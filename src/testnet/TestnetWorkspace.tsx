@@ -87,7 +87,6 @@ export function TestnetWorkspace() {
       setSelected(null);
       setView('orders');
       setJobs([]);
-      setError('');
       return;
     }
     refresh().catch((e) => setError(e.message));
@@ -99,7 +98,11 @@ export function TestnetWorkspace() {
     const c = walletConnector();
     const signIn = ({ accounts }: { accounts: { accountId: string }[] }) =>
       setAccount(accounts[0]?.accountId ?? null);
-    const signOut = () => setAccount(null);
+    const signOut = () => {
+      setAccount(null);
+      setModal(null);
+      setError('');
+    };
     c.on('wallet:signIn', signIn);
     c.on('wallet:signOut', signOut);
     return () => {
@@ -112,6 +115,45 @@ export function TestnetWorkspace() {
     d = state?.deployment;
   const recovery = order ? state?.recoveries?.[order.id] : undefined;
   const open = !recovery || recovery.phase === 'Open';
+  function walletError(value: unknown) {
+    const message = value instanceof Error ? value.message : typeof value === 'string' ? value : '';
+    if (
+      [
+        'No accounts found',
+        'No wallet selected',
+        'Account is disconnected',
+        'Account is not connected',
+      ].includes(message)
+    ) {
+      const message = 'Your wallet connection ended. Connect again to continue.';
+      session.current = null;
+      setModal(null);
+      setAccount(null);
+      setError(message);
+      return new Error(message);
+    }
+    return value instanceof Error
+      ? value
+      : new Error(message || 'This action could not be completed.');
+  }
+  async function signWalletMessage(challenge: {
+    message: string;
+    recipient: string;
+    nonce: string;
+  }) {
+    try {
+      const wallet = await walletConnector().wallet();
+      return await wallet.signMessage({
+        message: challenge.message,
+        recipient: challenge.recipient,
+        nonce: Uint8Array.from(atob(challenge.nonce), (c) => c.charCodeAt(0)),
+        network: 'testnet',
+        signerId: account!,
+      });
+    } catch (e) {
+      throw walletError(e);
+    }
+  }
   async function run(fn: () => Promise<unknown>, close = true) {
     setBusy(true);
     setError('');
@@ -120,7 +162,7 @@ export function TestnetWorkspace() {
       await refresh();
       if (close) setModal(null);
     } catch (e) {
-      setError((e as Error).message);
+      setError(walletError(e).message);
     } finally {
       setBusy(false);
     }
@@ -145,15 +187,7 @@ export function TestnetWorkspace() {
         session.current.expires <= Date.now()
       ) {
         const challenge = await post('/session/challenge', { accountId: account });
-        const signed = await (
-          await walletConnector().wallet()
-        ).signMessage({
-          message: challenge.message,
-          recipient: challenge.recipient,
-          nonce: Uint8Array.from(atob(challenge.nonce), (c) => c.charCodeAt(0)),
-          network: 'testnet',
-          signerId: account,
-        });
+        const signed = await signWalletMessage(challenge);
         session.current = await post('/session', { challengeId: challenge.id, ...signed });
       }
       headers.Authorization = 'Bearer ' + session.current!.token;
@@ -242,15 +276,7 @@ export function TestnetWorkspace() {
       auditHash: invoice.document_hash,
       invoice,
     });
-    const signed = await (
-      await walletConnector().wallet()
-    ).signMessage({
-      message: challenge.message,
-      recipient: challenge.recipient,
-      nonce: Uint8Array.from(atob(challenge.nonce), (c) => c.charCodeAt(0)),
-      network: 'testnet',
-      signerId: account!,
-    });
+    const signed = await signWalletMessage(challenge);
     await post('/submit', { challengeId: challenge.id, ...signed });
   }
   const totals = orders.reduce(

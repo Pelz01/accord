@@ -32,7 +32,7 @@ scripts/testnet-bootstrap.ts, scripts/testnet-deploy.ts, and scripts/testnet-wor
 
 Live NEAR AI Cloud extraction is verified with the configured server credential and z-ai/glm-5.3-flash. The recorded input is synthetic, and the model response is real. fixtures/near-ai-extraction.json contains the document hash, parsed fields, provider request IDs, timing, successful app HTTP result, and incomplete-invoice rejection. The testnet order did not change.
 
-For a new live check, run npx tsx scripts/near-ai-smoke.ts --http --negative while the server is running. This explicitly calls the provider. Unit tests replay the recorded response and test malformed output, mismatched prices, upstream failures, and rejection sentinels without live requests. Browser wallet signing still requires its separate end-to-end verification.
+For a new live check, run npx tsx scripts/near-ai-smoke.ts --http --negative while the server is running. This explicitly calls the provider. Unit tests replay the recorded response and test malformed output, mismatched prices, upstream failures, and rejection sentinels without live requests. The Intear buyer browser check below is separate from these SDK/API checks.
 
 ## Hosted verification
 
@@ -68,4 +68,4 @@ For a new payment recording, prepare a funded order with accepted quantity above
 
 ## Remaining gates
 
-Full real-wallet browser journey; mainnet network wiring and deployment; independent recovery/storage/upgrade review. Supplier confirmation and PDF/OCR are verified. Demo recording, the public demo post, personal submission details and actual submission remain pending. No hackathon submission or social post has been made.
+Supplier, receiver and operator real-wallet browser journeys; mainnet network wiring and deployment; independent recovery/storage/upgrade review. The real Intear buyer browser check passed creation, 100 aUSD funding, private scanned-invoice access and closure with a 60 aUSD refund after a 40 aUSD supplier payment. Companion SDK accounts performed the other roles. See fixtures/browser-wallet-evidence.json for exact coverage and receipts. Twelve isolated Playwright checks now include lost-session recovery during funding and invoice access. Demo recording, the public demo post, personal submission details and actual submission remain pending. No hackathon submission or social post has been made.

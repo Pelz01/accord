@@ -12,6 +12,8 @@ The development-only simulator has separate deterministic role headers. It is ex
 
 Wallet filtering is a navigation aid. Orders, quantities, prices, and attempts are public onchain. Connecting a wallet does not make these records private.
 
+When the connector explicitly reports a missing or disconnected account during an action, the interface clears its private session and returns to the wallet gate. Reconnection does not repeat the previous transaction or invoice request. Contract failures and ambiguous transfer outcomes are not treated as wallet disconnection.
+
 ## Hosted invoice authorization
 
 Invoice requests require a NEP-413 full-access wallet ownership proof bound to the website, account, network, nonce, and five-minute challenge. The challenge is atomically consumed once. The resulting 30-minute token is held in browser memory; only its SHA-256 hash is stored. Invoice access is limited to the order buyer, supplier, receiver, or operator. Persistent quotas limit each order to five requests per minute and 100 per UTC day, with a global limit of 1,000 per UTC day. Invalid or unavailable model output remains an error; no synthetic fallback is used.

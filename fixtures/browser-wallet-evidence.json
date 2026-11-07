@@ -1,0 +1,82 @@
+{
+  "network": "testnet",
+  "checkedAt": "2026-11-07T18:44:49.865Z",
+  "vault": "vault.accord-v2-8e0a631d.testnet",
+  "token": "token.accord-v2-8e0a631d.testnet",
+  "orderId": "PO-05AE2F8E",
+  "coverage": {
+    "buyer": "Real Intear web wallet in hosted browser",
+    "supplier": "Companion SDK test account",
+    "receiver": "Companion SDK test account",
+    "operator": "Companion SDK test account"
+  },
+  "allRolesBrowserVerified": false,
+  "checks": [
+    "Connected Intear account visible on hosted app",
+    "Empty purchase-order list scoped to connected account",
+    "Purchase order created through real wallet connector",
+    "100 aUSD funding through real browser wallet",
+    "Intear NEP-413 login accepted for private browser document upload",
+    "Browser scanned-PDF upload used OCR and live NEAR AI extraction: 4 cartons, 40 aUSD",
+    "Private download preserved original scanned-PDF hash",
+    "Unconfirmed invoice could not obtain payment authorization",
+    "Five-carton request rejected when only four cartons were accepted and invoiced",
+    "Restricted hosted worker settled 40 aUSD to fixed supplier for four accepted cartons",
+    "Buyer approved mutual closure through real Intear wallet; 60 aUSD returned and order Closed"
+  ],
+  "transactions": [
+    {
+      "label": "browser create_order",
+      "hash": "9Gca57chmjksj8jZ5tk7xGX84qYUFMYxHzbGHXJeXJ3W"
+    },
+    {
+      "label": "SDK companion supplier acceptance",
+      "hash": "3T98rBW98REL3caDXEdgc7YhnsczvKpoRPSFeD8oGzvC"
+    },
+    {
+      "label": "browser ft_transfer_call",
+      "hash": "FdxaVCcM6XKga3kiLV5WjzMGVGuhvzDEWvS3VMCGNpvM"
+    },
+    {
+      "label": "SDK companion partial delivery",
+      "hash": "CtraVd3WwDATstr9Xiadq1CE8ZDDiySuFsbB167tZqno"
+    },
+    {
+      "label": "SDK companion supplier invoice confirmation",
+      "hash": "5kndw3CQYe3YwqzkJnFLZk7B4zqMuRFjp9BoUfsZTW2L"
+    },
+    {
+      "label": "SDK companion supplier closure proposal",
+      "hash": "21ZtsUoG27KEu4f4u3W1jSNYhpfV8QW1EJJPqugADZcM"
+    },
+    {
+      "label": "browser accept_close",
+      "hash": "H39AvWiwjsDZ3BKNBp1Yx72Wrx8n7bKtnHYtS6E9dayv"
+    }
+  ],
+  "paymentTransaction": "CZu1VKwzZfcJvy1tnaukBTyRihgKxWPrGLAYcKhZj1gc",
+  "commitment": "8845e7b13206cb08e951501a54bd14f976f3f71962c6b64475182510bbceeb91",
+  "document": {
+    "id": "04aa2390-7018-4980-a98a-664c55b1d2d0",
+    "source": "ocr",
+    "sha256": "29e22607d5b97b774f68179e74e79aa0ecd71371e9182efb1b7724dc345ded23",
+    "invoiceReference": "ACC-BROWSER-001",
+    "providerRequestId": "11249760-bb88-43cb-b3d9-f6fc079c2ca6",
+    "model": "z-ai/glm-5.3-flash"
+  },
+  "final": {
+    "fundedBaseUnits": "100000000",
+    "acceptedQuantity": "4",
+    "paidQuantity": "4",
+    "pendingQuantity": "0",
+    "phase": "Closed",
+    "refundedBaseUnits": "60000000",
+    "refundPendingBaseUnits": "0"
+  },
+  "limitations": [
+    "Supplier, receiver and operator signatures used existing SDK test accounts.",
+    "Automation did not observe a browser download event; original bytes were verified through authenticated API download.",
+    "Wallet approvals were completed by the user."
+  ],
+  "mainnet": false
+}
