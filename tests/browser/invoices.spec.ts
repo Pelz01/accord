@@ -176,7 +176,7 @@ test('supplier uploads a scan, reviews its original, and confirms exact extracte
   await page.screenshot({ path: 'test-results/supplier-invoice-desktop.png', fullPage: true });
   await dialog.getByRole('button', { name: 'Confirm invoice', exact: true }).click();
   await expect(dialog.getByText('Supplier confirmed', { exact: true })).toBeVisible();
-  await expect(dialog.getByRole('button', { name: 'Authorize bounded request' })).toHaveCount(0);
+  await expect(dialog.getByRole('button', { name: 'Authorize payment' })).toHaveCount(0);
   expect(confirmed).toBe(true);
   await page.setViewportSize({ width: 390, height: 844 });
   await dialog.getByText('Supplier confirmed', { exact: true }).scrollIntoViewIfNeeded();
@@ -230,7 +230,7 @@ test('operator payment authorization includes the supplier-confirmed invoice fie
   await page.getByRole('button', { name: new RegExp(payload.reference) }).click();
   await page.getByLabel('Quantity to pay').fill('30');
   await expect(page.getByRole('button', { name: 'Confirm invoice', exact: true })).toHaveCount(0);
-  await page.getByRole('button', { name: 'Authorize bounded request' }).click();
+  await page.getByRole('button', { name: 'Authorize payment' }).click();
   await expect(page.getByRole('status').filter({ hasText: 'Payment requested.' })).toBeVisible();
   expect(challenges).toBe(1);
   expect(submissions).toBe(1);

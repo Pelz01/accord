@@ -1882,9 +1882,6 @@
     max-width: 330px;
     margin-top: 25px;
   }
-  .hero-description > br {
-    display: none;
-  }
   .hero-actions {
     gap: 15px;
     margin-top: 24px;

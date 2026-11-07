@@ -296,7 +296,7 @@ export function Landing() {
   return (
     <div className="landing" ref={root}>
       <div className="landing-announcement">
-        <span>Supplier payments, in agreement</span>
+        <span>Business, in accord.</span>
         <span className="announcement-divider" />
         <a href={contractUrl} target="_blank" rel="noreferrer">
           Explore the payment trail
@@ -344,17 +344,15 @@ export function Landing() {
         <section className="landing-hero">
           <div className="hero-kicker">
             <span className="landing-dot" />
-            SUPPLIER PAYMENTS, IN AGREEMENT
+            BUY. RECEIVE. PAY.
           </div>
           <h1>
-            Supplier payments,
-            <br />
-            <em>on your terms.</em>
+            Keep business <br />
+            <em>moving.</em>
           </h1>
           <p className="hero-description">
-            From accepted delivery to settled payment.
-            <br />
-            Give your AI agent a purchase order it can’t overrule.
+            Orders, deliveries and payments, brought together. <br />
+            Less chasing. More progress.
           </p>
           <div className="hero-actions">
             <a className="landing-button dark" href="/workspace">
@@ -416,9 +414,8 @@ export function Landing() {
                 has to reconcile the order, the receipt, and every payment that came before.
               </p>
               <p>
-                Accord puts that relationship into the payment itself. Accepted goods create an
-                entitlement. Your agent can request what’s earned, and your agreement defines the
-                limit.
+                With Accord, the order, delivery record and invoice stay connected. Your team knows
+                what arrived, what’s been paid, and what comes next.
               </p>
               <a href="#how-it-works" className="landing-link">
                 Follow an order through Accord
@@ -440,7 +437,7 @@ export function Landing() {
             <p>
               Keep people in charge of the decisions.
               <br />
-              Let the agent handle a bounded request.
+              Turn invoices into a clear next step.
             </p>
           </div>
           <div className="workflow-body landing-reveal">
@@ -679,11 +676,11 @@ export function Landing() {
           <div className="landing-final-lines" aria-hidden="true" />
           <span className="landing-section-label">LET’S GET IN AGREEMENT</span>
           <h2>
-            Better payments
+            Put your next order
             <br />
-            start with <em>good terms.</em>
+            <em>in motion.</em>
           </h2>
-          <p>See a purchase order become a bounded payment.</p>
+          <p>Bring your team and suppliers onto the same page.</p>
           <div>
             <a className="landing-button dark" href="/workspace">
               Open your workspace
@@ -700,9 +697,9 @@ export function Landing() {
         <div className="landing-footer-top">
           <Brand />
           <p>
-            Supplier payments,
+            Keep business
             <br />
-            in agreement.
+            moving.
           </p>
           <nav aria-label="Footer navigation">
             <a href="#product">Product</a>

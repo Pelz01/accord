@@ -1168,7 +1168,7 @@ export function App() {
         </main>
         <footer className="app-footer">
           <span>
-            Accord <span> / </span> Supplier payments, within bounds.
+            Accord <span> / </span> Keep business moving.
           </span>
           <span>
             Built on NEAR <span className="near-mark">N</span>

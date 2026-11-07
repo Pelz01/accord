@@ -4,6 +4,7 @@
 .git
 .github
 .openai
+.impeccable.md
 .cargo
 cloud
 contracts

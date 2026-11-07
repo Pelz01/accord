@@ -62,7 +62,7 @@ Run npm run verify:documents in Linux/WSL for text PDF, scanned PDF, PNG OCR, pa
 
 ## Submission materials
 
-submission/materials.json contains a 1,247-character product write-up, proposed track rationale, a two-minute demo script, a 241-character X post draft and verified receipt links. submission/accord-poster.png is the accompanying share image; the HTML source is alongside it. Rebuild with node scripts/build-submission.mjs after installing Playwright Chromium. Personal contact and payout details are intentionally deferred and absent from these public materials.
+submission/materials.json contains a 1,308-character product write-up, proposed track rationale, a two-minute demo script, a 210-character X post draft and verified receipt links. submission/accord-poster.png is the accompanying share image; the HTML source is alongside it. Rebuild with node scripts/build-submission.mjs after installing Playwright Chromium. Personal contact and payout details are intentionally deferred and absent from these public materials.
 
 For a new payment recording, prepare a funded order with accepted quantity above paid plus pending; the existing verification order is fully paid for its current accepted 80 units. The linked receipt is the completed verification transaction. Record the actual wallet prompts and final receipt for any new transfer. Recording, publishing the post and sending a submission have not been performed.
 

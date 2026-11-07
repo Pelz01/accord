@@ -1,6 +1,10 @@
 # Accord
 
-Accord helps buyers pay suppliers for accepted deliveries while an AI operator stays inside a funded purchase order. Supplier-accepted terms fix the price, authorities, and payout account. The NEAR contract reserves entitlement before sending tokens.
+**Keep business moving.**
+
+Orders, deliveries and payments, brought together. Less chasing. More progress.
+
+Accord keeps buying teams and suppliers on the same page, from the first order to the final payment. AI prepares invoice details for review. Suppliers confirm them, receivers record deliveries, and the NEAR contract keeps each payment within what was agreed and received.
 
 The hosted product is [accord-payments.vercel.app](https://accord-payments.vercel.app). It includes a public landing page and a wallet-gated procurement workspace. **The current chain deployment is NEAR testnet.** Wallet transactions, token transfers, contract callbacks, and the restricted operator have been exercised on testnet. Mainnet follows the remaining validation gates; it has not been deployed.
 

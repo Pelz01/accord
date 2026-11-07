@@ -329,7 +329,7 @@ export function TestnetWorkspace() {
           <p>
             Your wallet is your account.
             <br />
-            Connect to manage your orders and supplier payments.
+            Connect to manage your orders, invoices and payments.
           </p>
           <button
             className="button primary"
@@ -470,7 +470,7 @@ export function TestnetWorkspace() {
             <span className="connection-dot" />
             NEAR TESTNET
           </span>
-          <p>Purchase orders and supplier payments</p>
+          <p>Orders, deliveries and payments</p>
           {d && (
             <a
               href={`https://testnet.nearblocks.io/address/${d.vault}`}
@@ -933,7 +933,7 @@ export function TestnetWorkspace() {
         </main>
         <footer className="app-footer">
           <span>Accord / NEAR testnet</span>
-          <span>Supplier payments, in agreement.</span>
+          <span>Keep business moving.</span>
         </footer>
       </div>
       {modal && (

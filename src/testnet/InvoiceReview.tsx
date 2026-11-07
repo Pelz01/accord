@@ -425,7 +425,7 @@ export function InvoiceReview({
                         })
                       }
                     >
-                      Authorize bounded request
+                      Authorize payment
                       <ArrowUpRight size={15} />
                     </button>
                   )}

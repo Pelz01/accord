@@ -3,9 +3,7 @@ test('public landing explains Accord and keeps the workspaces separate', async (
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-    'Supplier payments,on your terms.',
-  );
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Keep business moving.');
   await expect(
     page.getByRole('link', { name: 'Explore the workspace', exact: true }),
   ).toHaveAttribute('href', '/workspace');

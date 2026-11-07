@@ -68,7 +68,11 @@ The frontend fix is source c65e65f and Vercel deployment dpl_9n25hhpa3CTyJbSVtfF
 
 ## Design assets
 
-The landing uses warm neutrals, forest green, Manrope/Public Sans and Bodoni Moda. Layout research referenced Mercury, Ramp, and Brex; original generated photographs are integrated with real HTML product panels. The rest of the landing copy remains intact apart from the specific labels the user asked to remove.
+The public brand leads with "Keep business moving." Supporting copy explains the product as "Orders, deliveries and payments, brought together. Less chasing. More progress." AI and contract controls are explained in context. The browser title, search description, Open Graph/X preview, app name, favicon and workspace footer follow this direction. The workspace uses its own "Workspace · Accord" tab title.
+
+public/brand/accord-mark.svg preserves the existing two-part mark. npm run build:brand derives SVG/ICO/PNG favicons, Apple/Android icons and the 1200 × 630 public/images/accord-social.jpg share image. The share image uses existing original photography and local fonts. The manifest opens the wallet-gated workspace; no service worker or offline transaction support is claimed. The public landing page has canonical and sitemap metadata, and the workspace/API responses are excluded from indexing.
+
+The landing uses warm neutrals, forest green, Manrope/Public Sans and Bodoni Moda. Layout research referenced Mercury, Ramp, and Brex; original generated photographs are integrated with real HTML product panels. The layout and photography remain established; the current brand copy leads with business outcomes and explains implementation details in the relevant workflows and safeguards.
 
 Asset generation used the built-in image generation tool. public/images/accord-commerce.jpg and public/images/accord-delivery.jpg are optimized JPEG exports; the originals remain in the local generated-image library.
 

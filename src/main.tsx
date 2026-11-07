@@ -8,6 +8,10 @@ import '@fontsource/public-sans/latin-400.css';
 import '@fontsource/public-sans/latin-500.css';
 import '@fontsource/public-sans/latin-600.css';
 import './styles.css';
+const workspaceRoute =
+  window.location.pathname.startsWith('/workspace') ||
+  Boolean(new URLSearchParams(window.location.search).get('network'));
+document.title = workspaceRoute ? 'Workspace · Accord' : 'Accord — Keep business moving.';
 const Simulator = import.meta.env.DEV
   ? React.lazy(() => import('./App').then((m) => ({ default: m.App })))
   : null;
@@ -20,8 +24,7 @@ createRoot(document.getElementById('root')!).render(
     <React.Suspense fallback={<div className="loading">Opening Accord…</div>}>
       {Simulator && window.location.pathname.startsWith('/dev/simulator') ? (
         <Simulator />
-      ) : window.location.pathname.startsWith('/workspace') ||
-        new URLSearchParams(window.location.search).get('network') ? (
+      ) : workspaceRoute ? (
         <TestnetWorkspace />
       ) : (
         <Landing />

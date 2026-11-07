@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /workspace
+Disallow: /api/
+Disallow: /dev/
+
+Sitemap: https://accord-payments.vercel.app/sitemap.xml

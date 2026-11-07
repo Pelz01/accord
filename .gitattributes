@@ -5,3 +5,4 @@
 *.wasm binary
 *.pdf binary
 *.jpg binary
+*.ico binary

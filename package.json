@@ -10,6 +10,7 @@
     "dev": "concurrently -k \"tsx watch server/index.ts\" \"vite --host 127.0.0.1\" \"node scripts/dev-documents.mjs\"",
     "build:frontend": "tsc --noEmit && vite build",
     "build:api": "esbuild server/runtime.ts --bundle --platform=node --format=esm --target=node24 --packages=external --outfile=dist-api/index.js",
+    "build:brand": "node scripts/build-brand-assets.mjs",
     "start:api": "node dist-api/index.js",
     "build": "npm run build:frontend && npm run build:api",
     "build:sites": "npm run build:frontend && node scripts/build-hosted.mjs",

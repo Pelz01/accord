@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-3 -3 41 39" fill="none">
+  <g id="accord-mark" fill="#286748" transform="rotate(-8 13.5 14.5)">
+    <rect x="5" width="13" height="25" rx="2" transform="translate(11.5 12.5) skewX(-22) translate(-11.5 -12.5)"/>
+    <rect x="17" y="10" width="13" height="19" rx="2" opacity=".52" transform="translate(23.5 19.5) skewX(-22) translate(-23.5 -19.5)"/>
+  </g>
+</svg>
