@@ -1,0 +1,69 @@
+{
+  "draft": true,
+  "projectName": "Accord",
+  "description": "Accord helps buyers pay suppliers for accepted deliveries while keeping AI inside an agreed purchase-order budget. Buyers create and fund fixed terms; suppliers accept the price and payout account; an authorized receiver confirms cumulative deliveries. PDF invoices and scans are processed into text, and NEAR AI Cloud extracts structured fields. The supplier reviews and confirms a canonical commitment covering those fields, the document hash, order terms, network and vault. An operator can then authorize a partial payment. A Rust contract on NEAR independently checks the supplier confirmation and enforces paid + pending <= accepted <= ordered, reserving entitlement before the token transfer. The operator cannot change prices, recipients or delivery records. The product includes wallet-gated orders, private file review, durable payment jobs, receipts, mutual closure and buyer refunds. The hosted application runs on Vercel and an isolated VPS backend. Real testnet transfers, supplier confirmation, PDF/OCR, failed callbacks and recovery have been verified. This release uses testnet aUSD. Mainnet and a complete real-wallet browser journey remain separate release gates; no external audit or invoice-specific payment ledger is claimed.",
+  "publicRepository": "https://github.com/Pelz01/accord",
+  "liveProduct": "https://accord-payments.vercel.app",
+  "proposedTracks": [
+    {
+      "id": "security",
+      "reason": "The agent cannot expand its spending authority; contract checks and limited keys constrain settlement."
+    },
+    {
+      "id": "realworld",
+      "reason": "Purchase orders, supplier invoices, delivery receipts and partial supplier payments."
+    }
+  ],
+  "demoPostDraft": "Built Accord at NEAR HACKATHON: AI reads supplier invoices; NEAR contracts enforce agreed terms and delivery-based payment limits. Try it: https://accord-payments.vercel.app Repo: https://github.com/Pelz01/accord @NEARProtocol #NEARHackathon",
+  "proofLinks": {
+    "invoiceConfirmation": "https://testnet.nearblocks.io/txns/GpkApCikL16Mhb8mPFhXuebzAVp18nnEtQxMQoFmFG84",
+    "payment": "https://testnet.nearblocks.io/txns/Ab1rGxNWG6CKoEYUmKnFUHrujnfhG88B26QRPzrnwnG",
+    "refund": "https://testnet.nearblocks.io/txns/5RzNhuARA7TWu7wpXwSArDG2ohmXxZemKXUfPQS9LVdZ"
+  },
+  "demo": [
+    {
+      "time": "0:00-0:15",
+      "show": "Landing page, then open the wallet gate.",
+      "say": "A supplier can invoice the full order before all the goods arrive. Accord pays only the quantity already accepted."
+    },
+    {
+      "time": "0:15-0:35",
+      "show": "A funded purchase order, fixed payout, price, accepted, paid and pending quantities.",
+      "say": "The buyer funds agreed terms. A separate supplier accepts them, and the receiver confirms delivery. Those records define the payment limit."
+    },
+    {
+      "time": "0:35-1:00",
+      "show": "Upload the synthetic scanned PDF, inspect its preview and OCR text, then extract fields.",
+      "say": "OCR reads the scan. NEAR AI extracts fields, and the application checks them against the order. Extraction alone grants no authority."
+    },
+    {
+      "time": "1:00-1:20",
+      "show": "Supplier review, the public-field notice, wallet confirmation, then the confirmed commitment.",
+      "say": "The supplier confirms these exact fields and this document hash. A changed invoice needs a new confirmation."
+    },
+    {
+      "time": "1:20-1:45",
+      "show": "Operator bounded request and the real completed testnet receipt linked in this file.",
+      "say": "The operator signs a bounded request. The worker has a limited key. NEAR checks the confirmed invoice and reserves delivery entitlement before sending tokens."
+    },
+    {
+      "time": "1:45-2:00",
+      "show": "The verified buyer refund receipt and the public repository.",
+      "say": "Both parties can close a settled order and return unused tokens to the buyer. Unknown outcomes stay reserved. The current release is on testnet."
+    }
+  ],
+  "recordingState": {
+    "scriptPrepared": true,
+    "videoRecorded": false,
+    "publicPostPublished": false,
+    "applicationSubmitted": false
+  },
+  "humanDetailsDeferred": true,
+  "submissionRulesSource": "https://nearhackathon.com/HACKATHON.md",
+  "readiness": {
+    "invoiceConfirmationVerified": true,
+    "pdfOcrVerified": true,
+    "mainnetDeployed": false,
+    "realWalletBrowserJourneyVerified": false
+  }
+}

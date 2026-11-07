@@ -4,7 +4,7 @@
 
 Open [accord-payments.vercel.app](https://accord-payments.vercel.app) for the hosted product. For development, run npm ci and npm run dev and open http://127.0.0.1:5173. The first page is the landing page. Open the workspace to connect a NEAR testnet wallet. Orders and balances remain hidden until connection; unrelated wallets do not inherit the supplied test records.
 
-The browser sends creation, acceptance, funding, and delivery transactions through the connected wallet. Authorities are enforced by the contract. Invoice extraction requires the server's NEAR_AI_API_KEY; it fails visibly when unavailable. Payment requests need the order operator's NEP-413 wallet signature, a fresh one-time challenge, and the server's restricted function-call key. Never share a private key in chat or commit it.
+The browser sends creation, acceptance, funding, delivery and supplier invoice confirmation transactions through the connected wallet. Authorities are enforced by the contract. Invoice extraction requires the server's NEAR_AI_API_KEY; it fails visibly when unavailable. Payment requests need the order operator's NEP-413 wallet signature, a fresh one-time challenge, and the server's restricted function-call key. Never share a private key in chat or commit it.
 
 ## Existing chain evidence
 
@@ -48,6 +48,24 @@ For an eligible funded order, buyer or supplier selects Propose closure. The oth
 
 The explicit npm run verify:recovery:testnet command uses ignored generated testnet credentials. It verifies both sandbox artifact hashes before an atomic code upgrade/state check and recovers the known closed order on repeat runs. This uses SDK signatures; the browser tests use isolated wallet doubles and do not replace a real wallet extension journey. Native storage deposits remain retained.
 
+## Supplier confirmation and PDF/OCR
+
+The current contract is version 2.2.0-invoices. The upgrade retained existing orders, recovery states and token balances. Through the public URL, the live check uploaded both a text PDF and a scanned PDF, verified extraction through real NEAR AI, privately downloaded the original bytes, and rejected access by an unrelated wallet. The supplier then confirmed the scanned invoice fields. Missing/tampered confirmations were rejected, and the restricted worker settled a 100 aUSD payment. PO-WORKER-001 is now paid 80, pending 0; the earlier 300 aUSD buyer refund is unchanged.
+
+- [Supplier confirmation](https://testnet.nearblocks.io/txns/GpkApCikL16Mhb8mPFhXuebzAVp18nnEtQxMQoFmFG84)
+- [Supplier-confirmed payment](https://testnet.nearblocks.io/txns/Ab1rGxNWG6CKoEYUmKnFUHrujnfhG88B26QRPzrnwnG)
+- Full proof: fixtures/invoice-release-evidence.json.
+
+To try the UI, connect an order member, open its funded order and select Review invoice. Upload a PDF/PNG/JPEG or select Invoice text. Extract and review the source beside the fields. The supplier confirms after reviewing the public-field notice. The operator selects that confirmed record and signs an eligible quantity. The worker and contract determine settlement; submission is not payment success.
+
+Run npm run verify:documents in Linux/WSL for text PDF, scanned PDF, PNG OCR, page-limit, unsupported-type, corrupt-file and size-limit checks. The production document image runs those same checks during its build. npm run verify:invoices:testnet is an explicit live check with ignored generated credentials. Repeat runs recover its saved document and payment rather than authorizing another transfer.
+
+## Submission materials
+
+submission/materials.json contains a 1,247-character product write-up, proposed track rationale, a two-minute demo script, a 241-character X post draft and verified receipt links. submission/accord-poster.png is the accompanying share image; the HTML source is alongside it. Rebuild with node scripts/build-submission.mjs after installing Playwright Chromium. Personal contact and payout details are intentionally deferred and absent from these public materials.
+
+For a new payment recording, prepare a funded order with accepted quantity above paid plus pending; the existing verification order is fully paid for its current accepted 80 units. The linked receipt is the completed verification transaction. Record the actual wallet prompts and final receipt for any new transfer. Recording, publishing the post and sending a submission have not been performed.
+
 ## Remaining gates
 
-Full real-wallet browser journey; mainnet network wiring and deployment; independent recovery/storage/upgrade review. P1 invoice confirmation, PDF/OCR and final submission materials remain incomplete. No hackathon submission or social post has been made.
+Full real-wallet browser journey; mainnet network wiring and deployment; independent recovery/storage/upgrade review. Supplier confirmation and PDF/OCR are verified. Demo recording, the public demo post, personal submission details and actual submission remain pending. No hackathon submission or social post has been made.

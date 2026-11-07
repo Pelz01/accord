@@ -1,0 +1,76 @@
+{
+  "network": "testnet",
+  "at": "2026-11-07T15:46:06.423Z",
+  "vault": "vault.accord-v2-8e0a631d.testnet",
+  "wasmSha256": "0264bf45465b17859ca565d8a6bdc0a82a06b46761c5b6c903c73a34a7a34101",
+  "checks": [
+    "invoice upgrade preserved all existing orders, recovery states and vault token balance",
+    "invoice files and review records require wallet authorization before processing",
+    "hosted PDF text and scanned-PDF OCR both feed real NEAR AI extraction",
+    "original file hash survives private download and unrelated wallets cannot read it",
+    "only the supplier confirmed the exact extracted fields on testnet",
+    "missing or tampered supplier confirmations cannot obtain payment authorization",
+    "restricted worker settled a real 100 aUSD payment bound to the supplier-confirmed scanned invoice",
+    "previous buyer refund remains unchanged"
+  ],
+  "transactions": [
+    {
+      "label": "atomic_invoice_upgrade",
+      "hash": "YWSYA9uvv2PTJECUubAMchjoKtdf7r6yB1prtmo6qd4"
+    },
+    {
+      "label": "rejected_operator_invoice_confirmation",
+      "hash": "78cASaecuJVPe7wwVFxt9DdPkDaPmMYnjKXAW69zWq3N"
+    },
+    {
+      "label": "confirm_invoice",
+      "hash": "GpkApCikL16Mhb8mPFhXuebzAVp18nnEtQxMQoFmFG84"
+    },
+    {
+      "label": "confirm_delivery",
+      "hash": "AEj8gjvHGExuipkyvBkLSnqaskJ5iMXK5sv6C2bgC1CC"
+    }
+  ],
+  "documents": [
+    {
+      "name": "invoice-text.pdf",
+      "sha256": "9747ca16d807e07b55626a4d8c71f10ebd0bbb265459d8a3e1bd6396b072f832",
+      "source": "pdf-text",
+      "id": "51c54ca6-f8d2-48fc-97c3-0ed8f37442a5"
+    },
+    {
+      "name": "invoice-scanned.pdf",
+      "sha256": "097a681848e3bff8d407143d54216316cdc635e92e90c0f64a0a31d958535a07",
+      "source": "ocr",
+      "id": "cc9ad292-eea9-422b-9d62-154a0ef00412"
+    }
+  ],
+  "providerRequestIds": [
+    "2d5e1b39-30f3-4be4-a609-5339d7ed0d3a",
+    "02ca58ed-cbab-4f07-a546-c92c215f1430"
+  ],
+  "commitment": "3ece8f4e767f1effebded9fb09cc131e499e0afaaebb4421942fafbf4c1d57b5",
+  "requestId": "089ef0d8-bbde-4de0-8623-f959e069dc83",
+  "paymentTransaction": "Ab1rGxNWG6CKoEYUmKnFUHrujnfhG88B26QRPzrnwnG",
+  "finalPaid": "80",
+  "hosted": {
+    "website": "https://accord-payments.vercel.app",
+    "frontendDeploymentId": "dpl_CN9UZMTB8xEyaazqpegzrcaMR57L",
+    "frontendSourceCommit": "8564b5a",
+    "apiRuntimeSourceCommit": "724f742",
+    "apiRuntimeBundleSha256": "35d1ce045c6f245b68cae2ce9d2c9845534c269ad4395abf066c9fe9e37a8073",
+    "apiContainer": "accord-api",
+    "documentContainer": "accord-documents",
+    "serverDirectory": "/home/ubuntu/accord",
+    "documentNetworkInternal": true,
+    "documentInternetAccess": false,
+    "documentCredentialsPresent": false,
+    "restartRecovered": true,
+    "persistedDocuments": 2,
+    "persistedInvoiceReviews": 2,
+    "persistedSettledJobs": 3,
+    "databaseIntegrity": "ok",
+    "backupVerified": true,
+    "verificationRepeatedWithoutNewPayment": true
+  }
+}

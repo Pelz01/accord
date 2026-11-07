@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Accord - NEAR Hackathon</title>
+    <style>
+      @font-face {
+        font-family: Manrope;
+        src: url('../node_modules/@fontsource/manrope/files/manrope-latin-500-normal.woff2');
+      }
+      @font-face {
+        font-family: Public;
+        src: url('../node_modules/@fontsource/public-sans/files/public-sans-latin-400-normal.woff2');
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #f4f1e8;
+        color: #183b2a;
+        font-family: Public, sans-serif;
+      }
+      .poster {
+        position: relative;
+        width: 1280px;
+        height: 720px;
+        overflow: hidden;
+      }
+      .photo {
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 47%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 66% center;
+      }
+      .shade {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          90deg,
+          #f4f1e8 0%,
+          #f4f1e8 48%,
+          rgba(244, 241, 232, 0.12) 70%,
+          transparent 100%
+        );
+      }
+      .brand {
+        position: absolute;
+        left: 64px;
+        top: 49px;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        font: 500 35px Manrope;
+        letter-spacing: -2px;
+      }
+      .symbol {
+        display: flex;
+        gap: 4px;
+        transform: skew(-15deg);
+      }
+      .symbol i {
+        display: block;
+        width: 12px;
+        height: 29px;
+        background: #2b6648;
+      }
+      .symbol i + i {
+        height: 24px;
+        margin-top: 5px;
+        background: #7a9e83;
+      }
+      .tag {
+        position: absolute;
+        top: 66px;
+        right: 58px;
+        font: 11px Manrope;
+        letter-spacing: 2px;
+        color: white;
+        text-shadow: 0 1px 6px #24382a;
+      }
+      h1 {
+        position: absolute;
+        left: 64px;
+        top: 177px;
+        width: 650px;
+        margin: 0;
+        font: 500 76px/1.09 Manrope;
+        letter-spacing: -4px;
+      }
+      .sub {
+        position: absolute;
+        left: 69px;
+        top: 393px;
+        width: 440px;
+        font: 20px/1.6 Public;
+        color: #5b6f5f;
+      }
+      .path {
+        position: absolute;
+        left: 69px;
+        top: 514px;
+        display: flex;
+        gap: 17px;
+        align-items: center;
+        font: 13px Manrope;
+        color: #28573c;
+      }
+      .path span {
+        color: #879f87;
+      }
+      .footer {
+        position: absolute;
+        left: 69px;
+        bottom: 48px;
+        font: 14px Public;
+        letter-spacing: 0.2px;
+      }
+      .footer small {
+        display: block;
+        font-size: 11px;
+        opacity: 0.65;
+        margin-top: 9px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="poster">
+      <img class="photo" src="../public/images/accord-commerce.jpg" alt="Warehouse loading bay" />
+      <div class="shade"></div>
+      <div class="brand">
+        <span class="symbol"><i></i><i></i></span>accord.
+      </div>
+      <div class="tag">NEAR HACKATHON</div>
+      <h1>Pay for<br />what arrived.</h1>
+      <p class="sub">AI prepares the invoice.<br />Your agreement controls payment.</p>
+      <div class="path">Review<span>→</span>Supplier approval<span>→</span>Settlement</div>
+      <div class="footer">accord-payments.vercel.app<small>github.com/Pelz01/accord</small></div>
+    </main>
+  </body>
+</html>
