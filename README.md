@@ -40,7 +40,7 @@ Set NEAR_AI_API_KEY in ignored .env to enable server-side NEAR AI Cloud extracti
 ## Code and verification
 
 - src/landing: marketing page, interactive product visual, and original generated photography.
-- src/testnet: wallet connection, contract reads, order creation, acceptance, funding, delivery, invoice review, and payment authorization.
+- src/testnet: wallet connection, contract reads, order creation, acceptance, funding, delivery, invoice review, payment authorization, and searchable payment history with receipt links.
 - contracts/vault: Rust payment boundary and private asynchronous callbacks.
 - contracts/test-token: six-decimal aUSD using the NEAR standard FT implementation.
 - server: development Fastify API, durable SQLite operator jobs, and extraction adapter.
@@ -57,6 +57,8 @@ cd sandbox
 npm ci
 npm test
 ```
+
+Checks run on the development machine. The optional GitHub workflow is manual-only and pinned to Ubuntu 24.04; a push does not start it.
 
 npm run build produces the frontend and dist/server/index.js hosted Worker. The build excludes the internal simulator from the production JavaScript. The development-only /dev/simulator route is an isolated deterministic test harness with an actor selector; its tests do not count as wallet authorization or chain evidence. It has no customer navigation.
 

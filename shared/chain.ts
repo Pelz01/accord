@@ -51,6 +51,16 @@ export type ChainState = {
   operatorReady: boolean;
   liveAiAvailable: boolean;
 };
+export type ChainJob = {
+  id: string;
+  orderId: string;
+  quantity: string;
+  auditHash: string;
+  status: 'queued' | 'submitting' | 'settled' | 'failed' | 'unresolved';
+  transactionHash: string | null;
+  error: string | null;
+  createdAt: string;
+};
 export function chainAvailable(o: ChainOrder) {
   return BigInt(o.accepted) - BigInt(o.paid) - BigInt(o.pending);
 }

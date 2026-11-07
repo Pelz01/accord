@@ -19,6 +19,7 @@ import {
 import {
   type ChainState,
   type ChainOrder,
+  type ChainJob,
   chainAvailable,
   ordersForAccount,
 } from '../../shared/chain';
@@ -27,6 +28,7 @@ import { Badge, Metric } from '../components/primitives';
 import { ModalShell } from '../components/ModalShell';
 import { CreateForm } from '../components/CreateOrderForm';
 import { walletConnector, accountId, sendCall } from './Wallet';
+import { PaymentHistory } from './PaymentHistory';
 
 const explorer = (hash: string) => `https://testnet.nearblocks.io/txns/${hash}`;
 function label(o: ChainOrder) {
@@ -57,15 +59,8 @@ export function TestnetWorkspace() {
     [extraction, setExtraction] = useState<Extraction | null>(null),
     [quantity, setQuantity] = useState(''),
     [transaction, setTransaction] = useState('');
-  const [jobs, setJobs] = useState<
-    {
-      id: string;
-      orderId: string;
-      status: string;
-      transactionHash: string | null;
-      error: string | null;
-    }[]
-  >([]);
+  const [jobs, setJobs] = useState<ChainJob[]>([]);
+  const [view, setView] = useState<'orders' | 'payments'>('orders');
   const refresh = useCallback(async () => {
     if (!account) return;
     const r = await fetch(
@@ -81,6 +76,7 @@ export function TestnetWorkspace() {
     if (!account) {
       setState(null);
       setSelected(null);
+      setView('orders');
       setJobs([]);
       setError('');
       return;
@@ -310,9 +306,25 @@ export function TestnetWorkspace() {
         </div>
         <p className="nav-label">WORKSPACE</p>
         <nav>
-          <button className="nav-item active" onClick={() => setSelected(null)}>
+          <button
+            className={`nav-item ${view === 'orders' ? 'active' : ''}`}
+            onClick={() => {
+              setSelected(null);
+              setView('orders');
+            }}
+          >
             <Layers2 size={18} />
             Purchase orders
+          </button>
+          <button
+            className={`nav-item ${view === 'payments' ? 'active' : ''}`}
+            onClick={() => {
+              setSelected(null);
+              setView('payments');
+            }}
+          >
+            <ArrowUpRight size={18} />
+            Payments
           </button>
           <a className="nav-item" href="/">
             <ArrowLeft size={18} />
@@ -327,7 +339,7 @@ export function TestnetWorkspace() {
           <div className="profile">
             <ShieldCheck size={18} />
             <div>
-              Contract enforced<small>Wallet identities, fixed authority</small>
+              Agreed terms<small>Clear payment limits</small>
             </div>
           </div>
         </div>
@@ -337,7 +349,9 @@ export function TestnetWorkspace() {
           <div className="breadcrumbs">
             Workspace
             <ChevronRight size={13} />
-            <button onClick={() => setSelected(null)}>Testnet orders</button>
+            <button onClick={() => setSelected(null)}>
+              {view === 'payments' ? 'Payments' : 'Purchase orders'}
+            </button>
             {order && (
               <>
                 <ChevronRight size={13} />
@@ -378,7 +392,7 @@ export function TestnetWorkspace() {
             <span className="connection-dot" />
             NEAR TESTNET
           </span>
-          <p>Onchain order records · standard-library aUSD test token</p>
+          <p>Purchase orders and supplier payments</p>
           {d && (
             <a
               href={`https://testnet.nearblocks.io/address/${d.vault}`}
@@ -425,6 +439,16 @@ export function TestnetWorkspace() {
                 <ArrowRight size={14} />
               </a>
             </div>
+          ) : view === 'payments' ? (
+            <PaymentHistory
+              state={state}
+              jobs={jobs}
+              account={account}
+              onOrder={(id) => {
+                setSelected(id);
+                setView('orders');
+              }}
+            />
           ) : order ? (
             <>
               <button className="back-link" onClick={() => setSelected(null)}>
@@ -694,7 +718,7 @@ export function TestnetWorkspace() {
             <>
               <div className="page-heading">
                 <div>
-                  <div className="eyebrow">LIVE CONTRACT WORKSPACE</div>
+                  <div className="eyebrow">PROCUREMENT</div>
                   <h1>Purchase orders</h1>
                   <p>Your orders, accepted deliveries, and supplier payments.</p>
                 </div>
@@ -788,16 +812,13 @@ export function TestnetWorkspace() {
                   <div className="empty-state">
                     <FileText size={30} />
                     <h2>No purchase orders yet</h2>
-                    <p>Connect a wallet to create a funded purchase order.</p>
+                    <p>Create your first purchase order to get started.</p>
                   </div>
                 )}
               </section>
               <div className="workspace-footer">
                 <ShieldCheck size={18} />
-                <p>
-                  <strong>Wallet identity is the authority.</strong> There is no role selector in
-                  the live workspace. The contract checks every immediate caller.
-                </p>
+                <p>Payments follow your agreed terms and confirmed deliveries.</p>
                 <a
                   href={`https://testnet.nearblocks.io/address/${d?.vault}`}
                   target="_blank"

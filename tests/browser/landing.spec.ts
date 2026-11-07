@@ -22,7 +22,9 @@ test('public landing explains Accord and keeps the workspaces separate', async (
   await page.getByRole('tab', { name: /02.*Confirm what actually arrived/ }).click();
   await expect(page.getByRole('tabpanel')).toContainText('40 cartons, accounted for.');
   await expect(page.getByRole('img', { name: /warehouse receiver/ })).toBeVisible();
-  await page.locator('.landing-workflow').screenshot({ path: 'test-results/landing-workflow.png' });
+  await page
+    .locator('.landing-workflow')
+    .screenshot({ path: 'test-results/landing-workflow.png', animations: 'disabled' });
   await page.getByRole('button', { name: 'Can the agent change the agreed payout?' }).click();
   await expect(page.getByText(/The supplier accepts a fixed payout account/)).toBeVisible();
   await page.screenshot({ path: 'test-results/landing-full.png', fullPage: true });
