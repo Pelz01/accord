@@ -1,0 +1,205 @@
+.modal:has(.create-order-form) {
+  width: min(560px, calc(100vw - 32px));
+  max-height: 92dvh;
+  background: var(--paper);
+}
+.modal:has(.create-order-form) .modal-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--paper);
+  padding: 27px 30px 23px;
+  align-items: flex-start;
+}
+.modal:has(.create-order-form) .modal-header .eyebrow {
+  display: none;
+}
+.modal:has(.create-order-form) .modal-header h2 {
+  font-size: 25px;
+  line-height: 1.25;
+}
+.modal:has(.create-order-form) .modal-header p {
+  color: #59665d;
+  font-size: 13px;
+  line-height: 1.6;
+  margin-top: 7px;
+}
+.modal:has(.create-order-form) .modal-body {
+  padding: 26px 30px 30px;
+}
+.modal:has(.create-order-form) .icon-button {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  color: #59665d;
+}
+.create-order-form fieldset {
+  border: 0;
+  margin: 0 0 25px;
+  padding: 0;
+  min-width: 0;
+}
+.create-order-form legend {
+  padding: 0;
+  margin-bottom: 17px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  color: var(--ink);
+}
+.create-order-form .field {
+  font-size: 13px;
+  color: #445348;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.create-order-form .field input {
+  min-width: 0;
+  min-height: 46px;
+  font-size: 14px;
+  color: var(--ink);
+  padding: 11px 13px;
+  background: var(--paper);
+  border-color: #d4dcd2;
+}
+.create-order-form .field input::placeholder {
+  color: #6b776d;
+  opacity: 1;
+}
+.create-order-form .field input:focus {
+  outline: 2px solid #286748;
+  outline-offset: 2px;
+  box-shadow: none;
+}
+.create-order-form .form-columns .field {
+  margin-bottom: 0;
+}
+.payout-choice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  width: fit-content;
+  font-size: 13px;
+  color: var(--ink);
+  cursor: pointer;
+}
+.payout-choice input {
+  width: 17px;
+  height: 17px;
+  accent-color: var(--green);
+  flex-shrink: 0;
+  margin: 0;
+}
+.create-order-form .separate-payout {
+  margin-top: 13px;
+}
+.create-order-form .form-help {
+  color: #59665d;
+  font-size: 12px;
+  line-height: 1.65;
+  margin: 7px 0 0;
+}
+.assigned-operator {
+  padding: 13px 15px;
+  border-left: 2px solid #a5b9a7;
+  background: #f0f3ed;
+  border-radius: 0 4px 4px 0;
+}
+.assigned-operator > span {
+  font-size: 12px;
+  color: #59665d;
+}
+.assigned-operator p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.create-order-summary {
+  border-top: 1px solid var(--line);
+  padding-top: 21px;
+}
+.create-order-summary > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.create-order-summary > div > span {
+  font-size: 14px;
+  font-weight: 500;
+}
+.create-order-summary strong {
+  font:
+    500 28px/1.3 Manrope,
+    sans-serif;
+  letter-spacing: -0.8px;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.create-order-summary small {
+  font-size: 13px;
+  letter-spacing: 0;
+  color: #59665d;
+}
+.create-order-summary > p {
+  font-size: 12px;
+  color: #59665d;
+  margin: 9px 0 0;
+  overflow-wrap: anywhere;
+}
+.create-order-summary > p span {
+  color: var(--ink);
+}
+.create-order-notes {
+  color: #59665d;
+  font-size: 12px;
+  line-height: 1.7;
+  margin: 19px 0 23px;
+}
+.create-order-notes p {
+  margin: 10px 0 0;
+}
+.create-order-notes strong {
+  color: #445348;
+  font-weight: 500;
+}
+.create-order-notes p:has(svg) {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.create-order-notes svg {
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+.create-order-notes .refund-unavailable {
+  color: #785b27;
+}
+.create-order-form > .button {
+  min-height: 48px;
+  font-size: 14px;
+}
+@media (max-width: 760px) {
+  .modal:has(.create-order-form) {
+    width: calc(100vw - 24px);
+    max-height: calc(100dvh - 24px);
+  }
+  .modal:has(.create-order-form) .modal-header,
+  .modal:has(.create-order-form) .modal-body {
+    padding: 23px 21px;
+  }
+  .modal:has(.create-order-form) .modal-header h2 {
+    font-size: 23px;
+  }
+  .create-order-form .form-columns {
+    gap: 12px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .create-order-form .field input {
+    font-size: 16px;
+  }
+}

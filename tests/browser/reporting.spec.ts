@@ -214,7 +214,18 @@ test('buyer overview separates reservations, invoice review and refunds; filtere
   expect(filtered).not.toContain('PO-COFFEE');
   await page.getByRole('button', { name: 'All orders', exact: true }).click();
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.screenshot({ path: 'test-results/payables-mobile.png' });
+  await expect(page.locator('.desktop-order-table')).not.toBeVisible();
+  const coffee = page
+    .getByRole('listitem')
+    .filter({ has: page.getByRole('heading', { name: 'Coffee cartons', exact: true }) })
+    .filter({ hasText: 'PO-COFFEE' });
+  await expect(coffee).toContainText('250 aUSD');
+  await expect(coffee).toContainText('150 aUSD in progress');
+  await expect(coffee).toContainText('60 of 100 cartons accepted');
+  const closed = page.getByRole('listitem').filter({ hasText: 'PO-CLOSED' });
+  await expect(closed).toContainText('40 aUSD');
+  await expect(closed).toContainText('60 aUSD');
+  await page.screenshot({ path: 'test-results/payables-mobile.png', fullPage: true });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
     true,
   );
@@ -239,6 +250,11 @@ test('supplier view scopes orders to the supplier or payout account and exports 
   await page.goBack();
   await expect(page.getByRole('heading', { name: 'Supplier view', exact: true })).toBeVisible();
   await page.setViewportSize({ width: 390, height: 844 });
+  await expect(page.getByRole('list', { name: 'Supplier orders' })).toBeVisible();
+  await expect(page.getByRole('list', { name: 'Supplier orders' })).toContainText(
+    'another-buyer.testnet',
+  );
+  await expect(page.getByRole('list', { name: 'Supplier orders' })).not.toContainText('PO-COFFEE');
   await page.screenshot({ path: 'test-results/supplier-mobile.png' });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
     true,
@@ -333,9 +349,103 @@ test('partial source coverage is disclosed and wallet disconnection removes repo
     .getByRole('button', { name: 'Payments', exact: true })
     .click();
   await expect(page.getByRole('status')).toContainText('Some payment attempts');
+  await page.getByRole('button', { name: 'Wallet: buyer.testnet', exact: true }).click();
   await page.getByRole('button', { name: 'Disconnect', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Connect your wallet.' })).toBeVisible();
   await expect(page.locator('body')).not.toContainText('PO-COFFEE');
   await expect(page.locator('.metric')).toHaveCount(0);
   expect(errors).toEqual([]);
 });
+
+for (const separatePayout of [false, true]) {
+  test(`order creation preserves exact terms with ${separatePayout ? 'a separate' : 'the supplier'} payment account across mobile layouts`, async ({
+    page,
+  }) => {
+    const fixture = fixtures();
+    fixture.state.orders = [];
+    fixture.state.attempts = [];
+    fixture.jobs = [];
+    const longBuyer = 'a'.repeat(56) + '.testnet';
+    const operator = 'operator.accord-v2-8e0a631d.testnet';
+    fixture.state.deployment!.operator = operator;
+    const errors = await setup(page, fixture, longBuyer);
+    const calls: unknown[][] = [];
+    await page.exposeFunction('recordPolishCall', (args: unknown[]) => calls.push(args));
+    // This wallet double records arguments only. It cannot sign or contact a chain.
+    await page.route('**/src/testnet/Wallet.ts*', (route) =>
+      route.fulfill({
+        contentType: 'application/javascript',
+        body: `const c={on:()=>{},off:()=>{},disconnect:async()=>{}};export const walletConnector=()=>c;export const accountId=async()=>${JSON.stringify(longBuyer)};export const sendCall=async(...args)=>{await window.recordPolishCall(args);return 'recorded-create';};`,
+      }),
+    );
+    await page.goto('/workspace');
+    await expect(page.locator('.workspace-label')).toHaveCount(0);
+    const wallet = page.getByRole('button', { name: `Wallet: ${longBuyer}`, exact: true });
+    await wallet.click();
+    await expect(page.locator('.wallet-menu-panel')).toContainText(longBuyer);
+    await wallet.press('Escape');
+    await expect(page.locator('.wallet-menu-panel')).not.toBeVisible();
+    await expect(wallet).toBeFocused();
+    await page.setViewportSize({ width: 390, height: 844 });
+    const walletBox = await wallet.boundingBox();
+    const brandBox = await page.locator('.sidebar .wordmark').boundingBox();
+    expect(Math.abs(walletBox!.y - brandBox!.y)).toBeLessThan(24);
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await page.getByRole('button', { name: 'New purchase order', exact: true }).click();
+    const dialog = page.getByRole('dialog');
+    await dialog.getByLabel('Item description').fill('Packing cartons');
+    await dialog.getByLabel('Quantity (cartons)').fill('80');
+    await dialog.getByLabel('Unit price (aUSD)').fill('12.125001');
+    await dialog.getByLabel('Supplier account', { exact: true }).fill('first-supplier.testnet');
+    await expect(dialog.getByLabel('Pay this supplier account')).toBeChecked();
+    await expect(dialog.getByLabel('Payment account', { exact: true })).toHaveCount(0);
+    if (separatePayout) {
+      await dialog.getByLabel('Pay this supplier account').uncheck();
+      await dialog.getByLabel('Payment account', { exact: true }).fill('payments.testnet');
+    }
+    // Changing the supplier must update the default payout, without replacing an explicit account.
+    await dialog.getByLabel('Supplier account', { exact: true }).fill('supplier.testnet');
+    await dialog.getByLabel('Delivery reviewer').fill('receiver.testnet');
+    await expect(dialog.locator('.assigned-operator')).toContainText(operator);
+    await expect(dialog.locator('.create-order-summary')).toContainText('970.00008 aUSD');
+    await expect(dialog.locator('.create-order-notes')).toContainText(
+      '1 testnet NEAR storage deposit.',
+    );
+    await expect(dialog.locator('.create-order-notes')).toContainText('not refundable');
+    if (!separatePayout) await page.screenshot({ path: 'test-results/create-order-desktop.png' });
+    for (const width of [320, 390, 760, 1024]) {
+      await page.setViewportSize({ width, height: 844 });
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+      ).toBe(true);
+      expect(await dialog.evaluate((el) => el.scrollWidth <= el.clientWidth)).toBe(true);
+      if (width === 390 && !separatePayout) {
+        await page.screenshot({ path: 'test-results/create-order-mobile.png' });
+        await dialog.evaluate((el) => el.scrollTo(0, el.scrollHeight));
+        await page.screenshot({ path: 'test-results/create-order-mobile-summary.png' });
+        await expect(
+          dialog.getByRole('button', { name: 'Create purchase order', exact: true }),
+        ).toBeInViewport();
+      }
+    }
+    await dialog.getByRole('button', { name: 'Create purchase order', exact: true }).click();
+    await expect(dialog).toHaveCount(0);
+    expect(calls).toHaveLength(1);
+    expect(calls[0][0]).toBe('vault.testnet');
+    expect(calls[0][1]).toBe('create_order');
+    expect(calls[0][3]).toBe('1000000000000000000000000');
+    expect(calls[0][2]).toMatchObject({
+      terms: {
+        supplier: 'supplier.testnet',
+        receiver: 'receiver.testnet',
+        operator,
+        payout: separatePayout ? 'payments.testnet' : 'supplier.testnet',
+        ordered: '80',
+        unit_price: '12125001',
+        unit: 'carton',
+        description: 'Packing cartons',
+      },
+    });
+    expect(errors).toEqual([]);
+  });
+}

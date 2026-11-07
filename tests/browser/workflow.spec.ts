@@ -51,7 +51,7 @@ test('create, accept, fund, and confirm a custom purchase order with separate ro
   await dialog.getByLabel('Supplier name', { exact: true }).fill('Atlas Packaging');
   await dialog.getByLabel('Item description').fill('Delivery cartons');
   await dialog.getByLabel('Supplier account', { exact: true }).fill('atlas.testnet');
-  await dialog.getByLabel('Fixed payout account').fill('atlas.testnet');
+  await expect(dialog.getByLabel('Pay this supplier account')).toBeChecked();
   await dialog.getByRole('button', { name: 'Create purchase order', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Atlas Packaging', exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Review & accept' })).toBeDisabled();

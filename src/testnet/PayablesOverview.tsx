@@ -7,6 +7,7 @@ import { orderCSV, paymentCSV, refundCSV } from '../../shared/reports';
 import { money } from '../../shared/schema';
 import { Badge, Metric } from '../components/primitives';
 import { Exports } from './Exports';
+import { OrderCards } from './OrderCards';
 import './reporting.css';
 
 const filters = [
@@ -214,82 +215,90 @@ export function PayablesOverview({
           </label>
         </div>
         {visible.length ? (
-          <div className="table-scroll">
-            <table className="report-table">
-              <thead>
-                <tr>
-                  <th>Order / {supplier ? 'buyer' : 'supplier'}</th>
-                  <th>Still committed</th>
-                  <th>Ready to review</th>
-                  <th>In progress</th>
-                  <th>Status</th>
-                  <th aria-label="Order actions" />
-                </tr>
-              </thead>
-              <tbody>
-                {visible.map((row) => (
-                  <tr key={row.order.id}>
-                    <td>
-                      <button className="payment-order" onClick={() => onOrder(row.order.id)}>
-                        {row.order.id}
-                        <ArrowRight size={13} />
-                      </button>
-                      <strong className="report-item">{row.order.terms.description}</strong>
-                      <small
-                        className="report-account"
-                        title={supplier ? row.order.buyer : row.order.terms.supplier}
-                      >
-                        {supplier ? row.order.buyer : row.order.terms.supplier}
-                      </small>
-                    </td>
-                    <td className="report-money">
-                      {money(row.committed)} <small>aUSD</small>
-                    </td>
-                    <td className="report-money">
-                      {money(row.ready)} <small>aUSD</small>
-                      <small className="block muted">
-                        {row.order.accepted} / {row.order.terms.ordered} {row.order.terms.unit}s
-                        accepted
-                      </small>
-                    </td>
-                    <td className="report-money">
-                      {money(row.processing)} <small>aUSD</small>
-                      {BigInt(row.awaitingDispatch) > 0n && (
-                        <small className="block muted">
-                          Includes {money(row.awaitingDispatch)} awaiting dispatch
-                        </small>
-                      )}
-                    </td>
-                    <td>
-                      <Badge
-                        tone={
-                          row.needsReview
-                            ? 'amber'
-                            : BigInt(row.ready) > 0n || row.status === 'Closed'
-                              ? 'green'
-                              : 'neutral'
-                        }
-                      >
-                        {row.status}
-                      </Badge>
-                      {supplier && row.order.terms.supplier !== account && (
-                        <small className="block muted">Payout recipient</small>
-                      )}
-                    </td>
-                    <td>
-                      <button
-                        className="report-open"
-                        aria-label={`Open order ${row.order.id}`}
-                        onClick={() => onOrder(row.order.id)}
-                      >
-                        <ArrowRight size={17} />
-                      </button>
-                    </td>
+          <>
+            <OrderCards
+              positions={visible}
+              supplier={supplier}
+              account={account}
+              onOrder={onOrder}
+            />
+            <div className="table-scroll desktop-order-table">
+              <table className="report-table">
+                <thead>
+                  <tr>
+                    <th>Order / {supplier ? 'buyer' : 'supplier'}</th>
+                    <th>Still committed</th>
+                    <th>Ready to review</th>
+                    <th>In progress</th>
+                    <th>Status</th>
+                    <th aria-label="Order actions" />
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {visible.map((row) => (
+                    <tr key={row.order.id}>
+                      <td>
+                        <button className="payment-order" onClick={() => onOrder(row.order.id)}>
+                          {row.order.id}
+                          <ArrowRight size={13} />
+                        </button>
+                        <strong className="report-item">{row.order.terms.description}</strong>
+                        <small
+                          className="report-account"
+                          title={supplier ? row.order.buyer : row.order.terms.supplier}
+                        >
+                          {supplier ? row.order.buyer : row.order.terms.supplier}
+                        </small>
+                      </td>
+                      <td className="report-money">
+                        {money(row.committed)} <small>aUSD</small>
+                      </td>
+                      <td className="report-money">
+                        {money(row.ready)} <small>aUSD</small>
+                        <small className="block muted">
+                          {row.order.accepted} / {row.order.terms.ordered} {row.order.terms.unit}s
+                          accepted
+                        </small>
+                      </td>
+                      <td className="report-money">
+                        {money(row.processing)} <small>aUSD</small>
+                        {BigInt(row.awaitingDispatch) > 0n && (
+                          <small className="block muted">
+                            Includes {money(row.awaitingDispatch)} awaiting dispatch
+                          </small>
+                        )}
+                      </td>
+                      <td>
+                        <Badge
+                          tone={
+                            row.needsReview
+                              ? 'amber'
+                              : BigInt(row.ready) > 0n || row.status === 'Closed'
+                                ? 'green'
+                                : 'neutral'
+                          }
+                        >
+                          {row.status}
+                        </Badge>
+                        {supplier && row.order.terms.supplier !== account && (
+                          <small className="block muted">Payout recipient</small>
+                        )}
+                      </td>
+                      <td>
+                        <button
+                          className="report-open"
+                          aria-label={`Open order ${row.order.id}`}
+                          onClick={() => onOrder(row.order.id)}
+                        >
+                          <ArrowRight size={17} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         ) : (
           <div className="empty-state">
             <Layers2 size={28} />

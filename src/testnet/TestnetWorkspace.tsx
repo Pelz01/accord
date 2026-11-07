@@ -37,6 +37,9 @@ import { InvoiceReview } from './InvoiceReview';
 import type { InvoicePayload } from '../../shared/invoices';
 import { orderPositions, positionTotals } from '../../shared/payables';
 import { paymentRows } from '../../shared/payments';
+import { OrderCards } from './OrderCards';
+import { WalletMenu } from './WalletMenu';
+import './workspace-polish.css';
 
 const explorer = (hash: string) => `https://testnet.nearblocks.io/txns/${hash}`;
 type WorkspaceView = 'home' | 'overview' | 'supplier' | 'orders' | 'payments';
@@ -149,14 +152,6 @@ export function TestnetWorkspace() {
           ? 'supplier'
           : 'orders'
       : view;
-  const viewLabel =
-    activeView === 'overview'
-      ? 'Payables'
-      : activeView === 'supplier'
-        ? 'Supplier view'
-        : activeView === 'payments'
-          ? 'Payments'
-          : 'Purchase orders';
   const positions = state ? orderPositions(state, jobs, account, 'all') : [];
   const positionByID = new Map(positions.map((position) => [position.order.id, position]));
   const order = orders.find((o) => o.id === selected),
@@ -415,14 +410,6 @@ export function TestnetWorkspace() {
           </span>
           accord<span className="wordmark-period">.</span>
         </a>
-        <div className="workspace-label">
-          <span className="workspace-avatar">N</span>
-          <div>
-            {account}
-            <small>Connected wallet</small>
-          </div>
-        </div>
-        <p className="nav-label">WORKSPACE</p>
         <nav aria-label="Workspace navigation">
           <button
             className={`nav-item ${activeView === 'overview' ? 'active' : ''}`}
@@ -464,43 +451,32 @@ export function TestnetWorkspace() {
             Back to website
           </a>
         </nav>
-        <div className="sidebar-bottom">
-          <div className="network-note">
-            <span className="connection-dot" />
-            NEAR testnet<small>Connected to NEAR</small>
-          </div>
-          <div className="profile">
-            <ShieldCheck size={18} />
-            <div>
-              Agreed terms<small>Clear payment limits</small>
-            </div>
-          </div>
-        </div>
       </aside>
       <div className="main-shell">
         <header className="topbar">
-          <div className="breadcrumbs">
-            Workspace
-            <ChevronRight size={13} />
-            <button onClick={() => navigate(activeView)}>{viewLabel}</button>
-            {activeView === 'orders' && order && (
-              <>
-                <ChevronRight size={13} />
-                <span>{order.id}</span>
-              </>
+          <div className="workspace-environment">
+            <span>
+              <span className="connection-dot" />
+              NEAR {d?.network === 'mainnet' ? 'mainnet' : 'testnet'}
+            </span>
+            {d && (
+              <a
+                href={`https://testnet.nearblocks.io/address/${d.vault}`}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="View payment contract"
+              >
+                <ArrowUpRight size={14} />
+              </a>
             )}
           </div>
           <div className="wallet-controls">
             {account ? (
-              <>
-                <span className="connected-account">{account}</span>
-                <button
-                  className="button secondary"
-                  onClick={() => run(() => walletConnector().disconnect())}
-                >
-                  Disconnect
-                </button>
-              </>
+              <WalletMenu
+                account={account}
+                busy={busy}
+                onDisconnect={() => run(() => walletConnector().disconnect())}
+              />
             ) : (
               <button
                 className="button primary"
@@ -518,23 +494,6 @@ export function TestnetWorkspace() {
             )}
           </div>
         </header>
-        <div className="environment-strip">
-          <span>
-            <span className="connection-dot" />
-            NEAR TESTNET
-          </span>
-          <p>Orders, deliveries and payments</p>
-          {d && (
-            <a
-              href={`https://testnet.nearblocks.io/address/${d.vault}`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              View contract
-              <ArrowUpRight size={12} />
-            </a>
-          )}
-        </div>
         <main>
           {error && (
             <div className="alert error" role="alert">
@@ -932,7 +891,12 @@ export function TestnetWorkspace() {
                 />
               </div>
               <section className="panel">
-                <div className="table-scroll">
+                <OrderCards
+                  positions={positions}
+                  account={account!}
+                  onOrder={(id) => navigate('orders', id)}
+                />
+                <div className="table-scroll desktop-order-table">
                   <table className="orders-table">
                     <thead>
                       <tr>
@@ -1028,7 +992,11 @@ export function TestnetWorkspace() {
                     ? 'Prepare token funding'
                     : 'Review supplier invoice'
           }
-          subtitle={order?.id ?? 'Sign with your connected wallet'}
+          subtitle={
+            modal === 'create'
+              ? 'Set the details. Your supplier reviews next.'
+              : (order?.id ?? 'Review with your connected wallet')
+          }
           onClose={() => {
             if (!busy) setModal(null);
           }}

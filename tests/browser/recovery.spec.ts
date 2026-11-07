@@ -103,7 +103,7 @@ test('supplier reviews exact buyer refund and signs the snapshot before closure'
     await route.fulfill({ json: { ok: true } });
   });
   await page.goto('/workspace');
-  await page.getByText(order.id, { exact: true }).click();
+  await page.getByRole('button', { name: order.id, exact: true }).click();
   const panel = page.getByRole('region', { name: 'Closure and recovery' });
   await expect(panel).toContainText('300');
   await panel.getByRole('button', { name: 'Review closure' }).click();
@@ -166,7 +166,7 @@ test('recipient recovery requires explicit receipt confirmation and preserves a 
     await route.fulfill({ json: { ok: true } });
   });
   await page.goto('/workspace');
-  await page.getByText(o.id, { exact: true }).click();
+  await page.getByRole('button', { name: o.id, exact: true }).click();
   const panel = page.getByRole('region', { name: 'Closure and recovery' });
   await expect(panel.getByRole('button', { name: 'Propose closure' })).toBeDisabled();
   await panel.getByRole('button', { name: 'I received this payment' }).click();

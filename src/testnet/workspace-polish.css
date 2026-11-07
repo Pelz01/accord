@@ -1,0 +1,381 @@
+.testnet-shell {
+  --muted: #59665d;
+  position: relative;
+}
+.testnet-shell .sidebar > .wordmark {
+  padding-bottom: 42px;
+}
+.testnet-shell .topbar {
+  min-height: 72px;
+  height: auto;
+  padding-block: 12px;
+  gap: 20px;
+}
+.workspace-environment,
+.workspace-environment > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.workspace-environment > a {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 36px;
+  border-radius: 5px;
+  color: var(--muted);
+}
+.workspace-environment > a:hover {
+  background: var(--green-wash);
+  color: var(--green);
+}
+.wallet-menu {
+  position: relative;
+  z-index: 6;
+  min-width: 0;
+}
+.wallet-menu > summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 42px;
+  padding: 9px 12px;
+  border: 1px solid #d7dfd4;
+  border-radius: 6px;
+  background: var(--paper);
+  font-size: 13px;
+  list-style: none;
+  cursor: pointer;
+}
+.wallet-menu > summary::-webkit-details-marker {
+  display: none;
+}
+.wallet-menu > summary > span {
+  max-width: 240px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.wallet-menu > summary > svg {
+  flex-shrink: 0;
+  color: var(--green);
+}
+.wallet-menu > summary:hover,
+.wallet-menu[open] > summary {
+  border-color: #a5b9a7;
+  background: #f0f4ec;
+}
+.wallet-menu-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  width: min(300px, calc(100vw - 40px));
+  padding: 18px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  box-shadow: 0 10px 30px #203b2814;
+}
+.wallet-menu-panel > span {
+  color: var(--muted);
+  font-size: 12px;
+}
+.wallet-menu-panel > p {
+  font-size: 13px;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+  margin: 6px 0 16px;
+}
+.wallet-menu-panel > button {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border-top: 1px solid var(--line);
+  min-height: 44px;
+  width: 100%;
+  padding-top: 14px;
+  font-size: 13px;
+  text-align: left;
+}
+.wallet-menu-panel > button:hover {
+  color: var(--green);
+}
+.testnet-shell .page-heading p {
+  font-size: 14px;
+  color: var(--muted);
+}
+.testnet-shell .metric-label {
+  color: #52614f;
+  font-size: 12px;
+}
+.testnet-shell .metric p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.65;
+}
+.testnet-shell .report-balance span,
+.testnet-shell .report-account,
+.testnet-shell .report-filters button,
+.testnet-shell .table-footer,
+.testnet-shell .report-footnote,
+.testnet-shell .report-notice {
+  font-size: 12px;
+}
+.testnet-shell .report-filters button {
+  min-height: 40px;
+}
+.testnet-shell .report-table th,
+.testnet-shell .report-money > small {
+  font-size: 11px;
+}
+.testnet-shell .report-table td,
+.testnet-shell .report-item {
+  font-size: 13px;
+}
+.testnet-shell .report-money small.block {
+  font-size: 11px;
+}
+.testnet-shell .report-toolbar {
+  gap: 15px;
+}
+.testnet-shell .report-toolbar .payment-search {
+  min-width: 180px;
+}
+.testnet-shell .report-heading-actions .button,
+.testnet-shell .export-menu summary {
+  font-size: 13px;
+  min-height: 44px;
+}
+.testnet-shell .modal-header p,
+.testnet-shell .field-note,
+.testnet-shell .modal-description {
+  color: #59665d;
+}
+.testnet-shell .field {
+  color: #445348;
+}
+.testnet-shell .field input {
+  color: var(--ink);
+}
+.testnet-shell .field input::placeholder {
+  color: #6b776d;
+}
+.order-cards {
+  display: none;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+@media (max-width: 1100px) {
+  .testnet-shell .report-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+@media (max-width: 760px) {
+  .testnet-shell .sidebar {
+    padding-top: 22px;
+    gap: 20px;
+  }
+  .testnet-shell .sidebar > .wordmark {
+    padding: 0;
+  }
+  .testnet-shell .sidebar nav {
+    margin-top: 0;
+  }
+  .testnet-shell .sidebar .nav-item {
+    min-height: 46px;
+    font-size: 12px;
+    gap: 6px;
+  }
+  .testnet-shell .topbar {
+    min-height: 44px;
+    padding: 4px 20px;
+    gap: 12px;
+  }
+  .testnet-shell .wallet-controls {
+    position: absolute;
+    right: 20px;
+    top: 17px;
+    max-width: calc(100% - 176px);
+    min-width: 0;
+  }
+  .wallet-menu {
+    max-width: 100%;
+  }
+  .workspace-environment {
+    gap: 2px;
+  }
+  .workspace-environment > span {
+    font-size: 11px;
+    gap: 6px;
+  }
+  .workspace-environment > a {
+    width: 25px;
+  }
+  .wallet-menu > summary {
+    font-size: 12px;
+    gap: 7px;
+    padding-inline: 10px;
+  }
+  .wallet-menu > summary > span {
+    max-width: min(30vw, 160px);
+    min-width: 0;
+  }
+  .testnet-shell .report-heading {
+    gap: 22px;
+  }
+  .testnet-shell .report-metrics .metric {
+    padding: 20px 16px;
+  }
+  .testnet-shell .metric-label {
+    font-size: 12px;
+    gap: 8px;
+  }
+  .testnet-shell .metric p {
+    font-size: 12px;
+  }
+  .testnet-shell .report-balance {
+    gap: 22px 25px;
+    margin-bottom: 28px;
+  }
+  .testnet-shell .report-balance span {
+    font-size: 12px;
+  }
+  .testnet-shell .report-toolbar {
+    padding: 17px;
+    gap: 15px;
+  }
+  .testnet-shell .report-filters {
+    gap: 4px;
+  }
+  .testnet-shell .report-filters button {
+    font-size: 11px;
+    min-height: 40px;
+    padding-inline: 9px;
+  }
+  .testnet-shell .desktop-order-table {
+    display: none;
+  }
+  .order-cards {
+    display: block;
+  }
+  .order-cards > li {
+    padding: 18px;
+  }
+  .order-cards > li + li {
+    border-top: 1px solid var(--line);
+  }
+  .order-card-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 11px;
+  }
+  .order-card-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    color: var(--green);
+    font-size: 13px;
+    font-weight: 500;
+    overflow-wrap: anywhere;
+    min-width: 0;
+    text-align: left;
+  }
+  .order-card-link svg {
+    flex-shrink: 0;
+  }
+  .order-cards .badge {
+    font-size: 11px;
+    max-width: 100%;
+    white-space: normal;
+    text-wrap: pretty;
+  }
+  .order-cards h2 {
+    font:
+      500 19px/1.4 Manrope,
+      sans-serif;
+    letter-spacing: -0.5px;
+    margin: 0 0 8px;
+    overflow-wrap: anywhere;
+  }
+  .order-card-account {
+    display: grid;
+    gap: 3px;
+    font-size: 12px;
+    color: #445348;
+    overflow-wrap: anywhere;
+    margin: 0;
+  }
+  .order-card-account > span {
+    color: var(--muted);
+    font-size: 11px;
+  }
+  .order-card-balances {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 12px;
+    margin: 23px 0 20px;
+  }
+  .order-card-balances > div {
+    min-width: 0;
+  }
+  .order-card-balances dt {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 5px;
+  }
+  .order-card-balances dd {
+    margin: 0;
+    font:
+      500 23px/1.4 Manrope,
+      sans-serif;
+    letter-spacing: -0.6px;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+  }
+  .order-card-balances small {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0;
+  }
+  .order-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px 14px;
+    flex-wrap: wrap;
+    padding-top: 15px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+  .testnet-shell .report-orders .table-footer {
+    padding: 15px 18px;
+    line-height: 1.7;
+    font-size: 11px;
+  }
+  .testnet-shell .report-footnote {
+    font-size: 12px;
+    margin-top: 20px;
+  }
+}
+@media (max-width: 380px) {
+  .testnet-shell .sidebar .nav-item svg {
+    display: none;
+  }
+}
+@media print {
+  .order-cards,
+  .wallet-menu {
+    display: none;
+  }
+}

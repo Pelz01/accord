@@ -1,6 +1,13 @@
 import { useState, type FormEvent } from 'react';
-import { LockKeyhole, ArrowRight } from 'lucide-react';
-import { type Role } from '../../shared/schema';
+import { ArrowRight, LockKeyhole } from 'lucide-react';
+import { money, type Role } from '../../shared/schema';
+import './create-order-form.css';
+
+function priceInBaseUnits(value: string) {
+  if (!/^\d+(\.\d{1,6})?$/.test(value)) return null;
+  const [whole, fraction = ''] = value.split('.');
+  return BigInt(whole) * 1_000_000n + BigInt(fraction.padEnd(6, '0'));
+}
 export function CreateForm({
   onCreate,
   busy,
@@ -18,128 +25,195 @@ export function CreateForm({
   operatorAccount?: string;
   recoveryEnabled?: boolean;
 }) {
-  const [unitPrice, setUnitPrice] = useState('10'),
-    [qty, setQty] = useState(100);
+  const [unitPrice, setUnitPrice] = useState('10');
+  const [qty, setQty] = useState(100);
+  const [supplier, setSupplier] = useState('');
+  const [paySupplier, setPaySupplier] = useState(true);
+  const price = priceInBaseUnits(unitPrice);
+  const total =
+    price !== null && Number.isSafeInteger(qty) && qty > 0
+      ? money((price * BigInt(qty)).toString())
+      : '—';
   function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (price === null) return;
     const form = new FormData(e.currentTarget);
-    const [whole, fraction = ''] = unitPrice.split('.');
-    const base = (BigInt(whole) * 1_000_000n + BigInt(fraction.padEnd(6, '0'))).toString();
     onCreate({
-      supplierName: form.get('supplierName') || form.get('supplier'),
-      supplier: form.get('supplier'),
-      payout: form.get('payout'),
+      supplierName: form.get('supplierName') || supplier,
+      supplier,
+      payout: paySupplier ? supplier : form.get('payout'),
       receiver: form.get('receiver'),
       operator: form.get('operator'),
       description: form.get('description'),
       ordered: qty,
-      unitPrice: base,
+      unitPrice: price.toString(),
     });
   }
   return (
-    <form onSubmit={submit}>
-      <div className="form-section-label">01 / ORDER DETAILS</div>
-      {!testnet && (
+    <form className="create-order-form" onSubmit={submit}>
+      <fieldset disabled={busy}>
+        <legend>Order details</legend>
+        {!testnet && (
+          <label className="field">
+            Supplier name
+            <input
+              name="supplierName"
+              placeholder="e.g. Meridian Supply Co."
+              required
+              minLength={2}
+              maxLength={80}
+              autoFocus
+            />
+          </label>
+        )}
         <label className="field">
-          Supplier name
+          Item description
           <input
-            name="supplierName"
-            placeholder="e.g. Meridian Supply Co."
+            name="description"
+            placeholder="e.g. Premium packing cartons"
             required
             minLength={2}
-            maxLength={80}
-            autoFocus
+            maxLength={160}
+            autoFocus={testnet}
           />
         </label>
-      )}
-      <label className="field">
-        Item description
-        <input
-          name="description"
-          placeholder="e.g. Premium packing cartons"
-          required
-          minLength={2}
-          maxLength={160}
-        />
-      </label>
-      <div className="form-columns">
+        <div className="form-columns">
+          <label className="field">
+            Quantity (cartons)
+            <input
+              type="number"
+              min={1}
+              max={1000000}
+              value={qty}
+              onChange={(e) => setQty(Number(e.target.value))}
+              required
+            />
+          </label>
+          <label className="field">
+            Unit price (aUSD)
+            <input
+              inputMode="decimal"
+              pattern="[0-9]+(\.[0-9]{1,6})?"
+              maxLength={38}
+              value={unitPrice}
+              onChange={(e) => setUnitPrice(e.target.value)}
+              required
+            />
+          </label>
+        </div>
+      </fieldset>
+      <fieldset disabled={busy}>
+        <legend>Supplier & payment</legend>
         <label className="field">
-          Quantity (cartons)
+          Supplier account
           <input
-            type="number"
-            min={1}
-            max={1000000}
-            value={qty}
-            onChange={(e) => setQty(Number(e.target.value))}
+            name="supplier"
+            placeholder="supplier.testnet"
             required
+            minLength={2}
+            maxLength={64}
+            pattern={'[a-z0-9._\\-]{2,64}'}
+            value={supplier}
+            onChange={(e) => setSupplier(e.target.value)}
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
           />
         </label>
-        <label className="field">
-          Unit price (aUSD)
+        <label className="payout-choice">
           <input
-            inputMode="decimal"
-            pattern="[0-9]+(\.[0-9]{1,6})?"
-            value={unitPrice}
-            onChange={(e) => setUnitPrice(e.target.value)}
-            required
+            type="checkbox"
+            checked={paySupplier}
+            onChange={(e) => setPaySupplier(e.target.checked)}
           />
+          Pay this supplier account
         </label>
-      </div>
-      <div className="form-section-label">02 / AUTHORITY & PAYOUT</div>
-      <label className="field">
-        Supplier account
-        <input
-          name="supplier"
-          placeholder="supplier.testnet"
-          required
-          pattern={'[a-z0-9._\\-]{2,64}'}
-        />
-      </label>
-      <label className="field">
-        Fixed payout account
-        <input
-          name="payout"
-          placeholder="supplier.testnet"
-          required
-          pattern={'[a-z0-9._\\-]{2,64}'}
-        />
-      </label>
-      <div className="form-columns">
+        {!paySupplier && (
+          <label className="field separate-payout">
+            Payment account
+            <input
+              name="payout"
+              placeholder="payments.testnet"
+              required
+              minLength={2}
+              maxLength={64}
+              pattern={'[a-z0-9._\\-]{2,64}'}
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+            />
+          </label>
+        )}
+        <p className="form-help">
+          Your supplier accepts the payment account before you fund the order.
+        </p>
+      </fieldset>
+      <fieldset disabled={busy}>
+        <legend>Your team</legend>
         <label className="field">
-          Receiver account
+          Delivery reviewer
           <input
             name="receiver"
             defaultValue={testnet ? '' : 'warehouse.testnet'}
             placeholder="receiver.testnet"
             required
+            minLength={2}
+            maxLength={64}
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
           />
         </label>
-        <label className="field">
-          Operator account
-          <input
-            name="operator"
-            defaultValue={operatorAccount || 'operator.testnet'}
-            readOnly={Boolean(operatorAccount)}
-            required
-          />
-        </label>
-      </div>
-      <p className="field-note">
-        Buyer: {buyerAccount}. Each authority must use a separate account. One line per order in
-        Accord.
-      </p>
-      <div className="alert warning">
-        <LockKeyhole size={16} />
-        {recoveryEnabled
-          ? 'Unused tokens can be refunded with buyer and supplier approval after accepted deliveries are paid.'
-          : 'Unspent funds cannot currently be refunded.'}
-      </div>
-      {testnet && (
-        <p className="field-note">
-          Creation attaches 1 testnet NEAR for order storage and token-call deposits. It is retained
-          without a refund.
+        {operatorAccount ? (
+          <div className="assigned-operator">
+            <span>Payment operator</span>
+            <p>{operatorAccount}</p>
+            <input type="hidden" name="operator" value={operatorAccount} />
+          </div>
+        ) : (
+          <label className="field">
+            Payment operator
+            <input
+              name="operator"
+              defaultValue="operator.testnet"
+              required
+              minLength={2}
+              maxLength={64}
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+            />
+          </label>
+        )}
+        <p className="form-help">
+          Buyer, supplier, delivery reviewer and payment operator each use a separate account.
         </p>
-      )}
+      </fieldset>
+      <div className="create-order-summary">
+        <div>
+          <span>Order total</span>
+          <strong>
+            {total} <small>aUSD</small>
+          </strong>
+        </div>
+        <p>
+          Created by <span>{buyerAccount}</span>
+        </p>
+      </div>
+      <div className="create-order-notes">
+        {testnet && (
+          <p>
+            <strong>1 testnet NEAR storage deposit.</strong> Retained by the order contract; not
+            refundable.
+          </p>
+        )}
+        <p className={recoveryEnabled ? '' : 'refund-unavailable'}>
+          <LockKeyhole size={14} />
+          {recoveryEnabled
+            ? 'Unused funds can be returned with your supplier’s approval after delivered goods are paid.'
+            : 'Unspent funds cannot currently be refunded.'}
+        </p>
+      </div>
       {role !== 'buyer' && (
         <p className="field-note">Switch the demo actor to Buyer to create an order.</p>
       )}

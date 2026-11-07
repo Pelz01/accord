@@ -149,6 +149,7 @@ test('wallet payment history filters records, links receipts, and opens related 
   );
   await history.getByRole('button', { name: own.id, exact: true }).first().click();
   await expect(page.getByRole('heading', { name: 'Delivery cartons', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Wallet: buyer.testnet', exact: true }).click();
   await page.getByRole('button', { name: 'Disconnect', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Connect your wallet.' })).toBeVisible();
   await expect(page.locator('.sidebar')).toHaveCount(0);
