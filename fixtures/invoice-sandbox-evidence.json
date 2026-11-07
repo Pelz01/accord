@@ -1,9 +1,9 @@
 {
-  "at": "2026-11-07T15:22:50.862Z",
+  "at": "2026-11-07T15:42:36.373Z",
   "environment": "local-near-sandbox",
   "runtime": "nearcore 2.14.0",
   "wasmSha256": {
-    "vault": "783e65b892c8c36faee988ad2f3d592c9b9c61041a6a6af920697432c016f36b"
+    "vault": "0264bf45465b17859ca565d8a6bdc0a82a06b46761c5b6c903c73a34a7a34101"
   },
   "checks": [
     {
@@ -39,18 +39,18 @@
       "status": "PASS"
     },
     {
-      "name": "closed remainder disables confirmations and payments while preserving audit records",
+      "name": "new confirmation invalidates stale closure; closed remainder disables confirmations and payments",
       "status": "PASS"
     }
   ],
   "receipts": [
     {
       "method": "request_payment",
-      "transactionHash": "vrD8CwTVX8jpYPkmMg4vzpH34Q33DFs3NUvvpgWMEb9",
+      "transactionHash": "oni3AEeCeR3UDu79NpwbD4b5fLLXiH2ZfrJeSPUn9iT",
       "outcomes": [
         {
-          "receiptId": "DvyXq7A9Xa8okq7fxX647xdf35oYbbhZY1zSbmdYJRD9",
-          "executor": "dev-79604-15296.test.near",
+          "receiptId": "3h5wuVV143DBjmqNEx156PDNSQFpbdGKwSLGgxwht32N",
+          "executor": "dev-65239-28256.test.near",
           "status": {
             "Failure": {
               "ActionError": {
@@ -64,17 +64,17 @@
             }
           },
           "logs": [],
-          "gasBurnt": "1542731312719"
+          "gasBurnt": "1542799481030"
         }
       ]
     },
     {
       "method": "confirm_invoice",
-      "transactionHash": "HyUGdarRyr7oJx2PPcxhmW5hywPPujeiwrqJ34ndNp5e",
+      "transactionHash": "3GbMV7DxXoRu6u62Ypfyx3quXeXXjfYWdHLVAjxydytH",
       "outcomes": [
         {
-          "receiptId": "2y2LjPuSxNie9HJx3XvQr6tDWrpnfhVVnC9fUJBgvRqQ",
-          "executor": "dev-79604-15296.test.near",
+          "receiptId": "8rECeFiCArdoiHhs6YgPZs97fjprMbkEbga8Dkbd1xYe",
+          "executor": "dev-65239-28256.test.near",
           "status": {
             "Failure": {
               "ActionError": {
@@ -88,73 +88,49 @@
             }
           },
           "logs": [],
-          "gasBurnt": "1554891280607"
+          "gasBurnt": "1554956036162"
         }
       ]
     },
     {
       "method": "confirm_invoice",
-      "transactionHash": "D6ye598jvH337G8kMrr9QivsDaNpV1L7mrVnmudaJeQq",
+      "transactionHash": "94KZrqGFoP3ayRpZE36qX5d734hq1HorVsXmKf7LWcmh",
       "outcomes": [
         {
-          "receiptId": "C8WxPGAQzQfr71HL1rw9uorNgj9gim2by8pgtCG6izZ9",
-          "executor": "dev-79604-15296.test.near",
+          "receiptId": "AY4Tsk1L15ZJSSrZVpNuAeGibLpJDSEq9MHzum8Ttc3A",
+          "executor": "dev-65239-28256.test.near",
           "status": {
-            "SuccessValue": "eyJjb21taXRtZW50IjoiY2QxYTVkMmM4NmNlZjJlYTE3MTU1ODc1NTRjNjJmZTM3YmI0OGE4OTBiYzY1YzE3MmUwMzZhN2I5N2ExYTQ3MyIsInN1cHBsaWVyIjoic3VwcGxpZXIudGVzdC5uZWFyIiwiaW52b2ljZSI6eyJvcmRlcl9pZCI6Imludm9pY2Utb3JkZXIiLCJ0ZXJtc192ZXJzaW9uIjoxLCJ0ZXJtc19oYXNoIjoiNTRlNmVlMDdiY2I4MGE1M2FiODM0ODIxYzAyYmM2ODRiOTMwM2M0NDMzMDM2MDg1MTM4NzU3MWE1NTYwMWNkNiIsImRvY3VtZW50X2hhc2giOiJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiIiwicmVmZXJlbmNlIjoiSU5WLVNCWC0wMDEiLCJsaW5lX2lkIjoiY2FydG9ucyIsInF1YW50aXR5IjoiMTAwIiwidG9rZW4iOiJkZXYtNzc3ODQtODExNTIudGVzdC5uZWFyIiwiYW1vdW50IjoiMTAwMDAwMDAwMCJ9fQ=="
+            "SuccessValue": "eyJjb21taXRtZW50IjoiMWVjNzE2NmNhODBlMzNlNDcwMjMwMGE1ZDBlYWQ3NTdhN2Y5ZjBlZDRhOWNmMTk1NDQ0NWZjYjVjMTZhZjdlMyIsInN1cHBsaWVyIjoic3VwcGxpZXIudGVzdC5uZWFyIiwiaW52b2ljZSI6eyJvcmRlcl9pZCI6Imludm9pY2Utb3JkZXIiLCJ0ZXJtc192ZXJzaW9uIjoxLCJ0ZXJtc19oYXNoIjoiNjYyYmI0YzRiODVmNjY5YTViOTQ5Y2JlOTYwNjVkZWVlYmYxNjI3MDczN2U4YmY2MWYyZTAwOTk0NWUwMDU2MiIsImRvY3VtZW50X2hhc2giOiJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiIiwicmVmZXJlbmNlIjoiSU5WLVNCWC0wMDEiLCJsaW5lX2lkIjoiY2FydG9ucyIsInF1YW50aXR5IjoiMTAwIiwidG9rZW4iOiJkZXYtNjM0MjktMTM3Ni50ZXN0Lm5lYXIiLCJhbW91bnQiOiIxMDAwMDAwMDAwIn19"
           },
           "logs": [
-            "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"invoice_confirmed\",\"data\":[{\"commitment\":\"cd1a5d2c86cef2ea1715587554c62fe37bb48a890bc65c172e036a7b97a1a473\",\"supplier\":\"supplier.test.near\",\"invoice\":{\"order_id\":\"invoice-order\",\"terms_version\":1,\"terms_hash\":\"54e6ee07bcb80a53ab834821c02bc684b9303c44330360851387571a55601cd6\",\"document_hash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"reference\":\"INV-SBX-001\",\"line_id\":\"cartons\",\"quantity\":\"100\",\"token\":\"dev-77784-81152.test.near\",\"amount\":\"1000000000\"}}]}"
+            "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"invoice_confirmed\",\"data\":[{\"commitment\":\"1ec7166ca80e33e4702300a5d0ead757a7f9f0ed4a9cf1954445fcb5c16af7e3\",\"supplier\":\"supplier.test.near\",\"invoice\":{\"order_id\":\"invoice-order\",\"terms_version\":1,\"terms_hash\":\"662bb4c4b85f669a5b949cbe96065deeebf16270737e8bf61f2e009945e00562\",\"document_hash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"reference\":\"INV-SBX-001\",\"line_id\":\"cartons\",\"quantity\":\"100\",\"token\":\"dev-63429-1376.test.near\",\"amount\":\"1000000000\"}}]}"
           ],
-          "gasBurnt": "2632363218519"
+          "gasBurnt": "2631922053651"
         }
       ]
     },
     {
       "method": "confirm_invoice",
-      "transactionHash": "Hp6vVVA6Ln21i46wDxjAnEPJit3CupUQZeHBZ9pUxoB7",
+      "transactionHash": "8841E6iFMstPefAqe62KgiddCNMJ3WGbFf5LkVHJUcA",
       "outcomes": [
         {
-          "receiptId": "MK15FxNJ9L9BUFQ2DtpkWzRPi76hHVsFNBRw8TFuik8",
-          "executor": "dev-79604-15296.test.near",
+          "receiptId": "6pCPRjQ2C3Pm1hVzLeeWyCKaM6nq95KRE5fiw9FHFTEB",
+          "executor": "dev-65239-28256.test.near",
           "status": {
-            "SuccessValue": "eyJjb21taXRtZW50IjoiY2QxYTVkMmM4NmNlZjJlYTE3MTU1ODc1NTRjNjJmZTM3YmI0OGE4OTBiYzY1YzE3MmUwMzZhN2I5N2ExYTQ3MyIsInN1cHBsaWVyIjoic3VwcGxpZXIudGVzdC5uZWFyIiwiaW52b2ljZSI6eyJvcmRlcl9pZCI6Imludm9pY2Utb3JkZXIiLCJ0ZXJtc192ZXJzaW9uIjoxLCJ0ZXJtc19oYXNoIjoiNTRlNmVlMDdiY2I4MGE1M2FiODM0ODIxYzAyYmM2ODRiOTMwM2M0NDMzMDM2MDg1MTM4NzU3MWE1NTYwMWNkNiIsImRvY3VtZW50X2hhc2giOiJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiIiwicmVmZXJlbmNlIjoiSU5WLVNCWC0wMDEiLCJsaW5lX2lkIjoiY2FydG9ucyIsInF1YW50aXR5IjoiMTAwIiwidG9rZW4iOiJkZXYtNzc3ODQtODExNTIudGVzdC5uZWFyIiwiYW1vdW50IjoiMTAwMDAwMDAwMCJ9fQ=="
+            "SuccessValue": "eyJjb21taXRtZW50IjoiMWVjNzE2NmNhODBlMzNlNDcwMjMwMGE1ZDBlYWQ3NTdhN2Y5ZjBlZDRhOWNmMTk1NDQ0NWZjYjVjMTZhZjdlMyIsInN1cHBsaWVyIjoic3VwcGxpZXIudGVzdC5uZWFyIiwiaW52b2ljZSI6eyJvcmRlcl9pZCI6Imludm9pY2Utb3JkZXIiLCJ0ZXJtc192ZXJzaW9uIjoxLCJ0ZXJtc19oYXNoIjoiNjYyYmI0YzRiODVmNjY5YTViOTQ5Y2JlOTYwNjVkZWVlYmYxNjI3MDczN2U4YmY2MWYyZTAwOTk0NWUwMDU2MiIsImRvY3VtZW50X2hhc2giOiJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiIiwicmVmZXJlbmNlIjoiSU5WLVNCWC0wMDEiLCJsaW5lX2lkIjoiY2FydG9ucyIsInF1YW50aXR5IjoiMTAwIiwidG9rZW4iOiJkZXYtNjM0MjktMTM3Ni50ZXN0Lm5lYXIiLCJhbW91bnQiOiIxMDAwMDAwMDAwIn19"
           },
           "logs": [],
-          "gasBurnt": "1975812817922"
+          "gasBurnt": "1975511939235"
         }
       ]
     },
     {
       "method": "request_payment",
-      "transactionHash": "8M9MeMyMZjLx6d2KruKDTdsRC44jUFrsyXhaa3Rv8VCG",
+      "transactionHash": "AF2eXVyPhRiv3tsNxbgfMtaAbuWfBvpVMUjaYYQUgU6A",
       "outcomes": [
         {
-          "receiptId": "7w3HC7HRSiqNT2zA4vzSWj6aXgTprZdbWv25uSKt6qTV",
-          "executor": "dev-79604-15296.test.near",
-          "status": {
-            "Failure": {
-              "ActionError": {
-                "index": 0,
-                "kind": {
-                  "FunctionCallError": {
-                    "ExecutionError": "Smart contract panicked: Supplier-confirmed invoice required"
-                  }
-                }
-              }
-            }
-          },
-          "logs": [],
-          "gasBurnt": "1792000574817"
-        }
-      ]
-    },
-    {
-      "method": "request_payment",
-      "transactionHash": "FUSPi7ewZz6zFjyH6SsHit4popTXJvQnJbUJmTMynTKY",
-      "outcomes": [
-        {
-          "receiptId": "HHbEQ596QUhArxwVXNNLuWdArmkP6NGp8vZeU9rVsyfi",
-          "executor": "dev-79604-15296.test.near",
+          "receiptId": "CpE5DWR2NW8DmSvKd4wq5TSZEsrSA7L9hbCzwaNQvhcM",
+          "executor": "dev-65239-28256.test.near",
           "status": {
             "Failure": {
               "ActionError": {
@@ -168,17 +144,41 @@
             }
           },
           "logs": [],
-          "gasBurnt": "1792580762913"
+          "gasBurnt": "1791751092600"
         }
       ]
     },
     {
       "method": "request_payment",
-      "transactionHash": "DgnckVhKYeMy2Z9XDoaqhQjCYuAcpKEvWRW2tTDs1Uuf",
+      "transactionHash": "ATkrPdGzETnabFWtR9RFUjz1bbNBRd4opnvVTrFKXQfS",
       "outcomes": [
         {
-          "receiptId": "D9N213bR8xe5yZDUkAYPKFHzf3nZ8m9yazn1hHo2Mxs4",
-          "executor": "dev-79604-15296.test.near",
+          "receiptId": "Dk1FBMaetmjMLr7pSgtBzQ5MY9h9iGCHxG9RfzoDzT8P",
+          "executor": "dev-65239-28256.test.near",
+          "status": {
+            "Failure": {
+              "ActionError": {
+                "index": 0,
+                "kind": {
+                  "FunctionCallError": {
+                    "ExecutionError": "Smart contract panicked: Supplier-confirmed invoice required"
+                  }
+                }
+              }
+            }
+          },
+          "logs": [],
+          "gasBurnt": "1792534501428"
+        }
+      ]
+    },
+    {
+      "method": "request_payment",
+      "transactionHash": "41MXsgkZzZkVSKWipZQ74V1rNkVvL8seqAKParGMQURW",
+      "outcomes": [
+        {
+          "receiptId": "5U5hVpgRsSAM4U5STS4gWzPJYLYX6qEXQTR3nf2pHepn",
+          "executor": "dev-65239-28256.test.near",
           "status": {
             "Failure": {
               "ActionError": {
@@ -192,34 +192,34 @@
             }
           },
           "logs": [],
-          "gasBurnt": "1575872842583"
+          "gasBurnt": "1575861081830"
         }
       ]
     },
     {
       "method": "confirm_invoice",
-      "transactionHash": "At6yHrN3EsLccsjrKGHeUFpNZPhrnkraVo4LJmaSnpEi",
+      "transactionHash": "EAfcy244bBgsY1TyZBufVCpnhewx9ZRAR1eU5yD1bczo",
       "outcomes": [
         {
-          "receiptId": "J2zDJCPyTiAMRrZhLVHxAuKTsnYbv1CePj7JKZZ93v6k",
-          "executor": "dev-79604-15296.test.near",
+          "receiptId": "66KThuUwcGMPnFabh4rp5EZcRV2XSUnhLccMNuLGnqoN",
+          "executor": "dev-65239-28256.test.near",
           "status": {
-            "SuccessValue": "eyJjb21taXRtZW50IjoiOWUzNTc0ZGQwMDcyMTc5YTMwZmI1OGQ4MjgwYTk0NTAxNThmMzY1NmQxZTNiMDU0ZGI5YzJiNGMyZDE0YjU5MiIsInN1cHBsaWVyIjoic3VwcGxpZXIudGVzdC5uZWFyIiwiaW52b2ljZSI6eyJvcmRlcl9pZCI6Imludm9pY2Utb3JkZXIiLCJ0ZXJtc192ZXJzaW9uIjoxLCJ0ZXJtc19oYXNoIjoiNTRlNmVlMDdiY2I4MGE1M2FiODM0ODIxYzAyYmM2ODRiOTMwM2M0NDMzMDM2MDg1MTM4NzU3MWE1NTYwMWNkNiIsImRvY3VtZW50X2hhc2giOiJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiIiwicmVmZXJlbmNlIjoiSU5WLVNCWC1TTUFMTCIsImxpbmVfaWQiOiJjYXJ0b25zIiwicXVhbnRpdHkiOiIyMCIsInRva2VuIjoiZGV2LTc3Nzg0LTgxMTUyLnRlc3QubmVhciIsImFtb3VudCI6IjIwMDAwMDAwMCJ9fQ=="
+            "SuccessValue": "eyJjb21taXRtZW50IjoiMDEwMmM0MTkxYTlhNjkyN2U1ZDUxM2U0MjVjYWM4NzEzMjM0OGY4ZTJlZmQxMTRmYmE2MjRlNzgyZTYzM2FmMyIsInN1cHBsaWVyIjoic3VwcGxpZXIudGVzdC5uZWFyIiwiaW52b2ljZSI6eyJvcmRlcl9pZCI6Imludm9pY2Utb3JkZXIiLCJ0ZXJtc192ZXJzaW9uIjoxLCJ0ZXJtc19oYXNoIjoiNjYyYmI0YzRiODVmNjY5YTViOTQ5Y2JlOTYwNjVkZWVlYmYxNjI3MDczN2U4YmY2MWYyZTAwOTk0NWUwMDU2MiIsImRvY3VtZW50X2hhc2giOiJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiIiwicmVmZXJlbmNlIjoiSU5WLVNCWC1TTUFMTCIsImxpbmVfaWQiOiJjYXJ0b25zIiwicXVhbnRpdHkiOiIyMCIsInRva2VuIjoiZGV2LTYzNDI5LTEzNzYudGVzdC5uZWFyIiwiYW1vdW50IjoiMjAwMDAwMDAwIn19"
           },
           "logs": [
-            "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"invoice_confirmed\",\"data\":[{\"commitment\":\"9e3574dd0072179a30fb58d8280a9450158f3656d1e3b054db9c2b4c2d14b592\",\"supplier\":\"supplier.test.near\",\"invoice\":{\"order_id\":\"invoice-order\",\"terms_version\":1,\"terms_hash\":\"54e6ee07bcb80a53ab834821c02bc684b9303c44330360851387571a55601cd6\",\"document_hash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"reference\":\"INV-SBX-SMALL\",\"line_id\":\"cartons\",\"quantity\":\"20\",\"token\":\"dev-77784-81152.test.near\",\"amount\":\"200000000\"}}]}"
+            "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"invoice_confirmed\",\"data\":[{\"commitment\":\"0102c4191a9a6927e5d513e425cac87132348f8e2efd114fba624e782e633af3\",\"supplier\":\"supplier.test.near\",\"invoice\":{\"order_id\":\"invoice-order\",\"terms_version\":1,\"terms_hash\":\"662bb4c4b85f669a5b949cbe96065deeebf16270737e8bf61f2e009945e00562\",\"document_hash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"reference\":\"INV-SBX-SMALL\",\"line_id\":\"cartons\",\"quantity\":\"20\",\"token\":\"dev-63429-1376.test.near\",\"amount\":\"200000000\"}}]}"
           ],
-          "gasBurnt": "2682980828601"
+          "gasBurnt": "2682053414937"
         }
       ]
     },
     {
       "method": "request_payment",
-      "transactionHash": "3tWXMDZc53raxQ6ChYuU5i63ViMtxm5ELG9EuWdYoJeo",
+      "transactionHash": "F2o5NCcvFeSDwRuhr4D6EYHa9YCq8p2w9mBGU9Evzs6K",
       "outcomes": [
         {
-          "receiptId": "BwV4g7caFfkdCccEjWe2cwtnXHhwCBNjNW7JTua6FnxK",
-          "executor": "dev-79604-15296.test.near",
+          "receiptId": "BCYLJPfnMYJyxdrW8iYCGEXABfboXjFi24rRoMvUhExh",
+          "executor": "dev-65239-28256.test.near",
           "status": {
             "Failure": {
               "ActionError": {
@@ -233,39 +233,39 @@
             }
           },
           "logs": [],
-          "gasBurnt": "1580836907135"
+          "gasBurnt": "1580882739302"
         }
       ]
     },
     {
       "method": "request_payment",
-      "transactionHash": "DpbjsSiwqMxDj8JmutpSiuqG2kCrGH53m286KpEeCpCN",
+      "transactionHash": "6aMhzuk8pz2pp5j8ZcL6MhdFrsDHtNjVqTa3UqKs6wwE",
       "outcomes": [
         {
-          "receiptId": "ABd3yY2po6ngg3YhTUuMujka6ZyL1HDeEQQjYZnifvcZ",
-          "executor": "dev-79604-15296.test.near",
+          "receiptId": "5zMBbxTzewsWd3P7zsikRJTSW1HYzQap5MjdunbQrnJX",
+          "executor": "dev-65239-28256.test.near",
           "status": {
-            "SuccessReceiptId": "FFUNdTpybNFt5CLnk7i91KrktYyeFCV5CzFhm5Y8WAqJ"
+            "SuccessReceiptId": "4b9dkwrks7Xdvz5ZbMcJ2xMSCjRKyHs89R8UvYFKm8Jc"
           },
           "logs": [
             "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_reserved\",\"data\":[{\"request_id\":\"confirmed-partial\",\"order_id\":\"invoice-order\",\"quantity\":\"40\",\"amount\":\"400000000\",\"recipient\":\"supplier.test.near\",\"audit_hash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"status\":\"Reserved\"}]}",
-            "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_invoice_bound\",\"data\":[{\"request_id\":\"confirmed-partial\",\"commitment\":\"cd1a5d2c86cef2ea1715587554c62fe37bb48a890bc65c172e036a7b97a1a473\"}]}"
+            "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_invoice_bound\",\"data\":[{\"request_id\":\"confirmed-partial\",\"commitment\":\"1ec7166ca80e33e4702300a5d0ead757a7f9f0ed4a9cf1954445fcb5c16af7e3\"}]}"
           ],
-          "gasBurnt": "3813291151936"
+          "gasBurnt": "3812379127649"
         },
         {
-          "receiptId": "3AwaW56MvQ7q8nmm6VNi581QYSwrws2dn2ByNc57XMKr",
-          "executor": "dev-77784-81152.test.near",
+          "receiptId": "5zBvBPJLCEvmj5A4nMfoRrme5VK4HfraeVqfw6vx3V3b",
+          "executor": "dev-63429-1376.test.near",
           "status": {
             "SuccessValue": ""
           },
           "logs": [
-            "EVENT_JSON:{\"standard\":\"nep141\",\"version\":\"1.0.0\",\"event\":\"ft_transfer\",\"data\":[{\"old_owner_id\":\"dev-79604-15296.test.near\",\"new_owner_id\":\"supplier.test.near\",\"amount\":\"400000000\",\"memo\":\"confirmed-partial\"}]}"
+            "EVENT_JSON:{\"standard\":\"nep141\",\"version\":\"1.0.0\",\"event\":\"ft_transfer\",\"data\":[{\"old_owner_id\":\"dev-65239-28256.test.near\",\"new_owner_id\":\"supplier.test.near\",\"amount\":\"400000000\",\"memo\":\"confirmed-partial\"}]}"
           ],
           "gasBurnt": "1729688265209"
         },
         {
-          "receiptId": "8xGCDLtDKK21TX4LWDvjPdScZgP1SeFMWmBmqBFXGpiR",
+          "receiptId": "Bt5qTxCLukp77o5GBgmr8WDmVwSDTk5N43yb324T8KnJ",
           "executor": "operator.test.near",
           "status": {
             "SuccessValue": ""
@@ -274,18 +274,18 @@
           "gasBurnt": "223182562500"
         },
         {
-          "receiptId": "FFUNdTpybNFt5CLnk7i91KrktYyeFCV5CzFhm5Y8WAqJ",
-          "executor": "dev-79604-15296.test.near",
+          "receiptId": "4b9dkwrks7Xdvz5ZbMcJ2xMSCjRKyHs89R8UvYFKm8Jc",
+          "executor": "dev-65239-28256.test.near",
           "status": {
             "SuccessValue": "IlNldHRsZWQi"
           },
           "logs": [
             "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_result\",\"data\":[{\"request_id\":\"confirmed-partial\",\"order_id\":\"invoice-order\",\"quantity\":\"40\",\"amount\":\"400000000\",\"recipient\":\"supplier.test.near\",\"audit_hash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"status\":\"Settled\"}]}"
           ],
-          "gasBurnt": "2454896264828"
+          "gasBurnt": "2454621026367"
         },
         {
-          "receiptId": "H5JJ8yyhCm1hzncheDRV4EyDJC78bNuoz2yZZTFK8SqP",
+          "receiptId": "HAurRnUAFmkJPb7CNeD5BWjM8ebDEH78ePT3EnLdwSci",
           "executor": "operator.test.near",
           "status": {
             "SuccessValue": ""
@@ -297,33 +297,33 @@
     },
     {
       "method": "request_payment",
-      "transactionHash": "S7ZohoGQc6dqUyPZCKAZxvBCFJPwrqbgKVpWUwxZZUw",
+      "transactionHash": "E26MT7yutXdeHkrQSsDGKh2TR83rkM1DS85ctBXKihYS",
       "outcomes": [
         {
-          "receiptId": "EntUn9en6EFvh77onJZG8b1dU41Fde9aTeHimCqz5BpU",
-          "executor": "dev-79604-15296.test.near",
+          "receiptId": "D3NvyS8t91DrNdZg3tExrroeyDv9snfSdAoA1ygPDwbK",
+          "executor": "dev-65239-28256.test.near",
           "status": {
-            "SuccessReceiptId": "GZzbyt5LYp9crK9eZCtqqrpSBAJgENzv9D2RdLqUZjTx"
+            "SuccessReceiptId": "7AxJZiVCF8tYaaYgHrWRbFcYyxCFWZFHx5YYMU6SRuU6"
           },
           "logs": [
             "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_reserved\",\"data\":[{\"request_id\":\"confirmed-second\",\"order_id\":\"invoice-order\",\"quantity\":\"30\",\"amount\":\"300000000\",\"recipient\":\"supplier.test.near\",\"audit_hash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"status\":\"Reserved\"}]}",
-            "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_invoice_bound\",\"data\":[{\"request_id\":\"confirmed-second\",\"commitment\":\"cd1a5d2c86cef2ea1715587554c62fe37bb48a890bc65c172e036a7b97a1a473\"}]}"
+            "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_invoice_bound\",\"data\":[{\"request_id\":\"confirmed-second\",\"commitment\":\"1ec7166ca80e33e4702300a5d0ead757a7f9f0ed4a9cf1954445fcb5c16af7e3\"}]}"
           ],
-          "gasBurnt": "3822693839919"
+          "gasBurnt": "3821889596668"
         },
         {
-          "receiptId": "6oEne7TD1g1nW23vYkqF7V25edzgamu3azodg4hFuqma",
-          "executor": "dev-77784-81152.test.near",
+          "receiptId": "FFuuhpB6q5ZviKgv4BAzJbdaWPMYay1Bzcc2RGVLfoue",
+          "executor": "dev-63429-1376.test.near",
           "status": {
             "SuccessValue": ""
           },
           "logs": [
-            "EVENT_JSON:{\"standard\":\"nep141\",\"version\":\"1.0.0\",\"event\":\"ft_transfer\",\"data\":[{\"old_owner_id\":\"dev-79604-15296.test.near\",\"new_owner_id\":\"supplier.test.near\",\"amount\":\"300000000\",\"memo\":\"confirmed-second\"}]}"
+            "EVENT_JSON:{\"standard\":\"nep141\",\"version\":\"1.0.0\",\"event\":\"ft_transfer\",\"data\":[{\"old_owner_id\":\"dev-65239-28256.test.near\",\"new_owner_id\":\"supplier.test.near\",\"amount\":\"300000000\",\"memo\":\"confirmed-second\"}]}"
           ],
           "gasBurnt": "1729224884746"
         },
         {
-          "receiptId": "3MagjLQvZ2ZyB4GwAf5dQ6EYTsudihrrbxjzF5Q3Pz1f",
+          "receiptId": "982UYizcZq3stTxdnxqrphXxtcAmNZCcnNPntEMHVN1Y",
           "executor": "operator.test.near",
           "status": {
             "SuccessValue": ""
@@ -332,18 +332,18 @@
           "gasBurnt": "223182562500"
         },
         {
-          "receiptId": "GZzbyt5LYp9crK9eZCtqqrpSBAJgENzv9D2RdLqUZjTx",
-          "executor": "dev-79604-15296.test.near",
+          "receiptId": "7AxJZiVCF8tYaaYgHrWRbFcYyxCFWZFHx5YYMU6SRuU6",
+          "executor": "dev-65239-28256.test.near",
           "status": {
             "SuccessValue": "IlNldHRsZWQi"
           },
           "logs": [
             "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_result\",\"data\":[{\"request_id\":\"confirmed-second\",\"order_id\":\"invoice-order\",\"quantity\":\"30\",\"amount\":\"300000000\",\"recipient\":\"supplier.test.near\",\"audit_hash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"status\":\"Settled\"}]}"
           ],
-          "gasBurnt": "2458688661818"
+          "gasBurnt": "2458508863053"
         },
         {
-          "receiptId": "7pJH6sMLD2djMBX1ZCLZqD4pzKgob5QMBv67T9wKh4dY",
+          "receiptId": "2TxiUeZEd1uwCbCQHTk97iLEtz2FkQcN4LThzuneBe3P",
           "executor": "operator.test.near",
           "status": {
             "SuccessValue": ""
@@ -354,33 +354,74 @@
       ]
     },
     {
-      "method": "accept_close",
-      "transactionHash": "5PMur9gpT5BdVeJgUcWTepqq9gtbnRnbcDs1LP27hXiz",
+      "method": "confirm_invoice",
+      "transactionHash": "9ZCUxk5Z8F25NUmbq2ss9RBABin8Vr4yWmys5KZfENGD",
       "outcomes": [
         {
-          "receiptId": "424Nbq1FGSgZWGYbMe2TDLvBZ9LDrJHEM7B2cBt3Q2Ra",
-          "executor": "dev-79604-15296.test.near",
+          "receiptId": "Cq195ZjMsAwHu8zz3hdKgB5XWnNfdULDpkv8BaYjXv9F",
+          "executor": "dev-65239-28256.test.near",
           "status": {
-            "SuccessReceiptId": "9dgWQpxgwoYGGVKxGfDKbbja4XrGdixKrGb2JPSyHV4d"
+            "SuccessValue": "eyJjb21taXRtZW50IjoiNDNlMDExY2EzN2E0OGE3MDcyMjYzNDcwMGUzMGM5YzM4MjQ1OWE5OTcwYmM3N2Y2MzhkZGVjYTBkMmRkNDljMSIsInN1cHBsaWVyIjoic3VwcGxpZXIudGVzdC5uZWFyIiwiaW52b2ljZSI6eyJvcmRlcl9pZCI6Imludm9pY2Utb3JkZXIiLCJ0ZXJtc192ZXJzaW9uIjoxLCJ0ZXJtc19oYXNoIjoiNjYyYmI0YzRiODVmNjY5YTViOTQ5Y2JlOTYwNjVkZWVlYmYxNjI3MDczN2U4YmY2MWYyZTAwOTk0NWUwMDU2MiIsImRvY3VtZW50X2hhc2giOiJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiIiwicmVmZXJlbmNlIjoiSU5WLUFEREVELUFGVEVSLUNMT1NFLVBST1BPU0FMIiwibGluZV9pZCI6ImNhcnRvbnMiLCJxdWFudGl0eSI6IjEwMCIsInRva2VuIjoiZGV2LTYzNDI5LTEzNzYudGVzdC5uZWFyIiwiYW1vdW50IjoiMTAwMDAwMDAwMCJ9fQ=="
+          },
+          "logs": [
+            "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"invoice_confirmed\",\"data\":[{\"commitment\":\"43e011ca37a48a70722634700e30c9c382459a9970bc77f638ddeca0d2dd49c1\",\"supplier\":\"supplier.test.near\",\"invoice\":{\"order_id\":\"invoice-order\",\"terms_version\":1,\"terms_hash\":\"662bb4c4b85f669a5b949cbe96065deeebf16270737e8bf61f2e009945e00562\",\"document_hash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"reference\":\"INV-ADDED-AFTER-CLOSE-PROPOSAL\",\"line_id\":\"cartons\",\"quantity\":\"100\",\"token\":\"dev-63429-1376.test.near\",\"amount\":\"1000000000\"}}]}"
+          ],
+          "gasBurnt": "2754773363958"
+        }
+      ]
+    },
+    {
+      "method": "accept_close",
+      "transactionHash": "2cc6hWfx9s57jCXJBQVUrn6wmV7TR2KxMJ9EgQfeePh1",
+      "outcomes": [
+        {
+          "receiptId": "Hc7NDsr6JBwE7zrvkHwFhZJQaDKvVkht3heKn7NGLeDG",
+          "executor": "dev-65239-28256.test.near",
+          "status": {
+            "Failure": {
+              "ActionError": {
+                "index": 0,
+                "kind": {
+                  "FunctionCallError": {
+                    "ExecutionError": "Smart contract panicked: Stale close proposal"
+                  }
+                }
+              }
+            }
+          },
+          "logs": [],
+          "gasBurnt": "1833024599744"
+        }
+      ]
+    },
+    {
+      "method": "accept_close",
+      "transactionHash": "9dUyhgAdE3WfM1mVwJbfuB2mnKgPVysrfox6wfQqmCe8",
+      "outcomes": [
+        {
+          "receiptId": "3QJvTwzTZTZdQeMF897YPHMgn7dPnatcPNMeL35bd186",
+          "executor": "dev-65239-28256.test.near",
+          "status": {
+            "SuccessReceiptId": "4XUMgW7co9KTjNyy9iSwpWHW6MxT4pnSPkFxzL74nHHe"
           },
           "logs": [
             "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"refund_reserved\",\"data\":[{\"order_id\":\"invoice-order\",\"refund\":{\"id\":1,\"amount\":\"300000000\",\"recipient\":\"buyer.test.near\",\"status\":\"Reserved\"}}]}"
           ],
-          "gasBurnt": "2983653964886"
+          "gasBurnt": "3080241582355"
         },
         {
-          "receiptId": "DrPCgiwRtULXxMioU1uBG6cMEc3W3ZmPAKZRVwBjWGT7",
-          "executor": "dev-77784-81152.test.near",
+          "receiptId": "7a9zhYWhRSf8Td5wMear63xV2omSHdbJ9GhBXixP6kJk",
+          "executor": "dev-63429-1376.test.near",
           "status": {
             "SuccessValue": ""
           },
           "logs": [
-            "EVENT_JSON:{\"standard\":\"nep141\",\"version\":\"1.0.0\",\"event\":\"ft_transfer\",\"data\":[{\"old_owner_id\":\"dev-79604-15296.test.near\",\"new_owner_id\":\"buyer.test.near\",\"amount\":\"300000000\",\"memo\":\"Accord refund invoice-order:1\"}]}"
+            "EVENT_JSON:{\"standard\":\"nep141\",\"version\":\"1.0.0\",\"event\":\"ft_transfer\",\"data\":[{\"old_owner_id\":\"dev-65239-28256.test.near\",\"new_owner_id\":\"buyer.test.near\",\"amount\":\"300000000\",\"memo\":\"Accord refund invoice-order:1\"}]}"
           ],
           "gasBurnt": "1730587611086"
         },
         {
-          "receiptId": "27DZPKm2iUcPascPBSTdjpUtqhBoUfWe1YS2GCBhXD7W",
+          "receiptId": "8BPBBFw1JeYffs9wZrPriLMhPLnSbYgMQ7VDxSuqf7k1",
           "executor": "supplier.test.near",
           "status": {
             "SuccessValue": ""
@@ -389,18 +430,18 @@
           "gasBurnt": "223182562500"
         },
         {
-          "receiptId": "9dgWQpxgwoYGGVKxGfDKbbja4XrGdixKrGb2JPSyHV4d",
-          "executor": "dev-79604-15296.test.near",
+          "receiptId": "4XUMgW7co9KTjNyy9iSwpWHW6MxT4pnSPkFxzL74nHHe",
+          "executor": "dev-65239-28256.test.near",
           "status": {
             "SuccessValue": "IkNsb3NlZCI="
           },
           "logs": [
             "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"refund_result\",\"data\":[{\"order_id\":\"invoice-order\",\"state\":{\"phase\":\"Closed\",\"proposal\":null,\"refund_pending\":\"0\",\"refunded\":\"300000000\",\"refunds\":[{\"id\":1,\"amount\":\"300000000\",\"recipient\":\"buyer.test.near\",\"status\":\"Settled\"}]},\"recipient_acknowledged\":false}]}"
           ],
-          "gasBurnt": "1931414133598"
+          "gasBurnt": "1931685434476"
         },
         {
-          "receiptId": "6oXztP9Lrmm6J3HgvkjwsaifWyBKQjHhqxpujjWh64nT",
+          "receiptId": "CA1SuvnueX8s7H2RPyPYkACEgUsbyiJexEhrtFZnGQwA",
           "executor": "supplier.test.near",
           "status": {
             "SuccessValue": ""
@@ -412,11 +453,11 @@
     },
     {
       "method": "confirm_invoice",
-      "transactionHash": "B94atennz2Yye65a6cLcFicwCThJWJJa3jNA7x6N2CvY",
+      "transactionHash": "H6tM18Zu1ESv7oGQN1iAReVL5ZiEdbUb8X6QSDCHaJEE",
       "outcomes": [
         {
-          "receiptId": "FY7YjW6gkqRoxBruUsRGTnM7raimnqgKsy4kJjw36qf4",
-          "executor": "dev-79604-15296.test.near",
+          "receiptId": "7pxotcTqAEw9dk6GaauJo9nhwsF6RULdRa8MNsNpM9o2",
+          "executor": "dev-65239-28256.test.near",
           "status": {
             "Failure": {
               "ActionError": {
@@ -430,17 +471,17 @@
             }
           },
           "logs": [],
-          "gasBurnt": "1569253624820"
+          "gasBurnt": "1569318380375"
         }
       ]
     },
     {
       "method": "request_payment",
-      "transactionHash": "2T5EsVBGJc5Hz2t86woa4Ys5DExfJSjDTubBqxq7bdFA",
+      "transactionHash": "xkJXUGo3KVctkgSBnPBwdfQE2xAK87TdWYQ4z3nxERe",
       "outcomes": [
         {
-          "receiptId": "6zMcM6jnLHATBR4NMTYbskuszNfVeuUZVFzrvcMcuw9f",
-          "executor": "dev-79604-15296.test.near",
+          "receiptId": "4yXmJV4sGh2Rm1hAsosQ3y4jJAbP69c2PXb9GtJRLPJw",
+          "executor": "dev-65239-28256.test.near",
           "status": {
             "Failure": {
               "ActionError": {
@@ -454,7 +495,7 @@
             }
           },
           "logs": [],
-          "gasBurnt": "1581130972132"
+          "gasBurnt": "1580889662455"
         }
       ]
     }

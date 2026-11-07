@@ -100,10 +100,11 @@ impl Vault {
     fn close_hash(&self, order: &Order, proposed_by: &AccountId, expires_at: U64) -> String {
         digest(
             &near_sdk::borsh::to_vec(&(
-                "accord-close-v1",
+                "accord-close-v2",
                 &self.network,
                 env::current_account_id(),
                 order,
+                self.invoice_ids(&order.id),
                 proposed_by,
                 expires_at,
             ))

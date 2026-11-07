@@ -3,6 +3,8 @@ import type { DatabaseSync } from 'node:sqlite';
 import { z } from 'zod';
 import { DomainError } from './ledger.ts';
 import type { SavedInvoice } from '../shared/invoices.ts';
+import type { ParsedDocument, StoredDocument } from '../shared/documents.ts';
+export type { ParsedDocument, StoredDocument } from '../shared/documents.ts';
 
 export const MAX_DOCUMENT = 2 * 1024 * 1024;
 const RETENTION = 7 * 86400000;
@@ -23,13 +25,6 @@ const parsedSchema = z.strictObject({
   previewBase64: z.string().max(3_000_000),
   previewType: z.enum(['image/png', 'image/jpeg']),
 });
-export type ParsedDocument = z.infer<typeof parsedSchema>;
-export type StoredDocument = ParsedDocument & {
-  id: string;
-  name: string;
-  documentHash: string;
-  expiresAt: string;
-};
 type Scope = { network: string; vault: string; orderId: string };
 type Parser = (bytes: Buffer) => Promise<ParsedDocument>;
 

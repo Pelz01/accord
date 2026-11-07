@@ -10,7 +10,7 @@ import {
   type InvoiceConfirmation,
   type SavedInvoice,
 } from '../../shared/invoices';
-import type { StoredDocument } from '../../server/documents';
+import type { StoredDocument } from '../../shared/documents';
 import { Badge } from '../components/primitives';
 import './invoice-review.css';
 

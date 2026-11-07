@@ -165,7 +165,17 @@ try {
   assert.deepEqual([state.paid, state.pending], ['70', '0']);
   record('confirmed invoice retains order-level incremental delivery limits');
   await buyer.call(vault, 'propose_close', { order_id: id });
-  const r = await vault.view('get_recovery', { order_id: id });
+  let r = await vault.view('get_recovery', { order_id: id });
+  await raw(supplier, 'confirm_invoice', {
+    order_id: id,
+    invoice: { ...invoice, reference: 'INV-ADDED-AFTER-CLOSE-PROPOSAL' },
+  });
+  assert.equal(
+    (await raw(supplier, 'accept_close', { order_id: id, proposal_hash: r.proposal.hash })).failed,
+    true,
+  );
+  await buyer.call(vault, 'propose_close', { order_id: id });
+  r = await vault.view('get_recovery', { order_id: id });
   await raw(supplier, 'accept_close', { order_id: id, proposal_hash: r.proposal.hash });
   assert.equal(
     (
@@ -177,7 +187,9 @@ try {
     true,
   );
   assert.equal((await payment('after-close', invoice)).failed, true);
-  record('closed remainder disables confirmations and payments while preserving audit records');
+  record(
+    'new confirmation invalidates stale closure; closed remainder disables confirmations and payments',
+  );
 } finally {
   await writeFile(
     new URL('../.data/invoice-sandbox-evidence.json', import.meta.url),

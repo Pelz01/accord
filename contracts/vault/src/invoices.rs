@@ -30,6 +30,9 @@ impl Vault {
     fn invoice_index() -> LookupMap<String, Vec<String>> {
         LookupMap::new(b"accord:invoice-index:v1:".to_vec())
     }
+    pub(crate) fn invoice_ids(&self, order_id: &String) -> Vec<String> {
+        Self::invoice_index().get(order_id).unwrap_or_default()
+    }
     pub(crate) fn invoice_commitment(&self, invoice: &InvoicePayload) -> String {
         // Canonical UTF-8 JSON array. Integer values are decimal strings, except
         // the pinned terms version. The same vector is tested in TypeScript.

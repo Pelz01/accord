@@ -633,3 +633,15 @@ fn canonical_invoice_matches_cross_language_unicode_vector() {
         "f9d9f90d77f02bfc69526fd1e8dba3b692d5b04509f223a6642586a40c2bded8"
     );
 }
+
+#[test]
+#[should_panic(expected = "Stale close proposal")]
+fn new_supplier_invoice_confirmation_invalidates_close_proposal() {
+    let mut v = ready_to_close();
+    let proposal = propose(&mut v);
+    let mut invoice = test_invoice(&v);
+    invoice.reference = "INV-ADDED-AFTER-PROPOSAL".into();
+    testing_env!(context("supplier.testnet").build());
+    v.confirm_invoice("PO-001".into(), invoice);
+    let _ = v.accept_close("PO-001".into(), proposal.hash);
+}
