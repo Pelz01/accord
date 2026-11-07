@@ -1,10 +1,14 @@
 import { useMemo, useState } from 'react';
 import { ArrowRight, ArrowUpRight, Check, CircleHelp, Clock3, Search, Wallet } from 'lucide-react';
-import { type ChainState, type ChainJob } from '../../shared/chain';
+import { ordersForAccount, type ChainState, type ChainJob } from '../../shared/chain';
 import { paymentRows, type PaymentRow } from '../../shared/payments';
 import { money } from '../../shared/schema';
 import { Badge, Metric } from '../components/primitives';
+import { advicePath, hasAdvice, paymentCSV } from '../../shared/reports';
+import { Exports } from './Exports';
+import { orderPositions, positionTotals } from '../../shared/payables';
 import './payment-history.css';
+import './reporting.css';
 
 const filters = ['All payments', 'Paid', 'In progress', 'Needs review', 'Failed'] as const;
 type Filter = (typeof filters)[number];
@@ -21,16 +25,20 @@ export function PaymentHistory({
   jobs,
   account,
   onOrder,
+  onAdvice,
+  capturedAt,
 }: {
   state: ChainState;
   jobs: ChainJob[];
   account: string;
   onOrder: (id: string) => void;
+  onAdvice: (id: string) => void;
+  capturedAt: string;
 }) {
   const [filter, setFilter] = useState<Filter>('All payments');
   const [query, setQuery] = useState('');
   const rows = useMemo(
-    () => paymentRows(state.orders, state.attempts, jobs, account),
+    () => paymentRows(state.orders, state.attempts, jobs, account, state.deployment),
     [state, jobs, account],
   );
   const search = query.trim().toLowerCase();
@@ -42,20 +50,24 @@ export function PaymentHistory({
           v.toLowerCase().includes(search),
         )),
   );
-  const totals = rows.reduce(
-    (sum, row) => {
-      if (row.status === 'Paid') sum.paid += BigInt(row.amount);
-      if (['Pending', 'Queued', 'Processing', 'Checking'].includes(row.status))
-        sum.pending += BigInt(row.amount);
-      if (row.status === 'Needs review') sum.review += BigInt(row.amount);
-      return sum;
-    },
-    { paid: 0n, pending: 0n, review: 0n },
-  );
+  const totals = positionTotals(orderPositions(state, jobs, account, 'all'));
   const explorer =
     state.deployment?.network === 'mainnet'
       ? 'https://nearblocks.io'
       : 'https://testnet.nearblocks.io';
+  const historyComplete =
+    state.coverage?.attemptsComplete ??
+    ordersForAccount(state.orders, account).every(
+      (order) =>
+        rows.filter((row) => row.order.id === order.id && row.source === 'contract').length ===
+        order.attempts,
+    );
+  const snapshot = capturedAt || new Date().toISOString();
+  const updated = new Intl.DateTimeFormat('en-GB', {
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'UTC',
+  }).format(new Date(snapshot));
   return (
     <>
       <div className="page-heading">
@@ -64,32 +76,50 @@ export function PaymentHistory({
           <h1>Payments</h1>
           <p>From payment request to confirmed settlement.</p>
         </div>
-        <span className="payment-live">
-          <span className="connection-dot" />
-          Updated automatically
-        </span>
+        <div className="payment-export-actions">
+          <span className="payment-live">
+            <span className="connection-dot" />
+            Updated {updated} UTC
+          </span>
+          <Exports
+            options={[
+              {
+                label: 'Payments CSV',
+                filename: `accord-${state.deployment!.network}-payments-${snapshot.slice(0, 10)}.csv`,
+                contents: () => paymentCSV(visible, state.deployment!, snapshot, state.coverage),
+                disabled: !visible.length,
+              },
+            ]}
+          />
+        </div>
       </div>
       <div className="metrics payment-metrics">
         <Metric
           label="Paid"
           amount={totals.paid.toString()}
-          caption="Confirmed payment records"
+          caption="Confirmed order balances"
           icon={<Check size={16} />}
           accent
         />
         <Metric
           label="In progress"
-          amount={totals.pending.toString()}
-          caption="Awaiting dispatch or confirmation"
+          amount={totals.processing}
+          caption="Reserved or awaiting dispatch"
           icon={<Clock3 size={16} />}
         />
         <Metric
           label="Needs review"
-          amount={totals.review.toString()}
-          caption="Outcome requires reconciliation"
+          amount={totals.reviewHeld}
+          caption="Included in the in-progress amount"
           icon={<CircleHelp size={16} />}
         />
       </div>
+      {!historyComplete && (
+        <div className="report-notice" role="status">
+          Some payment attempts are not available in this view. Exports include the listed payment
+          records; order balances remain current.
+        </div>
+      )}
       <section className="panel payment-history" aria-label="Payment history">
         <div className="payment-toolbar">
           <div className="payment-filters" aria-label="Filter payments">
@@ -138,6 +168,9 @@ export function PaymentHistory({
                       <small className="payment-request" title={row.id}>
                         {row.id}
                       </small>
+                      {row.invoice && (
+                        <small className="block muted">Invoice {row.invoice.reference}</small>
+                      )}
                     </td>
                     <td>
                       <span className="payment-recipient" title={row.recipient}>
@@ -183,6 +216,20 @@ export function PaymentHistory({
                         </a>
                       ) : (
                         <span className="muted">—</span>
+                      )}
+                      {hasAdvice(row) && (
+                        <a
+                          className="remittance-link"
+                          href={advicePath(row.id)}
+                          aria-label={`View remittance for ${row.id}`}
+                          onClick={(event) => {
+                            event.preventDefault();
+                            onAdvice(row.id);
+                          }}
+                        >
+                          Remittance advice
+                          <ArrowRight size={12} />
+                        </a>
                       )}
                     </td>
                   </tr>

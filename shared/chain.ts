@@ -62,6 +62,7 @@ export type Deployment = {
   features?: ('recovery-v1' | 'invoice-v1' | 'documents-v1')[];
 };
 export type ChainState = {
+  coverage?: { ordersComplete: boolean; attemptsComplete: boolean; orderLimit: number };
   authRequired?: boolean;
   configured: boolean;
   deployment: Deployment | null;
@@ -73,6 +74,8 @@ export type ChainState = {
   liveAiAvailable: boolean;
 };
 export type ChainJob = {
+  network?: Deployment['network'];
+  vault?: string;
   id: string;
   orderId: string;
   quantity: string;
@@ -81,6 +84,7 @@ export type ChainJob = {
   transactionHash: string | null;
   error: string | null;
   createdAt: string;
+  invoice?: import('./invoices').InvoicePayload;
 };
 export function chainAvailable(o: ChainOrder) {
   return BigInt(o.accepted) - BigInt(o.paid) - BigInt(o.pending);

@@ -60,6 +60,12 @@ Recovery state uses a separate fixed-prefix LookupMap, preserving the existing r
 
 The receiver is trusted to report physical delivery honestly. Disputes, returns, changed prices/receivers/payouts, and token issuer behavior remain outside automatic resolution. Expiry alone never permits withdrawing accepted, unpaid delivery funds.
 
+## Reporting boundaries
+
+Reporting is read-only and uses the same connected-account role scope as orders. It does not make public chain records private. All money arithmetic uses integer base units. Pending and uncertain transfers retain capacity, and confirmed refunds leave remaining commitments. Ready-for-review amounts require full funding, accepted unreserved goods and matching supplier confirmation; they are not a promise of automatic payment or an invoice-specific unpaid balance.
+
+Final remittance requires contract settlement or an explicitly labeled recipient acknowledgment. Worker success alone is insufficient. Invoice/date/receipt metadata attaches to a contract attempt only when its stored request fields match; absent metadata remains unknown. CSV exports neutralize spreadsheet-formula prefixes in untrusted values and record exact amounts, token identity, UTC snapshots and source coverage. The existing read path has 50-order/100-known-request caps and reports incomplete coverage; it is not a complete accounting indexer.
+
 ## Dependencies
 
 Application packages and Rust dependencies are pinned. The latest main application audit reports no known vulnerabilities. The isolated near-workspaces sandbox uses legacy dependencies with separate findings; it must not be bundled into the web server or used with customer keys. tar is overridden to 7.5.22. No external specialist audit has been completed. Executed checks are tracked in FOUNDATION.md.

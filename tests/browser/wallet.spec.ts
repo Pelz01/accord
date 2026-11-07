@@ -112,7 +112,7 @@ for (const action of ['funding', 'invoice access'] as const) {
     await expect(page.getByRole('button', { name: order.id, exact: true })).toHaveCount(0);
     expect(privateReads).toBe(0);
     await page.getByRole('button', { name: 'Connect wallet', exact: true }).click();
-    await expect(page.getByRole('heading', { name: 'Purchase orders', exact: true })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Payables', exact: true })).toBeVisible();
     await expect(page.getByRole('button', { name: order.id, exact: true })).toBeVisible();
     await expect(page.getByRole('dialog')).toHaveCount(0);
     await expect(page.getByRole('heading', { name: 'Prepare token funding' })).toHaveCount(0);

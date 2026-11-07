@@ -8,17 +8,18 @@ import {
   ChevronRight,
   FileText,
   Layers2,
+  LayoutDashboard,
   Loader2,
   LockKeyhole,
   PackageCheck,
   Plus,
   ShieldCheck,
+  Store,
   Wallet,
   X,
 } from 'lucide-react';
 import {
   type ChainState,
-  type ChainOrder,
   type ChainJob,
   chainAvailable,
   ordersForAccount,
@@ -29,30 +30,29 @@ import { ModalShell } from '../components/ModalShell';
 import { CreateForm } from '../components/CreateOrderForm';
 import { walletConnector, accountId, sendCall } from './Wallet';
 import { PaymentHistory } from './PaymentHistory';
+import { PayablesOverview } from './PayablesOverview';
+import { RemittanceAdvice } from './RemittanceAdvice';
 import { RecoveryPanel } from './RecoveryPanel';
 import { InvoiceReview } from './InvoiceReview';
 import type { InvoicePayload } from '../../shared/invoices';
-import type { ChainRecovery } from '../../shared/chain';
+import { orderPositions, positionTotals } from '../../shared/payables';
+import { paymentRows } from '../../shared/payments';
 
 const explorer = (hash: string) => `https://testnet.nearblocks.io/txns/${hash}`;
-function label(o: ChainOrder, recovery?: ChainRecovery) {
-  return recovery?.phase === 'Closed'
-    ? 'Closed'
-    : recovery?.phase === 'RefundPending'
-      ? 'Refund pending'
-      : recovery?.phase === 'RefundFailed'
-        ? 'Refund failed'
-        : !o.accepted_terms
-          ? 'Awaiting acceptance'
-          : o.funded === '0'
-            ? 'Awaiting funding'
-            : o.pending !== '0'
-              ? 'Payment in progress'
-              : chainAvailable(o) > 0n
-                ? 'Ready to pay'
-                : o.paid === o.terms.ordered
-                  ? 'Fulfilled'
-                  : 'Awaiting delivery';
+type WorkspaceView = 'home' | 'overview' | 'supplier' | 'orders' | 'payments';
+function route() {
+  const params = new URLSearchParams(window.location.search);
+  const requested = params.get('view');
+  const view: WorkspaceView = ['overview', 'supplier', 'orders', 'payments'].includes(
+    requested ?? '',
+  )
+    ? (requested as WorkspaceView)
+    : 'home';
+  return {
+    view,
+    order: view === 'orders' ? params.get('order') : null,
+    payment: view === 'payments' ? params.get('payment') : null,
+  };
 }
 
 export function TestnetWorkspace() {
@@ -60,7 +60,7 @@ export function TestnetWorkspace() {
     [error, setError] = useState(''),
     [busy, setBusy] = useState(false),
     [account, setAccount] = useState<string | null>(null),
-    [selected, setSelected] = useState<string | null>(null);
+    [selected, setSelected] = useState<string | null>(() => route().order);
   const [modal, setModal] = useState<'create' | 'receipt' | 'invoice' | 'accept' | 'fund' | null>(
       null,
     ),
@@ -68,7 +68,38 @@ export function TestnetWorkspace() {
     [transaction, setTransaction] = useState('');
   const [jobs, setJobs] = useState<ChainJob[]>([]);
   const session = useRef<{ accountId: string; token: string; expires: number } | null>(null);
-  const [view, setView] = useState<'orders' | 'payments'>('orders');
+  const [view, setView] = useState<WorkspaceView>(() => route().view);
+  const [adviceId, setAdviceId] = useState<string | null>(() => route().payment);
+  const [capturedAt, setCapturedAt] = useState('');
+  function navigate(
+    next: WorkspaceView,
+    orderId: string | null = null,
+    paymentId: string | null = null,
+    replace = false,
+  ) {
+    setView(next);
+    setSelected(orderId);
+    setAdviceId(paymentId);
+    setModal(null);
+    const url = new URL(window.location.href);
+    url.pathname = '/workspace';
+    for (const key of ['view', 'order', 'payment']) url.searchParams.delete(key);
+    if (next !== 'home') url.searchParams.set('view', next);
+    if (orderId) url.searchParams.set('order', orderId);
+    if (paymentId) url.searchParams.set('payment', paymentId);
+    window.history[replace ? 'replaceState' : 'pushState']({}, '', url);
+  }
+  useEffect(() => {
+    const changed = () => {
+      const next = route();
+      setView(next.view);
+      setSelected(next.order);
+      setAdviceId(next.payment);
+      setModal(null);
+    };
+    window.addEventListener('popstate', changed);
+    return () => window.removeEventListener('popstate', changed);
+  }, []);
   const refresh = useCallback(async () => {
     if (!account) return;
     const r = await fetch(
@@ -79,13 +110,12 @@ export function TestnetWorkspace() {
     setState(body);
     const j = await fetch('/api/chain/jobs');
     if (j.ok) setJobs((await j.json()).jobs);
+    setCapturedAt(new Date().toISOString());
   }, [account]);
   useEffect(() => {
     session.current = null;
     if (!account) {
       setState(null);
-      setSelected(null);
-      setView('orders');
       setJobs([]);
       return;
     }
@@ -100,7 +130,7 @@ export function TestnetWorkspace() {
       setAccount(accounts[0]?.accountId ?? null);
     const signOut = () => {
       setAccount(null);
-      setModal(null);
+      navigate('home', null, null, true);
       setError('');
     };
     c.on('wallet:signIn', signIn);
@@ -111,6 +141,24 @@ export function TestnetWorkspace() {
     };
   }, []);
   const orders = ordersForAccount(state?.orders ?? [], account);
+  const activeView =
+    view === 'home'
+      ? !orders.length || orders.some((order) => order.buyer === account)
+        ? 'overview'
+        : orders.some((order) => order.terms.supplier === account || order.terms.payout === account)
+          ? 'supplier'
+          : 'orders'
+      : view;
+  const viewLabel =
+    activeView === 'overview'
+      ? 'Payables'
+      : activeView === 'supplier'
+        ? 'Supplier view'
+        : activeView === 'payments'
+          ? 'Payments'
+          : 'Purchase orders';
+  const positions = state ? orderPositions(state, jobs, account, 'all') : [];
+  const positionByID = new Map(positions.map((position) => [position.order.id, position]));
   const order = orders.find((o) => o.id === selected),
     d = state?.deployment;
   const recovery = order ? state?.recoveries?.[order.id] : undefined;
@@ -127,7 +175,7 @@ export function TestnetWorkspace() {
     ) {
       const message = 'Your wallet connection ended. Connect again to continue.';
       session.current = null;
-      setModal(null);
+      navigate('home', null, null, true);
       setAccount(null);
       setError(message);
       return new Error(message);
@@ -236,7 +284,7 @@ export function TestnetWorkspace() {
       },
       '1000000000000000000000000',
     );
-    setSelected(id);
+    navigate('orders', id);
   }
   async function fund() {
     if (!d || !order) throw new Error('Order not loaded.');
@@ -279,15 +327,7 @@ export function TestnetWorkspace() {
     const signed = await signWalletMessage(challenge);
     await post('/submit', { challengeId: challenge.id, ...signed });
   }
-  const totals = orders.reduce(
-    (t, o) => ({
-      funded: t.funded + BigInt(o.funded) - BigInt(state?.recoveries?.[o.id]?.refunded ?? '0'),
-      paid: t.paid + BigInt(o.paid) * BigInt(o.terms.unit_price),
-      available: t.available + chainAvailable(o) * BigInt(o.terms.unit_price),
-      pending: t.pending + BigInt(o.pending) * BigInt(o.terms.unit_price),
-    }),
-    { funded: 0n, paid: 0n, available: 0n, pending: 0n },
-  );
+  const totals = positionTotals(positions);
   const role = order
     ? account === order.buyer
       ? 'buyer'
@@ -383,30 +423,45 @@ export function TestnetWorkspace() {
           </div>
         </div>
         <p className="nav-label">WORKSPACE</p>
-        <nav>
+        <nav aria-label="Workspace navigation">
           <button
-            className={`nav-item ${view === 'orders' ? 'active' : ''}`}
-            onClick={() => {
-              setSelected(null);
-              setView('orders');
-            }}
+            className={`nav-item ${activeView === 'overview' ? 'active' : ''}`}
+            disabled={busy}
+            onClick={() => navigate('overview')}
           >
-            <Layers2 size={18} />
-            Purchase orders
+            <LayoutDashboard size={18} />
+            <span className="nav-long">Overview</span>
+            <span className="nav-short">Overview</span>
           </button>
           <button
-            className={`nav-item ${view === 'payments' ? 'active' : ''}`}
-            onClick={() => {
-              setSelected(null);
-              setView('payments');
-            }}
+            className={`nav-item ${activeView === 'orders' ? 'active' : ''}`}
+            disabled={busy}
+            onClick={() => navigate('orders')}
+          >
+            <Layers2 size={18} />
+            <span className="nav-long">Purchase orders</span>
+            <span className="nav-short">Orders</span>
+          </button>
+          <button
+            className={`nav-item ${activeView === 'supplier' ? 'active' : ''}`}
+            disabled={busy}
+            onClick={() => navigate('supplier')}
+          >
+            <Store size={18} />
+            <span className="nav-long">Supplier view</span>
+            <span className="nav-short">Supplier</span>
+          </button>
+          <button
+            className={`nav-item ${activeView === 'payments' ? 'active' : ''}`}
+            disabled={busy}
+            onClick={() => navigate('payments')}
           >
             <ArrowUpRight size={18} />
             Payments
           </button>
-          <a className="nav-item" href="/">
+          <a className="nav-item website-link" href="/">
             <ArrowLeft size={18} />
-            Overview
+            Back to website
           </a>
         </nav>
         <div className="sidebar-bottom">
@@ -427,10 +482,8 @@ export function TestnetWorkspace() {
           <div className="breadcrumbs">
             Workspace
             <ChevronRight size={13} />
-            <button onClick={() => setSelected(null)}>
-              {view === 'payments' ? 'Payments' : 'Purchase orders'}
-            </button>
-            {order && (
+            <button onClick={() => navigate(activeView)}>{viewLabel}</button>
+            {activeView === 'orders' && order && (
               <>
                 <ChevronRight size={13} />
                 <span>{order.id}</span>
@@ -492,7 +545,7 @@ export function TestnetWorkspace() {
               </button>
             </div>
           )}
-          {transaction && (
+          {transaction && activeView === 'orders' && (
             <div className="chain-receipt" role="status">
               <Check size={15} />
               <span>Transaction submitted. Current contract state determines the outcome.</span>
@@ -507,7 +560,7 @@ export function TestnetWorkspace() {
               <Loader2 className="spin" />
               Loading your workspace…
             </div>
-          ) : !state.configured ? (
+          ) : !state.configured || !d ? (
             <div className="empty-state">
               <Wallet size={32} />
               <h2>Testnet deployment is not configured.</h2>
@@ -517,19 +570,37 @@ export function TestnetWorkspace() {
                 <ArrowRight size={14} />
               </a>
             </div>
-          ) : view === 'payments' ? (
+          ) : activeView === 'overview' || activeView === 'supplier' ? (
+            <PayablesOverview
+              key={activeView}
+              state={state}
+              jobs={jobs}
+              account={account}
+              supplier={activeView === 'supplier'}
+              onOrder={(id) => navigate('orders', id)}
+              onCreate={() => setModal('create')}
+              capturedAt={capturedAt}
+            />
+          ) : activeView === 'payments' && adviceId ? (
+            <RemittanceAdvice
+              row={paymentRows(state.orders, state.attempts, jobs, account, d).find(
+                (row) => row.id === adviceId,
+              )}
+              deployment={d!}
+              onBack={() => navigate('payments')}
+            />
+          ) : activeView === 'payments' ? (
             <PaymentHistory
               state={state}
               jobs={jobs}
               account={account}
-              onOrder={(id) => {
-                setSelected(id);
-                setView('orders');
-              }}
+              onOrder={(id) => navigate('orders', id)}
+              onAdvice={(id) => navigate('payments', null, id)}
+              capturedAt={capturedAt}
             />
           ) : order ? (
             <>
-              <button className="back-link" onClick={() => setSelected(null)}>
+              <button className="back-link" onClick={() => navigate('orders')}>
                 ← All purchase orders
               </button>
               <div className="page-heading">
@@ -538,8 +609,10 @@ export function TestnetWorkspace() {
                   <h1>{order.terms.description}</h1>
                   <p>{order.terms.supplier}</p>
                 </div>
-                <Badge tone={chainAvailable(order) > 0n ? 'green' : 'neutral'}>
-                  {label(order, recovery)}
+                <Badge
+                  tone={BigInt(positionByID.get(order.id)?.ready ?? '0') > 0n ? 'green' : 'neutral'}
+                >
+                  {positionByID.get(order.id)?.status ?? 'Needs review'}
                 </Badge>
               </div>
               <div className="detail-grid">
@@ -833,28 +906,28 @@ export function TestnetWorkspace() {
               </div>
               <div className="metrics">
                 <Metric
-                  label="Funded budget"
-                  amount={totals!.funded.toString()}
-                  caption="In onchain order ledgers"
+                  label="Still committed"
+                  amount={totals.committed}
+                  caption="Funded less paid and refunded"
                   icon={<Wallet size={16} />}
                 />
                 <Metric
                   label="Paid to suppliers"
-                  amount={totals!.paid.toString()}
+                  amount={totals.paid}
                   caption="Finalized in the contract"
                   icon={<ArrowUpRight size={16} />}
                 />
                 <Metric
-                  label="Eligible to pay"
-                  amount={totals!.available.toString()}
-                  caption="Accepted minus paid and pending"
+                  label="Ready to review"
+                  amount={totals.ready}
+                  caption="Accepted and invoice confirmed"
                   accent
                   icon={<ShieldCheck size={16} />}
                 />
                 <Metric
                   label="In progress"
-                  amount={totals!.pending.toString()}
-                  caption="Reservations stay locked"
+                  amount={totals.processing}
+                  caption="Reserved or awaiting dispatch"
                   icon={<LockKeyhole size={16} />}
                 />
               </div>
@@ -873,7 +946,7 @@ export function TestnetWorkspace() {
                     </thead>
                     <tbody>
                       {orders.map((o) => (
-                        <tr key={o.id} onClick={() => setSelected(o.id)}>
+                        <tr key={o.id} onClick={() => navigate('orders', o.id)}>
                           <td>
                             <button className="order-id">
                               <span className="document-icon">
@@ -896,8 +969,14 @@ export function TestnetWorkspace() {
                             {o.accepted} / {o.terms.ordered}
                           </td>
                           <td>
-                            <Badge tone={chainAvailable(o) > 0n ? 'green' : 'neutral'}>
-                              {label(o, state.recoveries?.[o.id])}
+                            <Badge
+                              tone={
+                                BigInt(positionByID.get(o.id)?.ready ?? '0') > 0n
+                                  ? 'green'
+                                  : 'neutral'
+                              }
+                            >
+                              {positionByID.get(o.id)?.status ?? 'Needs review'}
                             </Badge>
                           </td>
                           <td>

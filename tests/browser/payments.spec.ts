@@ -114,7 +114,7 @@ test('wallet payment history filters records, links receipts, and opens related 
     }),
   );
   await page.goto('/workspace');
-  await expect(page.getByRole('heading', { name: 'Purchase orders', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Payables', exact: true })).toBeVisible();
   await expect(page.getByText(other.id)).toHaveCount(0);
   await page.locator('.sidebar').getByRole('button', { name: 'Payments', exact: true }).click();
   const history = page.getByRole('region', { name: 'Payment history' });
@@ -122,7 +122,7 @@ test('wallet payment history filters records, links receipts, and opens related 
   await expect(history.locator('tbody tr')).toHaveCount(5);
   await expect(
     page.locator('.payment-metrics .metric').filter({ hasText: 'In progress' }),
-  ).toContainText('180');
+  ).toContainText('230');
   await expect(
     page.locator('.payment-metrics .metric').filter({ hasText: 'Needs review' }),
   ).toContainText('50');

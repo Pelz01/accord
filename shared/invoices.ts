@@ -31,6 +31,28 @@ export type SavedInvoice = Extraction & {
   sourceText: string;
 };
 
+export function invoiceMatchesOrder(order: ChainOrder, value: unknown): value is InvoicePayload {
+  const result = invoicePayloadSchema.safeParse(value);
+  if (!result.success) return false;
+  const i = result.data;
+  return (
+    i.order_id === order.id &&
+    i.terms_hash === order.terms_hash &&
+    i.token === order.token &&
+    i.line_id === order.terms.line_id &&
+    BigInt(i.amount) === BigInt(i.quantity) * BigInt(order.terms.unit_price)
+  );
+}
+
+export function confirmationsForOrder(order: ChainOrder, records: InvoiceConfirmation[] = []) {
+  return records.filter(
+    (record) =>
+      record.supplier === order.terms.supplier &&
+      /^[a-f0-9]{64}$/.test(record.commitment) &&
+      invoiceMatchesOrder(order, record.invoice),
+  );
+}
+
 export function canonicalInvoice(network: string, vault: string, invoice: InvoicePayload) {
   const i = invoicePayloadSchema.parse(invoice);
   return JSON.stringify([

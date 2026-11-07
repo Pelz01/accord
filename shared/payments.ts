@@ -1,4 +1,11 @@
-import { ordersForAccount, type ChainOrder, type ChainAttempt, type ChainJob } from './chain';
+import {
+  ordersForAccount,
+  type ChainOrder,
+  type ChainAttempt,
+  type ChainJob,
+  type Deployment,
+} from './chain';
+import { invoiceMatchesOrder, type InvoicePayload } from './invoices';
 
 export type PaymentStatus =
   | 'Paid'
@@ -18,6 +25,10 @@ export type PaymentRow = {
   transactionHash: string | null;
   createdAt: string | null;
   receiptAcknowledged?: boolean;
+  source: 'worker' | 'contract';
+  settlement: 'contract' | 'recipient' | null;
+  auditHash: string;
+  invoice: InvoicePayload | null;
 };
 
 // Contract attempts determine settlement. A worker acknowledgement alone is not
@@ -27,12 +38,23 @@ export function paymentRows(
   attempts: ChainAttempt[],
   jobs: ChainJob[],
   account: string | null,
+  deployment?: Deployment | null,
 ): PaymentRow[] {
-  const orders = new Map(ordersForAccount(allOrders, account).map((order) => [order.id, order]));
+  const orders = new Map(
+    ordersForAccount(allOrders, account)
+      .filter((order) => !deployment || order.token === deployment.token)
+      .map((order) => [order.id, order]),
+  );
   const byRequest = new Map<string, PaymentRow>();
   for (const job of jobs) {
     const order = orders.get(job.orderId);
-    if (!order) continue;
+    if (
+      !order ||
+      (deployment &&
+        ((job.network && job.network !== deployment.network) ||
+          (job.vault && job.vault !== deployment.vault)))
+    )
+      continue;
     const statuses = {
       queued: 'Queued',
       submitting: 'Processing',
@@ -49,12 +71,30 @@ export function paymentRows(
       status: statuses[job.status],
       transactionHash: job.transactionHash,
       createdAt: job.createdAt,
+      source: 'worker',
+      settlement: null,
+      auditHash: job.auditHash,
+      invoice:
+        invoiceMatchesOrder(order, job.invoice) &&
+        job.invoice.document_hash === job.auditHash &&
+        BigInt(job.quantity) <= BigInt(job.invoice.quantity)
+          ? job.invoice
+          : null,
     });
   }
   for (const attempt of attempts) {
     const order = orders.get(attempt.order_id);
     if (!order) continue;
-    const previous = byRequest.get(attempt.request_id);
+    const candidate = byRequest.get(attempt.request_id);
+    const previous =
+      candidate &&
+      candidate.order.id === order.id &&
+      candidate.quantity === attempt.quantity &&
+      candidate.amount === attempt.amount &&
+      candidate.recipient === attempt.recipient &&
+      candidate.auditHash === attempt.audit_hash
+        ? candidate
+        : undefined;
     byRequest.set(attempt.request_id, {
       id: attempt.request_id,
       order,
@@ -72,6 +112,15 @@ export function paymentRows(
       transactionHash: previous?.transactionHash ?? null,
       createdAt: previous?.createdAt ?? null,
       receiptAcknowledged: attempt.status === 'ReceiptAcknowledged',
+      source: 'contract',
+      settlement:
+        attempt.status === 'Settled'
+          ? 'contract'
+          : attempt.status === 'ReceiptAcknowledged'
+            ? 'recipient'
+            : null,
+      auditHash: attempt.audit_hash,
+      invoice: previous?.invoice ?? null,
     });
   }
   return [...byRequest.values()].sort(

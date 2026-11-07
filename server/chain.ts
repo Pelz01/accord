@@ -156,12 +156,10 @@ export async function registerChain(
           liveAiAvailable: !!process.env.NEAR_AI_API_KEY,
         };
       const account = accountSchema.safeParse(req.query.account);
-      const orders = account.success
-        ? ordersForAccount(
-            (await view<ChainOrder[]>(d, 'list_orders', { limit: 50 })) ?? [],
-            account.data,
-          )
+      const listed = account.success
+        ? ((await view<ChainOrder[]>(d, 'list_orders', { limit: 50 })) ?? [])
         : [];
+      const orders = account.success ? ordersForAccount(listed, account.data) : [];
       const recoveries = d.features?.includes('recovery-v1')
         ? Object.fromEntries(
             await Promise.all(
@@ -210,6 +208,17 @@ export async function registerChain(
         operatorReady,
         liveAiAvailable: !!process.env.NEAR_AI_API_KEY,
         authRequired,
+        coverage: {
+          ordersComplete: listed.length < 50,
+          attemptsComplete:
+            listed.length < 50 &&
+            orders.every(
+              (order) =>
+                attempts.filter((attempt) => attempt.order_id === order.id).length ===
+                order.attempts,
+            ),
+          orderLimit: 50,
+        },
       };
     },
   );
