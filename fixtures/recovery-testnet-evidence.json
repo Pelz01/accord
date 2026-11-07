@@ -1,0 +1,63 @@
+{
+  "network": "testnet",
+  "at": "2026-11-07T10:05:26.526Z",
+  "vault": "vault.accord-v2-8e0a631d.testnet",
+  "wasmSha256": "d278c88f43b47ae249a2443b779defc5090fc6362a7c1070b0915807f1d2af66",
+  "checks": [
+    "testnet upgrade preserved every existing order, tracked attempt and vault token balance",
+    "only the normal artifact verified by both sandbox suites was deployed",
+    "buyer cannot self-approve closure and operator cannot approve it",
+    "real 300 aUSD refund reached the original buyer after both approvals",
+    "completed refund cannot be replayed and its callback cannot be called publicly",
+    "other purchase order remains open with its original settled quantities"
+  ],
+  "transactions": [
+    {
+      "label": "atomic_code_upgrade_and_state_check",
+      "hash": "DwP6kAStj6Q76jCwZXpuw51NHg4q3PEaP6r5dZCjnTBr"
+    },
+    {
+      "label": "propose_close",
+      "hash": "7EdD25wzpiknrCjWZK51mhZq8vUj2f5JFcC9BquRRxa2"
+    },
+    {
+      "label": "rejected_accept_close",
+      "hash": "55hPZSqvV18yoQ19tjTzf9UoNLgowjwfu2ofkLsfRwhB"
+    },
+    {
+      "label": "rejected_accept_close",
+      "hash": "5Fjwif913syQQtJpW2BaYxP23Q862BuQFp7g41ZsvvQg"
+    },
+    {
+      "label": "accept_close",
+      "hash": "5RzNhuARA7TWu7wpXwSArDG2ohmXxZemKXUfPQS9LVdZ"
+    },
+    {
+      "label": "rejected_retry_refund",
+      "hash": "3jWbNdLCHePxcJLwaTqwSwBDNo5q2qNCHsExGYTyzTQo"
+    },
+    {
+      "label": "rejected_on_refund_result",
+      "hash": "CA1ytSscAQmA3AArLpFZgv4qVy8aymmftwu67HjAvb4X"
+    }
+  ],
+  "refund": {
+    "orderId": "PO-TESTNET-001",
+    "buyer": "buyer.accord-v2-8e0a631d.testnet",
+    "amount": "300000000",
+    "state": {
+      "phase": "Closed",
+      "proposal": null,
+      "refund_pending": "0",
+      "refunded": "300000000",
+      "refunds": [
+        {
+          "id": 1,
+          "amount": "300000000",
+          "recipient": "buyer.accord-v2-8e0a631d.testnet",
+          "status": "Settled"
+        }
+      ]
+    }
+  }
+}

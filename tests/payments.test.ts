@@ -60,6 +60,23 @@ test('worker acknowledgement does not declare payment success without a contract
   );
 });
 
+test('recipient confirmation finalizes history while retaining its distinct source', () => {
+  const rows = paymentRows(
+    [order],
+    [attempt('ReceiptAcknowledged')],
+    [job('unresolved')],
+    order.buyer,
+  );
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].status, 'Paid');
+  assert.equal(rows[0].receiptAcknowledged, true);
+  assert.equal(rows[0].transactionHash, 'actual-transaction-hash');
+  assert.equal(
+    paymentRows([order], [attempt('Settled')], [], order.buyer)[0].receiptAcknowledged,
+    false,
+  );
+});
+
 test('history cannot reveal unrelated wallet rows and does not require a saved worker job', () => {
   assert.deepEqual(paymentRows([order], [attempt('Settled')], [job('settled')], null), []);
   assert.deepEqual(

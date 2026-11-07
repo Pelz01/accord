@@ -31,7 +31,24 @@ export type ChainAttempt = {
   amount: string;
   recipient: string;
   audit_hash: string;
-  status: 'Reserved' | 'Settled' | 'TransferFailed';
+  status: 'Reserved' | 'Settled' | 'TransferFailed' | 'ReceiptAcknowledged';
+};
+export type ChainRecovery = {
+  phase: 'Open' | 'RefundPending' | 'RefundFailed' | 'Closed';
+  proposal: null | {
+    hash: string;
+    proposed_by: string;
+    expires_at: string;
+    refund_amount: string;
+  };
+  refund_pending: string;
+  refunded: string;
+  refunds: {
+    id: number;
+    amount: string;
+    recipient: string;
+    status: ChainAttempt['status'];
+  }[];
 };
 export type Deployment = {
   network: 'testnet' | 'mainnet';
@@ -42,6 +59,7 @@ export type Deployment = {
   wasmSha256: Record<string, string>;
   accounts: Record<string, string>;
   trackedRequestIds?: string[];
+  features?: 'recovery-v1'[];
 };
 export type ChainState = {
   authRequired?: boolean;
@@ -49,6 +67,7 @@ export type ChainState = {
   deployment: Deployment | null;
   orders: ChainOrder[];
   attempts: ChainAttempt[];
+  recoveries?: Record<string, ChainRecovery>;
   operatorReady: boolean;
   liveAiAvailable: boolean;
 };

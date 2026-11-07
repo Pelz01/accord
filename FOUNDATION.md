@@ -2,22 +2,22 @@
 
 Target: ready by end of 9 November 2026, Lagos time. Status: in progress. This records executed checks and remaining release gates.
 
-| Check                              | Result          | Evidence                                                                                                                                                                                                                                               |
-| ---------------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Application tests                  | PASS            | 29 tests: validation, extraction boundaries, settlement reservations/callbacks, replay, authority, durable restart, cross-order isolation, wallet order filtering, authoritative payment-history merging, and recorded live-AI replay/failure handling |
-| TypeScript and production frontend | PASS            | npm run check; simulator excluded from the production frontend                                                                                                                                                                                         |
-| Browser journeys                   | PASS            | Six Playwright tests: landing interaction/responsive layout, disconnected wallet gate, connected payment-history filtering/receipts/disconnection, wallet-authenticated invoice processing, and two isolated harness workflows                         |
-| Rust contract units                | PASS            | 12 tests using near-sdk 5.29.1 mocked environment                                                                                                                                                                                                      |
-| Real NEAR sandbox                  | PASS            | Nine checks on nearcore 2.14.0, actual FT calls/callbacks and failure receipts; fixtures/sandbox-evidence.json                                                                                                                                         |
-| Testnet deployment                 | PASS            | Same artifact hashes as sandbox; fixtures/testnet-evidence.json                                                                                                                                                                                        |
-| Restricted operator key            | PASS            | request_payment only on the vault; negative confirm_delivery call rejected                                                                                                                                                                             |
-| Authenticated durable worker       | PASS            | 400 aUSD payment settled for 40 cartons; fixtures/worker-evidence.json                                                                                                                                                                                 |
-| Browser wallet integration         | IMPLEMENTED     | Direct creation/acceptance/funding/delivery and signed operator authorization; automated browser test covers the disconnected boundary, not a wallet signing extension                                                                                 |
-| Hosted deployment                  | PASS            | Vercel frontend + VPS API at https://accord-payments.vercel.app; live wallet/AI/payment checks, restart persistence and backups verified; fixtures/hosted-evidence.json                                                                                |
-| Live NEAR AI request               | PASS            | Real GLM-5.3 Flash extraction: 100 cartons / 1,000 aUSD; app HTTP endpoint verified; incomplete invoice rejected; testnet order unchanged                                                                                                              |
-| Real recorded AI fixture           | PASS            | fixtures/near-ai-extraction.json: synthetic input, SHA-256, real provider request IDs, extracted fields, timing, HTTP result, and rejection check                                                                                                      |
-| Mainnet                            | NOT DEPLOYED    | Network wiring, release/recovery/storage/upgrade review and transaction validation pending                                                                                                                                                             |
-| P1 invoice commitment / P2 refunds | NOT IMPLEMENTED | Separate contract work after core payment correctness                                                                                                                                                                                                  |
+| Check                              | Result       | Evidence                                                                                                                                                                                                                                                         |
+| ---------------------------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Application tests                  | PASS         | 30 tests: validation, extraction boundaries, settlement reservations/callbacks, replay, authority, durable restart, cross-order isolation, wallet order filtering, authoritative payment-history merging, and recorded live-AI replay/failure handling           |
+| TypeScript and production frontend | PASS         | npm run check; simulator excluded from the production frontend                                                                                                                                                                                                   |
+| Browser journeys                   | PASS         | Eight Playwright tests: landing interaction/responsive layout, disconnected wallet gate, connected payment-history filtering/receipts/disconnection, wallet-authenticated invoice processing, two closure/recovery workflows, and two isolated harness workflows |
+| Rust contract units                | PASS         | 30 tests using near-sdk 5.29.1 mocked environment                                                                                                                                                                                                                |
+| Real NEAR sandbox                  | PASS         | 20 checks on nearcore 2.14.0: nine settlement and eleven recovery/upgrade checks; fixtures/sandbox-evidence.json and fixtures/recovery-sandbox-evidence.json                                                                                                     |
+| Testnet deployment                 | PASS         | Recovery artifact matches both sandbox suites; fixtures/recovery-testnet-evidence.json; initial deployment in fixtures/testnet-evidence.json                                                                                                                     |
+| Restricted operator key            | PASS         | request_payment only on the vault; negative confirm_delivery call rejected                                                                                                                                                                                       |
+| Authenticated durable worker       | PASS         | 400 aUSD payment settled for 40 cartons; fixtures/worker-evidence.json                                                                                                                                                                                           |
+| Browser wallet integration         | IMPLEMENTED  | Direct creation/acceptance/funding/delivery and signed operator authorization; automated browser test covers the disconnected boundary, not a wallet signing extension                                                                                           |
+| Hosted deployment                  | PASS         | Vercel frontend + VPS API at https://accord-payments.vercel.app; live wallet/AI/payment checks, restart persistence and backups verified; fixtures/hosted-evidence.json                                                                                          |
+| Live NEAR AI request               | PASS         | Real GLM-5.3 Flash extraction: 100 cartons / 1,000 aUSD; app HTTP endpoint verified; incomplete invoice rejected; testnet order unchanged                                                                                                                        |
+| Real recorded AI fixture           | PASS         | fixtures/near-ai-extraction.json: synthetic input, SHA-256, real provider request IDs, extracted fields, timing, HTTP result, and rejection check                                                                                                                |
+| Mainnet                            | NOT DEPLOYED | Network wiring, release/recovery/storage/upgrade review and transaction validation pending                                                                                                                                                                       |
+| Closure / token refunds            | PASS         | Mutual approvals, 300 aUSD testnet refund, failed-refund retry and callback recovery in real sandbox                                                                                                                                                             |
 
 ## Receipts and artifacts
 
@@ -25,7 +25,7 @@ PO-TESTNET-001 settled 400 then 300 aUSD after accepted quantity increased from 
 
 - Vault: vault.accord-v2-8e0a631d.testnet
 - Token: token.accord-v2-8e0a631d.testnet
-- Vault WASM SHA-256: def2bdad8270f66707caf87d464b5d4c453619a5ffd7a1d56a9f708a118399b2
+- Vault WASM SHA-256: d278c88f43b47ae249a2443b779defc5090fc6362a7c1070b0915807f1d2af66
 - Token WASM SHA-256: e6c7c764a85117b25d65bee5f4ca0bcd3459795cb8b00a538f8f8090869bfa4b
 
 The public fixtures contain deployment identifiers, hashes, receipts, and results only. Signing keys remain ignored. No mainnet transfer or hackathon submission has been made.
@@ -38,9 +38,15 @@ Run npm run check and npm run test:ui for application verification. Run cargo te
 
 ## Hosted release
 
-https://accord-payments.vercel.app is the public frontend. The VPS directory is /home/ubuntu/accord and the container is accord-api. The deployed application source is 763e771; Vercel deployment dpl_8MnDxGJBTVf7ace79Lc9djUGh8JK is Ready. The hosted worker settled 300 aUSD in transaction AYYhh1rsLzPndbSfB2ecwmqDGSra4F8dBNiXUkKXpBkm. The database retained both completed worker jobs after a container restart, passed integrity checks, and was backed up successfully.
+https://accord-payments.vercel.app is the public frontend. The VPS directory is /home/ubuntu/accord and the container is accord-api. The initial hosted release used source 763e771 and Vercel deployment dpl_8MnDxGJBTVf7ace79Lc9djUGh8JK. The hosted worker settled 300 aUSD in transaction AYYhh1rsLzPndbSfB2ecwmqDGSra4F8dBNiXUkKXpBkm. The database retained both completed worker jobs after a container restart, passed integrity checks, and was backed up successfully.
 
 Browser UI inspection confirmed the deployed landing page and wallet gate. A real browser-wallet transaction journey remains a separate release check; the hosted signature/payment smoke uses the NEAR SDK and generated testnet accounts.
+
+## Recovery release
+
+The testnet contract is version 2.1.0-recovery. The atomic upgrade preserved all existing orders, tracked payment attempts and the vault token balance. PO-TESTNET-001 then refunded its remaining 300 aUSD in transaction 5RzNhuARA7TWu7wpXwSArDG2ohmXxZemKXUfPQS9LVdZ. Its final recovery state is Closed, refunded 300000000, refund_pending 0. The separate worker order remains Open with paid 70 and pending 0.
+
+Recipient acknowledgment recovers successful transfers with failed callbacks without sending funds again. It does not release unknown failed transfers. Both success-with-starved-callback paths and definitive refund failure/retry were exercised in real NEAR sandbox. Native storage/call deposits remain retained. P1 invoice commitments, PDF/OCR and final submission materials remain incomplete.
 
 ## Design assets
 

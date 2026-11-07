@@ -22,11 +22,13 @@ Production keys remain outside the image and repository. The VPS receives only t
 
 The contract reserves quantity before standard-token ft_transfer, maintaining paid + pending <= accepted <= ordered. The private callback finalizes an immutable attempt once. A definite failed transfer releases entitlement only when the callback runs successfully. Missing or unexpected outcomes retain the reservation. A browser timeout does not establish transfer failure. The VPS worker persists the signed transaction hash before broadcasting and binds queued work to its network/vault. Unknown submissions are reconciled without blind retries or silently moving them to a different deployment.
 
-A successful transfer with a starved callback leaves capacity locked. No administrator can redirect payments, reset reservations, or sweep the settlement token. Reconciliation and user recovery remain unresolved for mainnet. Request IDs stay consumed after transfer failure.
+A successful transfer with a starved callback keeps its reservation. Only the immutable payout recipient can acknowledge a supplier payment as received; only the original buyer can acknowledge a refund. The contract records ReceiptAcknowledged separately from a successful callback. Acknowledgment sends no tokens, consumes the reserved obligation as paid, and makes late callbacks harmless. It is a voluntary recipient attestation, not cryptographic proof of a receipt. A dishonest acknowledgment can strand that recipient's entitlement; it cannot free the same money for reuse. No account can declare an uncertain transfer failed or release its reservation on a timeout. If funds were not received and no definitive callback exists, that reservation remains blocked.
+
+No administrator can redirect payments, reset reservations, or sweep the settlement token. Request IDs stay consumed after transfer failure. Mainnet recovery and upgrade control still require independent review.
 
 Funding accepts only the pinned token, original buyer, accepted unexpired order, and exact amount. Standard token resolution returns unused deposits. Plain token transfers do not grant order credit. Token account registration must precede transfers. Cross-order ledgers must remain isolated.
 
-Creation retains 1 native NEAR separately from the token budget, with no P0 refund. Each order allows at most 64 payment attempts. The request requires at least 80 Tgas and allocates 25/20 Tgas for transfer/callback. Sandbox receipts measured successful callbacks around 2.39 Tgas. These measurements do not replace storage, gas-price, and failure-path review for mainnet.
+Creation retains 1 native NEAR separately from the token budget; token refunds do not return this storage/call deposit. Each order allows at most 64 payment attempts. The request requires at least 80 Tgas and allocates 25/20 Tgas for transfer/callback. Sandbox receipts measured successful callbacks around 2.39 Tgas. These measurements do not replace storage, gas-price, and failure-path review for mainnet.
 
 ## Documents and models
 
@@ -40,7 +42,11 @@ The existing testnet deployment retains generated development full-access keys i
 
 The fault-injection Cargo feature deliberately starves callbacks for disposable sandbox tests only. Never deploy that artifact. The build script restores the normal output and testnet deployment verifies its hash against the passed sandbox artifact.
 
-The receiver is trusted to report physical delivery honestly. Disputes, returns, changed prices/receivers/payouts, token issuer behavior, mutual closure, and refunds remain outside P0. Undisbursed tokens have no withdrawal path.
+Mutual closure requires buyer and supplier approval of the same canonical snapshot, including network, vault, complete order state, proposer and expiry. A proposal lasts 24 hours. Changed delivery/payment state invalidates it. All accepted units must be paid and unresolved payments must be zero. The refund is reserved before its token transfer and the order remains frozen through definitive refund failures. Only the buyer may retry a definitive failure; ambiguous results cannot be retried. Refund IDs increase monotonically and only the latest eight records are retained, bounding storage without an eight-retry cutoff. Callbacks bind the exact refund ID and are private/idempotent. Closure becomes final only after successful refund, recipient acknowledgment, or a zero-refund close.
+
+Recovery state uses a separate fixed-prefix LookupMap, preserving the existing root/order/attempt encoding. The new attempt status is appended. Both a funded upgrade in the real NEAR sandbox and the existing testnet upgrade preserved orders, attempts and token balances. See fixtures/recovery-sandbox-evidence.json and fixtures/recovery-testnet-evidence.json. NEAR's [independent cross-contract execution](https://docs.near.org/smart-contracts/anatomy/crosscontract) and [private callback requirement](https://docs.near.org/smart-contracts/security/cross-contract-calls/callbacks) remain part of this boundary.
+
+The receiver is trusted to report physical delivery honestly. Disputes, returns, changed prices/receivers/payouts, and token issuer behavior remain outside automatic resolution. Expiry alone never permits withdrawing accepted, unpaid delivery funds.
 
 ## Dependencies
 

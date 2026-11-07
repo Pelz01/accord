@@ -1,0 +1,127 @@
+.recovery-section {
+  padding: 26px;
+  border-top: 1px solid var(--line, #e2e6df);
+}
+.recovery-section > p,
+.recovery-review-copy {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--muted, #64705f);
+}
+.refund-overview {
+  display: grid;
+  grid-template-columns: minmax(140px, 0.8fr) minmax(0, 1.2fr);
+  gap: 24px;
+  padding: 20px 0;
+}
+.refund-overview > div,
+.refund-review {
+  display: grid;
+  gap: 8px;
+}
+.refund-overview span,
+.refund-review > span {
+  font-size: 11px;
+  color: var(--muted, #64705f);
+  overflow-wrap: anywhere;
+}
+.refund-overview strong {
+  font-size: 26px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.6px;
+}
+.refund-overview small,
+.refund-review small {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--muted, #64705f);
+}
+.refund-overview .refund-account {
+  font-size: 12px;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.6;
+}
+.recovery-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+}
+.close-proposal {
+  display: grid;
+  gap: 6px;
+  padding: 14px 0;
+  border-top: 1px solid var(--line, #e2e6df);
+}
+.close-proposal span,
+.close-proposal small {
+  font-size: 11px;
+  color: var(--muted, #64705f);
+  overflow-wrap: anywhere;
+}
+.close-proposal strong {
+  font-size: 12px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.payment-recovery {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 16px;
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line, #e2e6df);
+}
+.payment-recovery strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+}
+.payment-recovery small {
+  display: block;
+  margin-top: 7px;
+  color: var(--muted, #64705f);
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+.refund-review {
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--line, #e2e6df);
+}
+.refund-review > strong {
+  font-size: 38px;
+  font-weight: 500;
+  letter-spacing: -1px;
+  font-variant-numeric: tabular-nums;
+}
+.recovery-confirm {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 22px 0;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.recovery-confirm input {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  accent-color: var(--green, #284e37);
+}
+@media (max-width: 640px) {
+  .recovery-section {
+    padding: 20px 16px;
+  }
+  .refund-overview,
+  .payment-recovery {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .payment-recovery .button {
+    justify-self: start;
+  }
+}

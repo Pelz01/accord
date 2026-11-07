@@ -29,20 +29,28 @@ import { ModalShell } from '../components/ModalShell';
 import { CreateForm } from '../components/CreateOrderForm';
 import { walletConnector, accountId, sendCall } from './Wallet';
 import { PaymentHistory } from './PaymentHistory';
+import { RecoveryPanel } from './RecoveryPanel';
+import type { ChainRecovery } from '../../shared/chain';
 
 const explorer = (hash: string) => `https://testnet.nearblocks.io/txns/${hash}`;
-function label(o: ChainOrder) {
-  return !o.accepted_terms
-    ? 'Awaiting acceptance'
-    : o.funded === '0'
-      ? 'Awaiting funding'
-      : o.pending !== '0'
-        ? 'Payment in progress'
-        : chainAvailable(o) > 0n
-          ? 'Ready to pay'
-          : o.paid === o.terms.ordered
-            ? 'Fulfilled'
-            : 'Awaiting delivery';
+function label(o: ChainOrder, recovery?: ChainRecovery) {
+  return recovery?.phase === 'Closed'
+    ? 'Closed'
+    : recovery?.phase === 'RefundPending'
+      ? 'Refund pending'
+      : recovery?.phase === 'RefundFailed'
+        ? 'Refund failed'
+        : !o.accepted_terms
+          ? 'Awaiting acceptance'
+          : o.funded === '0'
+            ? 'Awaiting funding'
+            : o.pending !== '0'
+              ? 'Payment in progress'
+              : chainAvailable(o) > 0n
+                ? 'Ready to pay'
+                : o.paid === o.terms.ordered
+                  ? 'Fulfilled'
+                  : 'Awaiting delivery';
 }
 
 export function TestnetWorkspace() {
@@ -103,6 +111,8 @@ export function TestnetWorkspace() {
   const orders = ordersForAccount(state?.orders ?? [], account);
   const order = orders.find((o) => o.id === selected),
     d = state?.deployment;
+  const recovery = order ? state?.recoveries?.[order.id] : undefined;
+  const open = !recovery || recovery.phase === 'Open';
   async function run(fn: () => Promise<unknown>, close = true) {
     setBusy(true);
     setError('');
@@ -242,7 +252,7 @@ export function TestnetWorkspace() {
   }
   const totals = orders.reduce(
     (t, o) => ({
-      funded: t.funded + BigInt(o.funded),
+      funded: t.funded + BigInt(o.funded) - BigInt(state?.recoveries?.[o.id]?.refunded ?? '0'),
       paid: t.paid + BigInt(o.paid) * BigInt(o.terms.unit_price),
       available: t.available + chainAvailable(o) * BigInt(o.terms.unit_price),
       pending: t.pending + BigInt(o.pending) * BigInt(o.terms.unit_price),
@@ -500,7 +510,7 @@ export function TestnetWorkspace() {
                   <p>{order.terms.supplier}</p>
                 </div>
                 <Badge tone={chainAvailable(order) > 0n ? 'green' : 'neutral'}>
-                  {label(order)}
+                  {label(order, recovery)}
                 </Badge>
               </div>
               <div className="detail-grid">
@@ -597,14 +607,18 @@ export function TestnetWorkspace() {
                                   <td>
                                     <Badge
                                       tone={
-                                        a.status === 'Settled'
+                                        a.status === 'Settled' || a.status === 'ReceiptAcknowledged'
                                           ? 'green'
                                           : a.status === 'TransferFailed'
                                             ? 'red'
                                             : 'amber'
                                       }
                                     >
-                                      {a.status === 'Reserved' ? 'Awaiting outcome' : a.status}
+                                      {a.status === 'Reserved'
+                                        ? 'Awaiting outcome'
+                                        : a.status === 'ReceiptAcknowledged'
+                                          ? 'Recipient confirmed'
+                                          : a.status}
                                     </Badge>
                                   </td>
                                 </tr>
@@ -647,6 +661,25 @@ export function TestnetWorkspace() {
                         </div>
                       ))}
                   </section>
+                  {recovery && (
+                    <RecoveryPanel
+                      key={`${order.id}:${account}`}
+                      order={order}
+                      recovery={recovery}
+                      account={account}
+                      attempts={state.attempts}
+                      busy={busy}
+                      onCall={async (method, args) => {
+                        setBusy(true);
+                        try {
+                          await call(method, args);
+                          await refresh();
+                        } finally {
+                          setBusy(false);
+                        }
+                      }}
+                    />
+                  )}
                 </div>
                 <aside className="order-aside">
                   <div className="next-action">
@@ -687,7 +720,8 @@ export function TestnetWorkspace() {
                         <ArrowRight size={15} />
                       </button>
                     )}
-                    {order.funded !== '0' &&
+                    {open &&
+                      order.funded !== '0' &&
                       BigInt(order.accepted) < BigInt(order.terms.ordered) && (
                         <button
                           className="button secondary full"
@@ -701,7 +735,7 @@ export function TestnetWorkspace() {
                           Confirm delivery
                         </button>
                       )}
-                    {chainAvailable(order) > 0n && (
+                    {open && chainAvailable(order) > 0n && (
                       <button
                         className="button primary full"
                         disabled={busy || role !== 'operator' || !state.operatorReady}
@@ -746,8 +780,9 @@ export function TestnetWorkspace() {
                   <div className="limit-note">
                     <LockKeyhole size={15} />
                     <p>
-                      Testnet only. Invoice authenticity is not verified. No closure or refunds;
-                      unspent test funds stay locked. Deployment keys are retained during testing.
+                      Testnet only. Invoice authenticity is not verified. Deployment keys are
+                      retained during testing.
+                      {!recovery && ' Closure and refunds are unavailable for this deployment.'}
                     </p>
                   </div>
                 </aside>
@@ -780,7 +815,7 @@ export function TestnetWorkspace() {
                 <Metric
                   label="Paid to suppliers"
                   amount={totals!.paid.toString()}
-                  caption="Confirmed by contract callbacks"
+                  caption="Finalized in the contract"
                   icon={<ArrowUpRight size={16} />}
                 />
                 <Metric
@@ -836,7 +871,7 @@ export function TestnetWorkspace() {
                           </td>
                           <td>
                             <Badge tone={chainAvailable(o) > 0n ? 'green' : 'neutral'}>
-                              {label(o)}
+                              {label(o, state.recoveries?.[o.id])}
                             </Badge>
                           </td>
                           <td>
@@ -907,6 +942,7 @@ export function TestnetWorkspace() {
               buyerAccount={account ?? ''}
               testnet
               operatorAccount={d?.operator}
+              recoveryEnabled={d?.features?.includes('recovery-v1')}
               onCreate={(input) => run(() => create(input as CreateOrder))}
             />
           ) : order && modal === 'accept' ? (
@@ -956,7 +992,10 @@ export function TestnetWorkspace() {
               <div className="alert warning">
                 <LockKeyhole size={16} />
                 Registration attaches up to 0.1 testnet NEAR per account; excess is returned by the
-                token. Unspent order tokens cannot be withdrawn.
+                token.{' '}
+                {recovery
+                  ? 'Unused tokens require buyer and supplier approval to refund.'
+                  : 'Unspent order tokens cannot be withdrawn.'}
               </div>
               <button className="button primary full" disabled={busy} onClick={() => run(fund)}>
                 Register & fund with wallet

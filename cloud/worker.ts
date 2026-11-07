@@ -218,7 +218,7 @@ async function processJobs(env: Env) {
       });
       if (attempt) {
         job.status =
-          attempt.status === 'Settled'
+          attempt.status === 'Settled' || attempt.status === 'ReceiptAcknowledged'
             ? 'settled'
             : attempt.status === 'TransferFailed'
               ? 'failed'
@@ -274,7 +274,7 @@ async function processJobs(env: Env) {
           request_id: job.id,
         });
         job.status =
-          final?.status === 'Settled'
+          final?.status === 'Settled' || final?.status === 'ReceiptAcknowledged'
             ? 'settled'
             : final?.status === 'TransferFailed'
               ? 'failed'

@@ -3,7 +3,9 @@ import { renameSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 // Rust emits post-MVP target features; lower them before testing on NEAR.
-for (const name of ['vault', 'token', 'vault-starved']) {
+for (const name of process.argv.length > 2
+  ? process.argv.slice(2)
+  : ['vault', 'token', 'vault-starved']) {
   const input = resolve(`.data/wasm/${name}.wasm`),
     output = resolve(`.data/wasm/${name}.optimized.wasm`);
   const result = spawnSync(

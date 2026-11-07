@@ -17,6 +17,7 @@ export type PaymentRow = {
   status: PaymentStatus;
   transactionHash: string | null;
   createdAt: string | null;
+  receiptAcknowledged?: boolean;
 };
 
 // Contract attempts determine settlement. A worker acknowledgement alone is not
@@ -61,7 +62,7 @@ export function paymentRows(
       amount: attempt.amount,
       recipient: attempt.recipient,
       status:
-        attempt.status === 'Settled'
+        attempt.status === 'Settled' || attempt.status === 'ReceiptAcknowledged'
           ? 'Paid'
           : attempt.status === 'TransferFailed'
             ? 'Failed'
@@ -70,6 +71,7 @@ export function paymentRows(
               : 'Pending',
       transactionHash: previous?.transactionHash ?? null,
       createdAt: previous?.createdAt ?? null,
+      receiptAcknowledged: attempt.status === 'ReceiptAcknowledged',
     });
   }
   return [...byRequest.values()].sort(

@@ -8,6 +8,9 @@ use near_sdk::{
     AccountId, Gas, NearToken, PanicOnDefault, Promise, PromiseError, PromiseOrValue,
 };
 
+mod recovery;
+pub use recovery::*;
+
 const MAX_ATTEMPTS: u32 = 64;
 // Provisional allocations; sandbox gas measurements remain a release gate.
 const TRANSFER_GAS: Gas = Gas::from_tgas(25);
@@ -54,6 +57,8 @@ pub enum AttemptStatus {
     Reserved,
     Settled,
     TransferFailed,
+    // Appended to preserve the encoding of existing testnet attempts.
+    ReceiptAcknowledged,
 }
 
 #[near(serializers = [borsh, json])]
@@ -130,7 +135,7 @@ impl Vault {
         bounded(&terms.unit, 32);
         require!(
             env::attached_deposit() >= NearToken::from_near(1),
-            "Attach 1 NEAR for bounded order storage and calls; not refundable in P0"
+            "Attach 1 NEAR for bounded order storage and calls"
         );
         require!(self.orders.get(&order_id).is_none(), "Order exists");
         let buyer = env::predecessor_account_id();
@@ -401,6 +406,10 @@ impl Vault {
             order.accepted_terms && order.funded.0 > 0,
             "Order not active"
         );
+        require!(
+            self.recovery(&order.id).phase == ClosePhase::Open,
+            "Order is closing or closed"
+        );
     }
 }
 
@@ -429,6 +438,7 @@ impl FungibleTokenReceiver for Vault {
             || order.funded.0 != 0
             || expected != Some(amount.0)
             || env::block_timestamp() >= order.terms.expires_at.0
+            || self.recovery(&msg).phase != ClosePhase::Open
         {
             return PromiseOrValue::Value(amount);
         }

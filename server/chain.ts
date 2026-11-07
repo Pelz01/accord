@@ -11,7 +11,13 @@ import { verifyMessage } from 'near-api-js/nep413';
 import { randomBytes, randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import type { FastifyInstance } from 'fastify';
-import type { Deployment, ChainOrder, ChainAttempt, ChainState } from '../shared/chain.ts';
+import type {
+  Deployment,
+  ChainOrder,
+  ChainAttempt,
+  ChainState,
+  ChainRecovery,
+} from '../shared/chain.ts';
 import { ordersForAccount } from '../shared/chain.ts';
 import { accountSchema, type Order } from '../shared/schema.ts';
 import { Ledger, DomainError } from './ledger.ts';
@@ -139,6 +145,16 @@ export async function registerChain(
             account.data,
           )
         : [];
+      const recoveries = d.features?.includes('recovery-v1')
+        ? Object.fromEntries(
+            await Promise.all(
+              orders.map(async (order) => [
+                order.id,
+                await view<ChainRecovery>(d, 'get_recovery', { order_id: order.id }),
+              ]),
+            ),
+          )
+        : undefined;
       const jobs = (
         ledger.db.prepare('SELECT payload FROM chain_jobs').all() as { payload: string }[]
       ).map((row) => JSON.parse(row.payload) as Job);
@@ -162,6 +178,7 @@ export async function registerChain(
         deployment: d,
         orders,
         attempts,
+        recoveries,
         operatorReady,
         liveAiAvailable: !!process.env.NEAR_AI_API_KEY,
         authRequired,
@@ -191,6 +208,10 @@ export async function registerChain(
     const body = requestSchema.parse(req.body);
     const order = await view<ChainOrder | null>(d, 'get_order', { order_id: body.orderId });
     if (!order) throw new DomainError('Order not found.', 404);
+    if (d.features?.includes('recovery-v1')) {
+      const recovery = await view<ChainRecovery>(d, 'get_recovery', { order_id: order.id });
+      if (recovery.phase !== 'Open') throw new DomainError('This order is closing or closed.', 409);
+    }
     if (order.terms.operator !== d.operator)
       throw new DomainError('This order uses a different operator.', 403);
     const capacity = BigInt(order.accepted) - BigInt(order.paid) - BigInt(order.pending);
@@ -312,7 +333,7 @@ export async function registerChain(
         const attempt = await view<ChainAttempt | null>(d, 'get_attempt', { request_id: job.id });
         if (attempt) {
           job.status =
-            attempt.status === 'Settled'
+            attempt.status === 'Settled' || attempt.status === 'ReceiptAcknowledged'
               ? 'settled'
               : attempt.status === 'TransferFailed'
                 ? 'failed'
@@ -369,7 +390,7 @@ export async function registerChain(
           await provider.sendTransactionUntil(signed.signedTransaction, 'FINAL');
           const outcome = await view<ChainAttempt | null>(d, 'get_attempt', { request_id: job.id });
           job.status =
-            outcome?.status === 'Settled'
+            outcome?.status === 'Settled' || outcome?.status === 'ReceiptAcknowledged'
               ? 'settled'
               : outcome?.status === 'TransferFailed'
                 ? 'failed'

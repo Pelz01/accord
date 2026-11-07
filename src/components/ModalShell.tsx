@@ -46,7 +46,7 @@ export function ModalShell({
     >
       <div className="modal-header">
         <div>
-          <span className="eyebrow">ACCORD / LOCAL SIMULATION</span>
+          <span className="eyebrow">ACCORD</span>
           <h2 id="modal-title">{title}</h2>
           <p>{subtitle}</p>
         </div>

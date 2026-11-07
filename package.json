@@ -18,6 +18,7 @@
     "test:ui": "playwright test",
     "test:sites": "node scripts/check-hosted.mjs",
     "verify:hosted": "tsx scripts/hosted-smoke.ts",
+    "verify:recovery:testnet": "tsx scripts/testnet-recovery.ts",
     "check": "npm test && npm run build"
   },
   "dependencies": {

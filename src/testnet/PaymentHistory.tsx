@@ -165,6 +165,9 @@ export function PaymentHistory({
                       >
                         {row.status}
                       </Badge>
+                      {row.receiptAcknowledged && (
+                        <small className="block muted">Confirmed by recipient</small>
+                      )}
                     </td>
                     <td>
                       {row.transactionHash ? (

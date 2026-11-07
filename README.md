@@ -93,6 +93,10 @@ The hosted integration verified real wallet signatures, live AI, a 300 aUSD test
 
 P0 supports one line per order, integer quantities, fixed six-decimal test-token amounts, exact funding, partial deliveries and payments, bounded attempts, and distinct role accounts. Creation retains 1 native NEAR for bounded storage/outgoing call deposits separately from token funding.
 
-P1 supplier invoice commitments and P2 closure/refunds are not implemented. Invoice hashes are audit references, not proof of authenticity or invoice-specific entitlement. Remaining tokens and uncertain reservations have no user recovery path yet. Mainnet requires explicit deployment/network integration, recovery and storage review, mainnet provider/network validation, and further browser transaction testing.
+Closure and token refunds are implemented on testnet. Buyer and supplier approve the same 24-hour state snapshot after all accepted deliveries are paid and no transfer is unresolved. The order freezes before dispatch; unused tokens return only to the original buyer. A definite failed refund can be retried. Missing callbacks keep their reservation until the actual recipient explicitly acknowledges receipt; acknowledgment consumes it as paid and never reopens spending capacity. Unreceived, ambiguous transfers remain reserved. The native 1 NEAR storage/call deposit is retained.
+
+The real testnet check refunded 300 aUSD on PO-TESTNET-001. See fixtures/recovery-testnet-evidence.json and fixtures/recovery-sandbox-evidence.json. The explicit npm run verify:recovery:testnet command verifies the tested artifact, upgrades the generated testnet vault if needed, and closes that known order; repeat runs read its existing refund. It never deploys the callback-starvation artifact.
+
+P1 supplier invoice commitments and PDF/OCR are not implemented. Invoice hashes are audit references, not proof of authenticity or invoice-specific entitlement. Mainnet still requires network integration, independent recovery/storage/upgrade review, production token validation, and a complete real-wallet browser journey.
 
 Target: ready before 10 November 2026, meaning by the end of 9 November in Lagos. See [JUDGE.md](JUDGE.md), [SECURITY.md](SECURITY.md), and [FOUNDATION.md](FOUNDATION.md) for reproduction, authority boundaries, and executed evidence. MIT licensed. Built for the NEAR Hackathon.

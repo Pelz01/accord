@@ -8,6 +8,7 @@ export function CreateForm({
   buyerAccount = 'buyer.testnet',
   testnet = false,
   operatorAccount,
+  recoveryEnabled = false,
 }: {
   onCreate: (input: unknown) => void;
   busy: boolean;
@@ -15,6 +16,7 @@ export function CreateForm({
   buyerAccount?: string;
   testnet?: boolean;
   operatorAccount?: string;
+  recoveryEnabled?: boolean;
 }) {
   const [unitPrice, setUnitPrice] = useState('10'),
     [qty, setQty] = useState(100);
@@ -128,7 +130,9 @@ export function CreateForm({
       </p>
       <div className="alert warning">
         <LockKeyhole size={16} />
-        Unspent funds cannot currently be refunded.
+        {recoveryEnabled
+          ? 'Unused tokens can be refunded with buyer and supplier approval after accepted deliveries are paid.'
+          : 'Unspent funds cannot currently be refunded.'}
       </div>
       {testnet && (
         <p className="field-note">

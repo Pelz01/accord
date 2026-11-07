@@ -24,7 +24,7 @@ Sanitized public evidence is in fixtures/testnet-evidence.json and fixtures/work
 
 npm run check runs application tests, TypeScript, and the frontend/API production builds. npm run test:ui checks the landing page, wallet gate, and isolated development harness. The harness tests exercise deterministic state transitions, not NEAR transfers.
 
-For contract checks, run cargo test --locked -p accord-vault. For real cross-contract execution, run bash sandbox/build.sh, then npm ci and npm test from sandbox. The nine executed checks include the standard FT resolver, 400/300 partial settlement, replay, unauthorized delivery/private callback rejection, transfer failure, retained reservation after successful transfer with a starved callback, and cross-order isolation. See fixtures/sandbox-evidence.json for receipts and artifact hashes.
+For contract checks, run cargo test --locked -p accord-vault. For real cross-contract execution, run bash sandbox/build.sh, then npm ci and npm test from sandbox. The original nine settlement checks include the standard FT resolver, 400/300 partial settlement, replay, unauthorized delivery/private callback rejection, transfer failure, retained reservation after successful transfer with a starved callback, and cross-order isolation. See fixtures/sandbox-evidence.json for receipts and artifact hashes. The additional eleven recovery checks cover mutual closure, stale snapshots, refunds, definitive-failure retries, successful transfers with failed callbacks, cross-order isolation, and upgrading the old funded schema; see fixtures/recovery-sandbox-evidence.json.
 
 scripts/testnet-bootstrap.ts, scripts/testnet-deploy.ts, and scripts/testnet-worker-smoke.ts support a disposable testnet deployment. They use ignored .data credentials, never mainnet. The deploy script requires artifacts to match the passing sandbox evidence before deployment. Do not rerun a money-out smoke against customer funds.
 
@@ -40,6 +40,14 @@ The Vercel frontend forwards to the isolated VPS API. Real NEP-413 ownership and
 
 The explicit npm run verify:hosted command uses ignored generated testnet credentials. It can advance the known verification order and authorize its bounded payment; a repeat run recovers the existing job. This is SDK/API evidence, not an automated browser-wallet extension transaction.
 
+## Closure and refund verification
+
+The tested contract upgrade retained both existing orders and token balances. PO-TESTNET-001 is now closed: 700 aUSD paid to the supplier and 300 aUSD returned to its original buyer, with no pending refund. [Refund receipt](https://testnet.nearblocks.io/txns/5RzNhuARA7TWu7wpXwSArDG2ohmXxZemKXUfPQS9LVdZ). Its counters remain accepted 70, paid 70, pending 0. PO-WORKER-001 remains open. See fixtures/recovery-testnet-evidence.json.
+
+For an eligible funded order, buyer or supplier selects Propose closure. The other party reviews the original buyer account and amount, then signs the stored proposal hash. State changes invalidate it. A failed refund permits a buyer retry after repairing the token registration problem. A refund with an unknown outcome cannot be retried. Only its recipient can explicitly acknowledge funds actually received. Unreceived ambiguous transfers remain reserved.
+
+The explicit npm run verify:recovery:testnet command uses ignored generated testnet credentials. It verifies both sandbox artifact hashes before an atomic code upgrade/state check and recovers the known closed order on repeat runs. This uses SDK signatures; the browser tests use isolated wallet doubles and do not replace a real wallet extension journey. Native storage deposits remain retained.
+
 ## Remaining gates
 
-Full real-wallet browser journey; mainnet network wiring and deployment; recovery/storage/upgrade review. P1 invoice confirmation and P2 closure/refunds are not included. No hackathon submission or social post has been made.
+Full real-wallet browser journey; mainnet network wiring and deployment; independent recovery/storage/upgrade review. P1 invoice confirmation, PDF/OCR and final submission materials remain incomplete. No hackathon submission or social post has been made.
