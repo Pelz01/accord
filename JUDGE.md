@@ -2,7 +2,7 @@
 
 ## Product
 
-Run npm ci and npm run dev, then open http://127.0.0.1:5173. The first page is the landing page. Open the workspace to connect a NEAR testnet wallet. Orders and balances remain hidden until connection; unrelated wallets do not inherit the supplied test records.
+Open [accord-payments.vercel.app](https://accord-payments.vercel.app) for the hosted product. For development, run npm ci and npm run dev and open http://127.0.0.1:5173. The first page is the landing page. Open the workspace to connect a NEAR testnet wallet. Orders and balances remain hidden until connection; unrelated wallets do not inherit the supplied test records.
 
 The browser sends creation, acceptance, funding, and delivery transactions through the connected wallet. Authorities are enforced by the contract. Invoice extraction requires the server's NEAR_AI_API_KEY; it fails visibly when unavailable. Payment requests need the order operator's NEP-413 wallet signature, a fresh one-time challenge, and the server's restricted function-call key. Never share a private key in chat or commit it.
 
@@ -22,7 +22,7 @@ Sanitized public evidence is in fixtures/testnet-evidence.json and fixtures/work
 
 ## Reproduction tools
 
-npm run check runs application tests, TypeScript, production builds, and a built-Worker routing/configuration smoke. npm run test:ui checks the landing page, wallet gate, and isolated development harness. The harness tests exercise deterministic state transitions, not NEAR transfers.
+npm run check runs application tests, TypeScript, and the frontend/API production builds. npm run test:ui checks the landing page, wallet gate, and isolated development harness. The harness tests exercise deterministic state transitions, not NEAR transfers.
 
 For contract checks, run cargo test --locked -p accord-vault. For real cross-contract execution, run bash sandbox/build.sh, then npm ci and npm test from sandbox. The nine executed checks include the standard FT resolver, 400/300 partial settlement, replay, unauthorized delivery/private callback rejection, transfer failure, retained reservation after successful transfer with a starved callback, and cross-order isolation. See fixtures/sandbox-evidence.json for receipts and artifact hashes.
 
@@ -34,6 +34,12 @@ Live NEAR AI Cloud extraction is verified with the configured server credential 
 
 For a new live check, run npx tsx scripts/near-ai-smoke.ts --http --negative while the server is running. This explicitly calls the provider. Unit tests replay the recorded response and test malformed output, mismatched prices, upstream failures, and rejection sentinels without live requests. Browser wallet signing still requires its separate end-to-end verification.
 
+## Hosted verification
+
+The Vercel frontend forwards to the isolated VPS API. Real NEP-413 ownership and replay checks, live AI extraction, and the restricted worker have been verified through the public URL. The worker paid another 300 aUSD on PO-WORKER-001, reaching paid quantity 70 with pending 0. The completed job survived a container restart and the SQLite backup passed integrity checks. See fixtures/hosted-evidence.json and [the testnet receipt](https://testnet.nearblocks.io/txns/AYYhh1rsLzPndbSfB2ecwmqDGSra4F8dBNiXUkKXpBkm).
+
+The explicit npm run verify:hosted command uses ignored generated testnet credentials. It can advance the known verification order and authorize its bounded payment; a repeat run recovers the existing job. This is SDK/API evidence, not an automated browser-wallet extension transaction.
+
 ## Remaining gates
 
-Hosted Worker/D1 and hosted AI integration verification; mainnet network wiring and deployment; recovery/storage/upgrade review. P1 invoice confirmation and P2 closure/refunds are not included. No hackathon submission or social post has been made.
+Full real-wallet browser journey; mainnet network wiring and deployment; recovery/storage/upgrade review. P1 invoice confirmation and P2 closure/refunds are not included. No hackathon submission or social post has been made.

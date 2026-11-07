@@ -8,13 +8,19 @@ The buyer creates and funds an order, a separate supplier accepts immutable econ
 
 The connected browser uses NEAR wallets for direct calls. Operator dispatch requires a signed NEP-413 challenge bound to network, vault, request ID, order, quantity, document hash, and expiry. Challenges expire after five minutes and can be consumed only once. The signer must own the operator account. A restricted function-call key may call only request_payment on the deployed vault. Its allowance limits gas, not token expenditure; the contract enforces the financial boundary.
 
-The development-only simulator has separate deterministic role headers. It is excluded from the production frontend and is not an authentication mechanism. Its Fastify server binds to loopback and rejects unexpected Host/Origin headers. Do not expose that development server as the hosted product. The separate hosted Worker uses D1 jobs/challenges, same-origin checks, and secret environment bindings; its live deployment is still awaiting verification. Public invoice processing still needs request-level wallet authorization and rate limits before enabling a provider credential there.
+The development-only simulator has separate deterministic role headers. It is excluded from the production frontend and is not an authentication mechanism. Its Fastify server binds to loopback and rejects unexpected Host/Origin headers. Do not expose that development server as the hosted product. The active hosted product uses a separate production-only Fastify entry on the VPS. Simulator endpoints are absent. The Vercel proxy authenticates to the origin with a timing-safe checked shared secret; requests remain on HTTPS and responses are not cached. The API checks the configured frontend origin. Direct unauthenticated origin requests are rejected. The API runs in an isolated non-root container with persistent SQLite storage and verified daily backups.
 
 Wallet filtering is a navigation aid. Orders, quantities, prices, and attempts are public onchain. Connecting a wallet does not make these records private.
 
+## Hosted invoice authorization
+
+Invoice requests require a NEP-413 full-access wallet ownership proof bound to the website, account, network, nonce, and five-minute challenge. The challenge is atomically consumed once. The resulting 30-minute token is held in browser memory; only its SHA-256 hash is stored. Invoice access is limited to the order buyer, supplier, receiver, or operator. Persistent quotas limit each order to five requests per minute and 100 per UTC day, with a global limit of 1,000 per UTC day. Invalid or unavailable model output remains an error; no synthetic fallback is used.
+
+Production keys remain outside the image and repository. The VPS receives only the restricted operator key, never the generated full-access role/deployment keys. Vercel holds the proxy credential but not the model or NEAR signing key.
+
 ## Asynchronous funds
 
-The contract reserves quantity before standard-token ft_transfer, maintaining paid + pending <= accepted <= ordered. The private callback finalizes an immutable attempt once. A definite failed transfer releases entitlement only when the callback runs successfully. Missing or unexpected outcomes retain the reservation. A browser timeout does not establish transfer failure.
+The contract reserves quantity before standard-token ft_transfer, maintaining paid + pending <= accepted <= ordered. The private callback finalizes an immutable attempt once. A definite failed transfer releases entitlement only when the callback runs successfully. Missing or unexpected outcomes retain the reservation. A browser timeout does not establish transfer failure. The VPS worker persists the signed transaction hash before broadcasting and binds queued work to its network/vault. Unknown submissions are reconciled without blind retries or silently moving them to a different deployment.
 
 A successful transfer with a starved callback leaves capacity locked. No administrator can redirect payments, reset reservations, or sweep the settlement token. Reconciliation and user recovery remain unresolved for mainnet. Request IDs stay consumed after transfer failure.
 

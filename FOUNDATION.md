@@ -4,16 +4,16 @@ Target: ready by end of 9 November 2026, Lagos time. Status: in progress. This r
 
 | Check                              | Result          | Evidence                                                                                                                                                                                                                                               |
 | ---------------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Application tests                  | PASS            | 24 tests: validation, extraction boundaries, settlement reservations/callbacks, replay, authority, durable restart, cross-order isolation, wallet order filtering, authoritative payment-history merging, and recorded live-AI replay/failure handling |
+| Application tests                  | PASS            | 29 tests: validation, extraction boundaries, settlement reservations/callbacks, replay, authority, durable restart, cross-order isolation, wallet order filtering, authoritative payment-history merging, and recorded live-AI replay/failure handling |
 | TypeScript and production frontend | PASS            | npm run check; simulator excluded from the production frontend                                                                                                                                                                                         |
-| Browser journeys                   | PASS            | Five Playwright tests: landing interaction/responsive layout, disconnected wallet gate, connected payment-history filtering/receipts/disconnection, and two isolated harness workflows                                                                 |
+| Browser journeys                   | PASS            | Six Playwright tests: landing interaction/responsive layout, disconnected wallet gate, connected payment-history filtering/receipts/disconnection, wallet-authenticated invoice processing, and two isolated harness workflows                         |
 | Rust contract units                | PASS            | 12 tests using near-sdk 5.29.1 mocked environment                                                                                                                                                                                                      |
 | Real NEAR sandbox                  | PASS            | Nine checks on nearcore 2.14.0, actual FT calls/callbacks and failure receipts; fixtures/sandbox-evidence.json                                                                                                                                         |
 | Testnet deployment                 | PASS            | Same artifact hashes as sandbox; fixtures/testnet-evidence.json                                                                                                                                                                                        |
 | Restricted operator key            | PASS            | request_payment only on the vault; negative confirm_delivery call rejected                                                                                                                                                                             |
 | Authenticated durable worker       | PASS            | 400 aUSD payment settled for 40 cartons; fixtures/worker-evidence.json                                                                                                                                                                                 |
 | Browser wallet integration         | IMPLEMENTED     | Direct creation/acceptance/funding/delivery and signed operator authorization; automated browser test covers the disconnected boundary, not a wallet signing extension                                                                                 |
-| Hosted Worker                      | PREPARED        | Build and route/configuration smoke; live deployment and D1 runtime verification pending                                                                                                                                                               |
+| Hosted deployment                  | PASS            | Vercel frontend + VPS API at https://accord-payments.vercel.app; live wallet/AI/payment checks, restart persistence and backups verified; fixtures/hosted-evidence.json                                                                                |
 | Live NEAR AI request               | PASS            | Real GLM-5.3 Flash extraction: 100 cartons / 1,000 aUSD; app HTTP endpoint verified; incomplete invoice rejected; testnet order unchanged                                                                                                              |
 | Real recorded AI fixture           | PASS            | fixtures/near-ai-extraction.json: synthetic input, SHA-256, real provider request IDs, extracted fields, timing, HTTP result, and rejection check                                                                                                      |
 | Mainnet                            | NOT DEPLOYED    | Network wiring, release/recovery/storage/upgrade review and transaction validation pending                                                                                                                                                             |
@@ -21,7 +21,7 @@ Target: ready by end of 9 November 2026, Lagos time. Status: in progress. This r
 
 ## Receipts and artifacts
 
-PO-TESTNET-001 settled 400 then 300 aUSD after accepted quantity increased from 40 to 70. Final paid quantity 70, pending 0. PO-WORKER-001 separately settled 400 aUSD through the authenticated durable worker. These are testnet transfers, independent of the browser's marketing interaction or development harness.
+PO-TESTNET-001 settled 400 then 300 aUSD after accepted quantity increased from 40 to 70. Final paid quantity 70, pending 0. PO-WORKER-001 first settled 400 aUSD through the authenticated worker, then another 300 aUSD through the hosted Vercel/VPS flow after acceptance increased to 70. Its latest paid quantity is 70, pending 0. These are testnet transfers, independent of the browser's marketing interaction or development harness.
 
 - Vault: vault.accord-v2-8e0a631d.testnet
 - Token: token.accord-v2-8e0a631d.testnet
@@ -32,9 +32,15 @@ The public fixtures contain deployment identifiers, hashes, receipts, and result
 
 ## Runtime and reproduction
 
-Node 24.12.0; Rust 1.99.1; near-sdk and near-contract-standards 5.29.1; isolated near-workspaces 5.0.0; official sandbox nearcore 2.14.0. The WASM build enables the NEAR host configuration and lowers unsupported post-MVP features using Binaryen. Negative callback builds remain test-only.
+Development Node 24.12.0; VPS container Node 24.22.2; Rust 1.99.1; near-sdk and near-contract-standards 5.29.1; isolated near-workspaces 5.0.0; official sandbox nearcore 2.14.0. The WASM build enables the NEAR host configuration and lowers unsupported post-MVP features using Binaryen. Negative callback builds remain test-only.
 
 Run npm run check and npm run test:ui for application verification. Run cargo test --locked -p accord-vault, bash sandbox/build.sh, then npm ci and npm test inside sandbox for contract verification. Detailed chain reproduction is in JUDGE.md. Browser screenshots are generated under ignored test-results.
+
+## Hosted release
+
+https://accord-payments.vercel.app is the public frontend. The VPS directory is /home/ubuntu/accord and the container is accord-api. The deployed application source is 763e771; Vercel deployment dpl_8MnDxGJBTVf7ace79Lc9djUGh8JK is Ready. The hosted worker settled 300 aUSD in transaction AYYhh1rsLzPndbSfB2ecwmqDGSra4F8dBNiXUkKXpBkm. The database retained both completed worker jobs after a container restart, passed integrity checks, and was backed up successfully.
+
+Browser UI inspection confirmed the deployed landing page and wallet gate. A real browser-wallet transaction journey remains a separate release check; the hosted signature/payment smoke uses the NEAR SDK and generated testnet accounts.
 
 ## Design assets
 

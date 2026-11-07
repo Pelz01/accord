@@ -1,0 +1,41 @@
+{
+  "website": "https://accord-payments.vercel.app",
+  "network": "testnet",
+  "at": "2026-11-07T09:33:41.862Z",
+  "vault": "vault.accord-v2-8e0a631d.testnet",
+  "orderId": "PO-WORKER-001",
+  "requestId": "727a3874-03e7-442b-85e9-0b724414e32a",
+  "transactionHash": "AYYhh1rsLzPndbSfB2ecwmqDGSra4F8dBNiXUkKXpBkm",
+  "providerRequestId": "00648320-2246-4d04-aa1b-9bce06dac540",
+  "amountBaseUnits": "300000000",
+  "paid": "70",
+  "pending": "0",
+  "checks": [
+    "public HTTPS frontend and proxy reach the isolated API",
+    "disconnected API contains no order records",
+    "invoice processing requires wallet authorization",
+    "invalid wallet signature rejected",
+    "real NEP-413 wallet ownership verified",
+    "wallet sign-in replay rejected",
+    "real NEAR AI extraction succeeds through Vercel and the VPS",
+    "one-time payment authorization accepted and replay rejected",
+    "VPS background worker dispatched with the restricted key",
+    "real 300 aUSD partial payment settled",
+    "final paid quantity is 70 and pending is zero",
+    "settled jobs survived backend restart",
+    "SQLite integrity check passed after restart",
+    "daily backup service produced a verified database snapshot"
+  ],
+  "deployment": {
+    "frontend": "Vercel",
+    "backend": "VPS Docker",
+    "sourceCommit": "763e771",
+    "vercelDeploymentId": "dpl_8MnDxGJBTVf7ace79Lc9djUGh8JK",
+    "serverDirectory": "/home/ubuntu/accord",
+    "container": "accord-api",
+    "nodeVersion": "24.22.2"
+  },
+  "restartRecovered": true,
+  "databaseIntegrity": "ok",
+  "dailyBackups": true
+}

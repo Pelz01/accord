@@ -2,7 +2,7 @@
 
 Accord helps buyers pay suppliers for accepted deliveries while an AI operator stays inside a funded purchase order. Supplier-accepted terms fix the price, authorities, and payout account. The NEAR contract reserves entitlement before sending tokens.
 
-The product includes a public landing page and a wallet-gated procurement workspace. **The current chain deployment is NEAR testnet.** Wallet transactions, token transfers, contract callbacks, and the restricted operator have been exercised on testnet. Mainnet follows the remaining validation gates; it has not been deployed.
+The hosted product is [accord-payments.vercel.app](https://accord-payments.vercel.app). It includes a public landing page and a wallet-gated procurement workspace. **The current chain deployment is NEAR testnet.** Wallet transactions, token transfers, contract callbacks, and the restricted operator have been exercised on testnet. Mainnet follows the remaining validation gates; it has not been deployed.
 
 ## Run
 
@@ -45,8 +45,9 @@ The default NEAR_AI_MODEL is z-ai/glm-5.3-flash. To repeat the explicit live che
 - src/testnet: wallet connection, contract reads, order creation, acceptance, funding, delivery, invoice review, payment authorization, and searchable payment history with receipt links.
 - contracts/vault: Rust payment boundary and private asynchronous callbacks.
 - contracts/test-token: six-decimal aUSD using the NEAR standard FT implementation.
-- server: development Fastify API, durable SQLite operator jobs, and extraction adapter.
-- cloud, drizzle: hosted Worker and D1 implementation; hosting integration is prepared but deployment and D1 execution remain unverified.
+- server: separate development and production Fastify entries, durable SQLite jobs, wallet sessions, invoice quotas, and extraction.
+- api/proxy.ts and deploy/: Vercel frontend proxy, isolated VPS container, HTTPS route, persistent database, and daily backups.
+- cloud, drizzle: optional earlier Sites Worker/D1 target; unused by the active Vercel/VPS deployment.
 - sandbox: real disposable NEAR node tests, separate from browser tests.
 
 ```sh
@@ -62,14 +63,36 @@ npm test
 
 Checks run on the development machine. GitHub Actions is disabled for this repository; pushes do not start remote checks.
 
-npm run build produces the frontend and dist/server/index.js hosted Worker. The build excludes the internal simulator from the production JavaScript. The development-only /dev/simulator route is an isolated deterministic test harness with an actor selector; its tests do not count as wallet authorization or chain evidence. It has no customer navigation.
+npm run build produces the frontend in dist and the VPS API in dist-api. The separate optional build:sites command produces the earlier Worker target. The build excludes the internal simulator from the production JavaScript. The development-only /dev/simulator route is an isolated deterministic test harness with an actor selector; its tests do not count as wallet authorization or chain evidence. It has no customer navigation.
 
 Rust is pinned to 1.99.1; Windows contract development uses Ubuntu/WSL. The sandbox uses pinned nearcore 2.14.0. Its negative-test fault-injection build must never be deployed. The build script restores the ordinary artifact afterward.
+
+## Hosted operations
+
+The frontend runs on Vercel. Its small server-side proxy forwards API requests over HTTPS to the VPS using a secret origin credential. NEAR AI and operator credentials stay on the VPS; Vercel receives only its proxy credential and API base URL. GitHub Actions and Git-triggered Vercel deployments are disabled. Releases are deployed manually.
+
+The VPS installation is isolated under /home/ubuntu/accord:
+
+| Folder  | Contents                                              |
+| ------- | ----------------------------------------------------- |
+| app     | Application source and deployment files               |
+| data    | Persistent accord.sqlite database                     |
+| config  | Public NEAR testnet deployment configuration          |
+| secrets | Protected API environment and restricted operator key |
+| backups | Verified SQLite snapshots and deployment backups      |
+
+The container is accord-api, bound to loopback port 8794. It uses Node 24.22.2 from a pinned official image, a non-root user, a read-only root filesystem, and a restart policy. The HTTPS gateway forwards only /accord/api/. Daily backups run through accord-backup.timer; accord-backup.service can be started manually. Both source units are in deploy/.
+
+From the VPS app directory, use docker compose -f deploy/compose.yaml ps or docker compose -f deploy/compose.yaml logs --tail 50 api for status. Never publish the secrets folder or a full container environment dump.
+
+Invoice processing requires a one-time NEP-413 wallet sign-in, an unexpired 30-minute session, and membership in the purchase order. Only a session hash is stored. Limits are five requests per order per minute, 100 per order per UTC day, and 1,000 globally per UTC day. Payment requests keep their separate operator authorization and contract limits. Transaction hashes are stored before broadcast; uncertain requests are reconciled without blind retries.
+
+The hosted integration verified real wallet signatures, live AI, a 300 aUSD testnet payment, restart persistence, and database backups. See fixtures/hosted-evidence.json. npm run verify:hosted is an explicit live test using the ignored development wallet credentials. It recovers an existing request rather than paying twice; ordinary unit tests make no live provider or blockchain writes.
 
 ## Current scope
 
 P0 supports one line per order, integer quantities, fixed six-decimal test-token amounts, exact funding, partial deliveries and payments, bounded attempts, and distinct role accounts. Creation retains 1 native NEAR for bounded storage/outgoing call deposits separately from token funding.
 
-P1 supplier invoice commitments and P2 closure/refunds are not implemented. Invoice hashes are audit references, not proof of authenticity or invoice-specific entitlement. Remaining tokens and uncertain reservations have no user recovery path yet. Mainnet requires explicit deployment/network integration, recovery and storage review, hosted provider validation, and further transaction testing.
+P1 supplier invoice commitments and P2 closure/refunds are not implemented. Invoice hashes are audit references, not proof of authenticity or invoice-specific entitlement. Remaining tokens and uncertain reservations have no user recovery path yet. Mainnet requires explicit deployment/network integration, recovery and storage review, mainnet provider/network validation, and further browser transaction testing.
 
 Target: ready before 10 November 2026, meaning by the end of 9 November in Lagos. See [JUDGE.md](JUDGE.md), [SECURITY.md](SECURITY.md), and [FOUNDATION.md](FOUNDATION.md) for reproduction, authority boundaries, and executed evidence. MIT licensed. Built for the NEAR Hackathon.

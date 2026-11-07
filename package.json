@@ -11,12 +11,14 @@
     "build:frontend": "tsc --noEmit && vite build",
     "build:api": "esbuild server/runtime.ts --bundle --platform=node --format=esm --target=node24 --packages=external --outfile=dist-api/index.js",
     "start:api": "node dist-api/index.js",
-    "build": "npm run build:frontend && node scripts/build-hosted.mjs",
+    "build": "npm run build:frontend && npm run build:api",
+    "build:sites": "npm run build:frontend && node scripts/build-hosted.mjs",
     "start": "tsx server/index.ts",
     "test": "tsx --test tests/*.test.ts",
     "test:ui": "playwright test",
-    "test:hosted": "node scripts/check-hosted.mjs",
-    "check": "npm test && npm run build && npm run test:hosted"
+    "test:sites": "node scripts/check-hosted.mjs",
+    "verify:hosted": "tsx scripts/hosted-smoke.ts",
+    "check": "npm test && npm run build"
   },
   "dependencies": {
     "@fontsource/bodoni-moda": "5.3.0",
