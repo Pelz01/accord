@@ -10,6 +10,8 @@ use near_sdk::{
 
 mod recovery;
 pub use recovery::*;
+mod invoices;
+pub use invoices::*;
 
 const MAX_ATTEMPTS: u32 = 64;
 // Provisional allocations; sandbox gas measurements remain a release gate.
@@ -266,6 +268,7 @@ impl Vault {
         request_id: String,
         quantity: U64,
         audit_hash: String,
+        invoice: Option<InvoicePayload>,
     ) -> Promise {
         let mut order = self.order(&order_id);
         self.active(&order);
@@ -273,6 +276,9 @@ impl Vault {
             env::predecessor_account_id() == order.terms.operator,
             "Operator only"
         );
+        let invoice =
+            invoice.unwrap_or_else(|| env::panic_str("Supplier-confirmed invoice required"));
+        let commitment = self.require_confirmed_invoice(&order, &invoice, quantity, &audit_hash);
         bounded(&request_id, 64);
         require!(
             audit_hash.len() == 64 && audit_hash.bytes().all(|b| b.is_ascii_hexdigit()),
@@ -317,6 +323,10 @@ impl Vault {
         self.orders.insert(&order_id, &order);
         self.attempts.insert(&request_id, &attempt);
         event("payment_reserved", json!(&attempt));
+        event(
+            "payment_invoice_bound",
+            json!({"request_id":request_id,"commitment":commitment}),
+        );
         Promise::new(self.token.clone())
             .function_call(
                 "ft_transfer",

@@ -23,13 +23,15 @@ import {
   chainAvailable,
   ordersForAccount,
 } from '../../shared/chain';
-import { type CreateOrder, type Extraction, money, createSchema } from '../../shared/schema';
+import { type CreateOrder, money, createSchema } from '../../shared/schema';
 import { Badge, Metric } from '../components/primitives';
 import { ModalShell } from '../components/ModalShell';
 import { CreateForm } from '../components/CreateOrderForm';
 import { walletConnector, accountId, sendCall } from './Wallet';
 import { PaymentHistory } from './PaymentHistory';
 import { RecoveryPanel } from './RecoveryPanel';
+import { InvoiceReview } from './InvoiceReview';
+import type { InvoicePayload } from '../../shared/invoices';
 import type { ChainRecovery } from '../../shared/chain';
 
 const explorer = (hash: string) => `https://testnet.nearblocks.io/txns/${hash}`;
@@ -63,9 +65,6 @@ export function TestnetWorkspace() {
       null,
     ),
     [total, setTotal] = useState(''),
-    [text, setText] = useState(''),
-    [extraction, setExtraction] = useState<Extraction | null>(null),
-    [quantity, setQuantity] = useState(''),
     [transaction, setTransaction] = useState('');
   const [jobs, setJobs] = useState<ChainJob[]>([]);
   const session = useRef<{ accountId: string; token: string; expires: number } | null>(null);
@@ -136,8 +135,8 @@ export function TestnetWorkspace() {
     if (!r.ok) throw new Error(data.error ?? 'Request failed.');
     return data;
   }
-  async function extractInvoice() {
-    if (!order || !account) throw new Error('Connect your wallet and open an order first.');
+  async function authorizedRequest(path: string, body?: unknown) {
+    if (!account) throw new Error('Connect your wallet first.');
     const headers: Record<string, string> = {};
     if (state?.authRequired) {
       if (
@@ -157,18 +156,22 @@ export function TestnetWorkspace() {
         });
         session.current = await post('/session', { challengeId: challenge.id, ...signed });
       }
-      headers.Authorization = `Bearer ${session.current!.token}`;
+      headers.Authorization = 'Bearer ' + session.current!.token;
     }
-    try {
-      return await post(
-        `/orders/${encodeURIComponent(order.id)}/extract`,
-        { text, mode: 'live' },
-        headers,
-      );
-    } catch (error) {
-      session.current = null;
-      throw error;
+    const response = await fetch('/api/chain' + path, {
+      method: body === undefined ? 'GET' : 'POST',
+      headers: {
+        ...headers,
+        ...(body === undefined ? {} : { 'Content-Type': 'application/json' }),
+      },
+      ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+    });
+    const result = await response.json();
+    if (!response.ok) {
+      if (response.status === 401) session.current = null;
+      throw new Error(result.error ?? 'This action could not be completed.');
     }
+    return result;
   }
   async function call(method: string, args: Record<string, unknown>, deposit = '0') {
     if (!d) throw new Error('Testnet deployment is not configured.');
@@ -225,26 +228,26 @@ export function TestnetWorkspace() {
       ),
     );
   }
-  async function payment() {
-    if (!order || !extraction) throw new Error('Review an invoice first.');
+  async function payment(invoice: InvoicePayload, quantity: string) {
+    if (!order) throw new Error('Open an order first.');
     if (
       BigInt(quantity) <= 0n ||
       BigInt(quantity) > chainAvailable(order) ||
-      BigInt(quantity) > BigInt(extraction.invoice.quantity)
+      BigInt(quantity) > BigInt(invoice.quantity)
     )
-      throw new Error('Requested quantity exceeds current order or invoice quantity.');
+      throw new Error('Requested quantity exceeds the order or invoice.');
     const challenge = await post('/challenge', {
       orderId: order.id,
       quantity,
-      auditHash: extraction.documentHash,
+      auditHash: invoice.document_hash,
+      invoice,
     });
-    const bytes = Uint8Array.from(atob(challenge.nonce), (c) => c.charCodeAt(0));
     const signed = await (
       await walletConnector().wallet()
     ).signMessage({
       message: challenge.message,
       recipient: challenge.recipient,
-      nonce: bytes,
+      nonce: Uint8Array.from(atob(challenge.nonce), (c) => c.charCodeAt(0)),
       network: 'testnet',
       signerId: account!,
     });
@@ -735,14 +738,11 @@ export function TestnetWorkspace() {
                           Confirm delivery
                         </button>
                       )}
-                    {open && chainAvailable(order) > 0n && (
+                    {open && order.funded !== '0' && (
                       <button
                         className="button primary full"
-                        disabled={busy || role !== 'operator' || !state.operatorReady}
+                        disabled={busy || role === 'observer'}
                         onClick={() => {
-                          setText('');
-                          setExtraction(null);
-                          setQuantity(chainAvailable(order).toString());
                           setModal('invoice');
                         }}
                       >
@@ -1049,89 +1049,27 @@ export function TestnetWorkspace() {
                 <Check size={15} />
               </button>
             </form>
-          ) : order && modal === 'invoice' ? (
-            <>
-              <p className="modal-description">
-                Add your invoice text, then review the extracted details before requesting payment.
-              </p>
-              <div className="invoice-review">
-                <div className="invoice-document">
-                  <div className="document-heading">
-                    <FileText size={16} />
-                    Invoice source
-                  </div>
-                  <textarea
-                    aria-label="Invoice source text"
-                    placeholder="Paste the supplier invoice text here…"
-                    value={text}
-                    onChange={(e) => {
-                      setText(e.target.value);
-                      setExtraction(null);
-                    }}
-                  />
-                </div>
-                <div className="extracted-fields">
-                  {extraction ? (
-                    <>
-                      <span className="eyebrow">EXTRACTED FIELDS</span>
-                      <h3>{extraction.invoice.reference}</h3>
-                      <dl>
-                        <div>
-                          <dt>Invoiced quantity</dt>
-                          <dd>{extraction.invoice.quantity}</dd>
-                        </div>
-                        <div>
-                          <dt>Eligible quantity</dt>
-                          <dd>{chainAvailable(order).toString()}</dd>
-                        </div>
-                        <div>
-                          <dt>Fixed payout</dt>
-                          <dd>{order.terms.payout}</dd>
-                        </div>
-                      </dl>
-                      <label className="field">
-                        Quantity to pay
-                        <input
-                          type="number"
-                          min={1}
-                          max={chainAvailable(order).toString()}
-                          value={quantity}
-                          onChange={(e) => setQuantity(e.target.value)}
-                        />
-                      </label>
-                      <p className="field-note">
-                        Your wallet signs a one-time authorization. The worker uses a restricted key
-                        to request the payment. The contract independently enforces entitlement.
-                      </p>
-                    </>
-                  ) : (
-                    <div className="extraction-empty">
-                      <FileText size={28} />
-                      <h3>Review the invoice</h3>
-                      <p>Extraction does not authorize payment or confirm invoice authenticity.</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div className="modal-actions">
-                <p>Settlement uses real testnet token transfers.</p>
-                {extraction ? (
-                  <button className="button primary" disabled={busy} onClick={() => run(payment)}>
-                    Authorize bounded request
-                    <ArrowUpRight size={15} />
-                  </button>
-                ) : (
-                  <button
-                    className="button primary"
-                    disabled={busy}
-                    onClick={() => run(async () => setExtraction(await extractInvoice()), false)}
-                  >
-                    {busy ? <Loader2 className="spin" size={15} /> : <FileText size={15} />}Extract
-                    invoice
-                  </button>
-                )}
-              </div>
-            </>
+          ) : order && d && modal === 'invoice' ? (
+            <InvoiceReview
+              key={order.id + ':' + account}
+              order={order}
+              deployment={d}
+              account={account}
+              confirmations={state?.confirmations?.[order.id] ?? []}
+              busy={busy}
+              operatorReady={state?.operatorReady ?? false}
+              liveAiAvailable={state?.liveAiAvailable ?? false}
+              onBusy={setBusy}
+              request={authorizedRequest}
+              onConfirm={async (invoice) => {
+                await call('confirm_invoice', { order_id: order.id, invoice });
+                await refresh();
+              }}
+              onPayment={async (invoice, quantity) => {
+                await payment(invoice, quantity);
+                await refresh();
+              }}
+            />
           ) : null}
         </ModalShell>
       )}

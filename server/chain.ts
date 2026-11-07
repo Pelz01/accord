@@ -23,6 +23,14 @@ import { accountSchema, type Order } from '../shared/schema.ts';
 import { Ledger, DomainError } from './ledger.ts';
 import { extract } from './extraction.ts';
 import type { InvoiceAuthorizer } from './sessions.ts';
+import { InvoiceFiles } from './documents.ts';
+import {
+  invoicePayload,
+  invoicePayloadSchema,
+  invoiceCommitment,
+  type InvoicePayload,
+  type InvoiceConfirmation,
+} from '../shared/invoices.ts';
 
 type KeyFile = { accountId: string; secretKey: KeyPairString; publicKey: string };
 type Job = {
@@ -36,11 +44,13 @@ type Job = {
   transactionHash: string | null;
   error: string | null;
   createdAt: string;
+  invoice?: InvoicePayload;
 };
 const requestSchema = z.strictObject({
   orderId: z.string().min(1).max(64),
   quantity: z.string().regex(/^[1-9]\d{0,18}$/),
   auditHash: z.string().regex(/^[a-f0-9]{64}$/),
+  invoice: invoicePayloadSchema.optional(),
 });
 const provider = new JsonRpcProvider({ url: 'https://test.rpc.fastnear.com' });
 const recipient = 'Accord testnet operator';
@@ -120,8 +130,15 @@ export async function registerChain(
     worker = true,
     authRequired = false,
     authorizeInvoice,
-  }: { worker?: boolean; authRequired?: boolean; authorizeInvoice?: InvoiceAuthorizer } = {},
+    authorizeAccess,
+  }: {
+    worker?: boolean;
+    authRequired?: boolean;
+    authorizeInvoice?: InvoiceAuthorizer;
+    authorizeAccess?: InvoiceAuthorizer;
+  } = {},
 ) {
+  const files = new InvoiceFiles(ledger.db);
   ledger.db.exec(
     `CREATE TABLE IF NOT EXISTS chain_jobs (id TEXT PRIMARY KEY,payload TEXT NOT NULL); CREATE TABLE IF NOT EXISTS chain_challenges (id TEXT PRIMARY KEY,payload TEXT NOT NULL,used INTEGER NOT NULL DEFAULT 0,expires INTEGER NOT NULL);`,
   );
@@ -155,6 +172,16 @@ export async function registerChain(
             ),
           )
         : undefined;
+      const confirmations = d.features?.includes('invoice-v1')
+        ? Object.fromEntries(
+            await Promise.all(
+              orders.map(async (o) => [
+                o.id,
+                await view<InvoiceConfirmation[]>(d, 'list_invoices', { order_id: o.id }),
+              ]),
+            ),
+          )
+        : undefined;
       const jobs = (
         ledger.db.prepare('SELECT payload FROM chain_jobs').all() as { payload: string }[]
       ).map((row) => JSON.parse(row.payload) as Job);
@@ -179,6 +206,7 @@ export async function registerChain(
         orders,
         attempts,
         recoveries,
+        confirmations,
         operatorReady,
         liveAiAvailable: !!process.env.NEAR_AI_API_KEY,
         authRequired,
@@ -195,13 +223,60 @@ export async function registerChain(
     const order = await view<ChainOrder | null>(d, 'get_order', { order_id: req.params.id });
     if (!order) throw new DomainError('Order not found.', 404);
     const body = z
-      .strictObject({ text: z.string().min(1).max(32768), mode: z.enum(['sample', 'live']) })
+      .strictObject({
+        text: z.string().min(1).max(32768).optional(),
+        documentId: z.string().uuid().optional(),
+        mode: z.enum(['sample', 'live']),
+      })
+      .refine(
+        (body) => Boolean(body.text) !== Boolean(body.documentId),
+        'Provide text or a document.',
+      )
       .parse(req.body);
     if (authRequired && body.mode !== 'live')
       throw new DomainError('Use live invoice processing.', 400);
     if (authorizeInvoice) await authorizeInvoice(req, order);
-    return extract(asPreviewOrder(order), body.text, body.mode);
+    const scope = { network: d.network, vault: d.vault, orderId: order.id };
+    files.checkInvoiceCapacity(scope);
+    const document = body.documentId ? files.document(scope, body.documentId) : null;
+    const text = document?.text ?? body.text!;
+    const extraction = await extract(asPreviewOrder(order), text, body.mode);
+    if (document) extraction.documentHash = document.documentHash;
+    return files.save(scope, {
+      ...extraction,
+      payload: invoicePayload(order, extraction),
+      documentId: document?.id ?? null,
+      sourceText: text,
+    });
   });
+  async function privateOrder(req: Parameters<InvoiceAuthorizer>[0], orderId: string) {
+    if (!authorizeAccess) throw new DomainError('Wallet authorization is required.', 401);
+    const d = await requiredDeployment();
+    const order = await view<ChainOrder | null>(d, 'get_order', { order_id: orderId });
+    if (!order) throw new DomainError('Order not found.', 404);
+    await authorizeAccess(req, order);
+    return { d, order, scope: { network: d.network, vault: d.vault, orderId } };
+  }
+  app.get<{ Params: { id: string } }>('/api/chain/orders/:id/invoices', async (req) => {
+    const { scope } = await privateOrder(req, req.params.id);
+    return { invoices: files.list(scope) };
+  });
+  app.post<{ Params: { id: string } }>('/api/chain/orders/:id/documents', async (req) => {
+    const { scope, order } = await privateOrder(req, req.params.id);
+    if (authorizeInvoice) await authorizeInvoice(req, order);
+    return files.upload(scope, req.body);
+  });
+  app.get<{ Params: { id: string; documentId: string }; Querystring: { download?: string } }>(
+    '/api/chain/orders/:id/documents/:documentId',
+    async (req) => {
+      const { scope } = await privateOrder(req, req.params.id);
+      return files.document(
+        scope,
+        z.string().uuid().parse(req.params.documentId),
+        req.query.download === '1',
+      );
+    },
+  );
   app.post('/api/chain/challenge', async (req) => {
     const d = await requiredDeployment();
     await operatorKey(d);
@@ -214,6 +289,24 @@ export async function registerChain(
     }
     if (order.terms.operator !== d.operator)
       throw new DomainError('This order uses a different operator.', 403);
+    if (d.features?.includes('invoice-v1')) {
+      if (!body.invoice) throw new DomainError('Select a supplier-confirmed invoice.', 409);
+      const commitment = await invoiceCommitment(d.network, d.vault, body.invoice);
+      const confirmation = await view<InvoiceConfirmation | null>(d, 'get_invoice', { commitment });
+      if (
+        !confirmation ||
+        confirmation.supplier !== order.terms.supplier ||
+        body.invoice.order_id !== order.id ||
+        body.invoice.terms_hash !== order.terms_hash ||
+        body.auditHash !== body.invoice.document_hash ||
+        body.invoice.token !== order.token ||
+        body.invoice.line_id !== order.terms.line_id ||
+        BigInt(body.quantity) > BigInt(body.invoice.quantity) ||
+        BigInt(body.invoice.amount) !==
+          BigInt(body.invoice.quantity) * BigInt(order.terms.unit_price)
+      )
+        throw new DomainError('The payment must match a supplier-confirmed invoice.', 409);
+    }
     const capacity = BigInt(order.accepted) - BigInt(order.paid) - BigInt(order.pending);
     if (BigInt(body.quantity) > capacity)
       throw new DomainError('Quantity exceeds current contract capacity.');
@@ -283,6 +376,7 @@ export async function registerChain(
       orderId: challenge.request.orderId,
       quantity: challenge.request.quantity,
       auditHash: challenge.request.auditHash,
+      invoice: challenge.request.invoice,
       status: 'queued',
       transactionHash: null,
       error: null,
@@ -363,6 +457,13 @@ export async function registerChain(
           save(job);
           continue;
         }
+        if (d.features?.includes('invoice-v1') && !job.invoice) {
+          job.status = 'unresolved';
+          job.error =
+            'This request needs a fresh authorization referencing a supplier-confirmed invoice.';
+          save(job);
+          continue;
+        }
         const key = await operatorKey(d);
         const signer = KeyPairSigner.fromSecretKey(key.secretKey);
         const account = new Account(key.accountId, provider, signer);
@@ -377,6 +478,7 @@ export async function registerChain(
                 request_id: job.id,
                 quantity: job.quantity,
                 audit_hash: job.auditHash,
+                invoice: job.invoice ?? null,
               },
               150_000_000_000_000n,
               0n,

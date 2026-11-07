@@ -107,13 +107,28 @@ try {
       receipt_hash: 'a'.repeat(64),
     });
   }
-  const pay = (v, id, request_id, quantity = '40') =>
-    raw(operator, v, 'request_payment', {
+  const pay = async (v, id, request_id, quantity = '40') => {
+    const o = await read(v, id);
+    const invoice = {
+      order_id: id,
+      terms_version: 1,
+      terms_hash: o.terms_hash,
+      document_hash: 'b'.repeat(64),
+      reference: 'INV-' + id,
+      line_id: o.terms.line_id,
+      quantity: o.terms.ordered,
+      token: token.accountId,
+      amount: (BigInt(o.terms.ordered) * BigInt(o.terms.unit_price)).toString(),
+    };
+    if (v !== legacy) await supplier.call(v, 'confirm_invoice', { order_id: id, invoice });
+    return raw(operator, v, 'request_payment', {
       order_id: id,
       request_id,
       quantity,
       audit_hash: 'b'.repeat(64),
+      invoice,
     });
+  };
   async function proposal(v, id, b = buyer) {
     await b.call(v, 'propose_close', { order_id: id });
     return (await recovery(v, id)).proposal;
@@ -254,7 +269,7 @@ try {
   assert.deepEqual(await read(legacy, 'upgrade'), oldOrder);
   assert.deepEqual(await legacy.view('get_attempt', { request_id: 'legacy-payment' }), oldAttempt);
   assert.equal(await balance(legacy), oldBalance);
-  assert.equal(await legacy.view('get_version', {}), '2.1.0-recovery');
+  assert.equal(await legacy.view('get_version', {}), '2.2.0-invoices');
   p = await proposal(legacy, 'upgrade');
   await approve(legacy, 'upgrade', p);
   assert.equal((await recovery(legacy, 'upgrade')).refunded, '600000000');

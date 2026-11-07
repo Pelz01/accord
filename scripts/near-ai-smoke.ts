@@ -2,7 +2,8 @@ import 'dotenv/config';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { JsonRpcProvider } from 'near-api-js';
+import { Account, JsonRpcProvider, type KeyPairString } from 'near-api-js';
+import { signMessage } from 'near-api-js/nep413';
 import { extract } from '../server/extraction.ts';
 import { asPreviewOrder } from '../server/chain.ts';
 import { DomainError } from '../server/ledger.ts';
@@ -82,11 +83,48 @@ async function main() {
   assert.equal(result.documentHash, createHash('sha256').update(text).digest('hex'));
   let httpVerification: { status: number; providerRequestId: string | null } | null = null;
   if (process.argv.includes('--http')) {
+    const credentials = JSON.parse(await readFile('.data/testnet-credentials.json', 'utf8')) as {
+      accounts: Record<string, { accountId: string; secretKey: KeyPairString }>;
+    };
+    const account = new Account(
+      credentials.accounts.operator.accountId,
+      provider,
+      credentials.accounts.operator.secretKey,
+    );
+    const challenge = await fetch('http://127.0.0.1:3001/api/chain/session/challenge', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ accountId: account.accountId }),
+    }).then((r) => r.json());
+    const signed = await signMessage({
+      signerAccount: account,
+      payload: {
+        message: challenge.message,
+        recipient: challenge.recipient,
+        nonce: Buffer.from(challenge.nonce, 'base64'),
+      },
+    });
+    const sessionResponse = await fetch('http://127.0.0.1:3001/api/chain/session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        challengeId: challenge.id,
+        accountId: signed.accountId,
+        publicKey: signed.publicKey.toString(),
+        signature: Buffer.from(signed.signature).toString('base64'),
+      }),
+    });
+    assert.equal(sessionResponse.status, 200);
+    const session = await sessionResponse.json();
     const response = await fetch(
       `http://127.0.0.1:3001/api/chain/orders/${encodeURIComponent(order.id)}/extract`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Origin: 'http://127.0.0.1:5173' },
+        headers: {
+          'Content-Type': 'application/json',
+          Origin: 'http://127.0.0.1:5173',
+          Authorization: 'Bearer ' + session.token,
+        },
         body: JSON.stringify({ text, mode: 'live' }),
         signal: AbortSignal.timeout(50000),
       },

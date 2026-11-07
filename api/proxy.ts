@@ -32,7 +32,7 @@ export default async function proxy(request: Request, response: ServerResponse) 
   const url = new URL(request.url ?? '/', 'https://accord.invalid');
   const path = url.searchParams.get('__accord_path') ?? '';
   if (
-    !/^(health|chain\/(state|jobs|challenge|submit|session(?:\/challenge)?|orders\/[A-Za-z0-9_-]{1,64}\/extract))$/.test(
+    !/^(health|chain\/(state|jobs|challenge|submit|session(?:\/challenge)?|orders\/[A-Za-z0-9_-]{1,64}\/(?:extract|invoices|documents(?:\/[a-f0-9-]{36})?)))$/.test(
       path,
     )
   )
@@ -51,6 +51,7 @@ export default async function proxy(request: Request, response: ServerResponse) 
     if (typeof value === 'string') headers[name] = value;
   }
   let body: string | undefined;
+  const bodyLimit = path.endsWith('/documents') ? 2_900_000 : 40000;
   if (request.method === 'POST') {
     if (request.body !== undefined)
       body = typeof request.body === 'string' ? request.body : JSON.stringify(request.body);
@@ -60,12 +61,13 @@ export default async function proxy(request: Request, response: ServerResponse) 
       for await (const chunk of request) {
         const buffer = Buffer.from(chunk);
         length += buffer.length;
-        if (length > 40000) return fail(response, 413, 'This request is too large.');
+        if (length > bodyLimit) return fail(response, 413, 'This request is too large.');
         chunks.push(buffer);
       }
       body = Buffer.concat(chunks).toString('utf8');
     }
-    if (Buffer.byteLength(body) > 40000) return fail(response, 413, 'This request is too large.');
+    if (Buffer.byteLength(body) > bodyLimit)
+      return fail(response, 413, 'This request is too large.');
     headers['content-type'] = 'application/json';
   }
   try {

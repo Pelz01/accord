@@ -7,7 +7,7 @@
     "node": ">=24.12.0 <25"
   },
   "scripts": {
-    "dev": "concurrently -k \"tsx watch server/index.ts\" \"vite --host 127.0.0.1\"",
+    "dev": "concurrently -k \"tsx watch server/index.ts\" \"vite --host 127.0.0.1\" \"node scripts/dev-documents.mjs\"",
     "build:frontend": "tsc --noEmit && vite build",
     "build:api": "esbuild server/runtime.ts --bundle --platform=node --format=esm --target=node24 --packages=external --outfile=dist-api/index.js",
     "start:api": "node dist-api/index.js",
@@ -19,6 +19,8 @@
     "test:sites": "node scripts/check-hosted.mjs",
     "verify:hosted": "tsx scripts/hosted-smoke.ts",
     "verify:recovery:testnet": "tsx scripts/testnet-recovery.ts",
+    "verify:invoices:testnet": "tsx scripts/testnet-invoices.ts",
+    "verify:documents": "node scripts/documents-smoke.mjs",
     "check": "npm test && npm run build"
   },
   "dependencies": {

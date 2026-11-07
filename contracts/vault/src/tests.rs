@@ -51,9 +51,32 @@ fn setup() -> Vault {
     v
 }
 fn request(v: &mut Vault, id: &str, qty: u64) {
+    let invoice = test_invoice(v);
+    testing_env!(context("supplier.testnet").build());
+    v.confirm_invoice("PO-001".into(), invoice.clone());
     testing_env!(context("operator.testnet").build());
-    v.request_payment("PO-001".into(), id.into(), U64(qty), "b".repeat(64))
-        .detach();
+    v.request_payment(
+        "PO-001".into(),
+        id.into(),
+        U64(qty),
+        "b".repeat(64),
+        Some(invoice),
+    )
+    .detach();
+}
+fn test_invoice(v: &Vault) -> InvoicePayload {
+    let o = v.get_order("PO-001".into()).unwrap();
+    InvoicePayload {
+        order_id: o.id,
+        terms_version: 1,
+        terms_hash: o.terms_hash,
+        document_hash: "b".repeat(64),
+        reference: "INV-001".into(),
+        line_id: o.terms.line_id,
+        quantity: U64(100),
+        token: o.token,
+        amount: U128(1_000_000_000),
+    }
 }
 fn callback(v: &mut Vault, id: &str, result: PromiseResult) -> CallbackDisposition {
     testing_env!(
@@ -495,4 +518,118 @@ fn repeated_definite_refund_failures_keep_bounded_history_and_unique_ids() {
         RefundDisposition::Closed
     );
     assert_eq!(v.get_recovery("PO-001".into()).refunded.0, 600_000_000);
+}
+
+#[test]
+fn invoice_confirmation_is_immutable_idempotent_and_preserves_legacy_root() {
+    let mut v = setup();
+    let invoice = test_invoice(&v);
+    let before = near_sdk::borsh::to_vec(&v).unwrap();
+    testing_env!(context("supplier.testnet").build());
+    let confirmation = v.confirm_invoice("PO-001".into(), invoice.clone());
+    assert_eq!(
+        v.confirm_invoice("PO-001".into(), invoice.clone())
+            .commitment,
+        confirmation.commitment
+    );
+    assert_eq!(v.list_invoices("PO-001".into()).len(), 1);
+    assert_eq!(
+        v.get_invoice(confirmation.commitment).unwrap().invoice,
+        invoice
+    );
+    assert_eq!(near_sdk::borsh::to_vec(&v).unwrap(), before);
+}
+
+#[test]
+#[should_panic(expected = "Supplier only")]
+fn operator_cannot_confirm_an_invoice() {
+    let mut v = setup();
+    let invoice = test_invoice(&v);
+    testing_env!(context("operator.testnet").build());
+    v.confirm_invoice("PO-001".into(), invoice);
+}
+
+#[test]
+#[should_panic(expected = "Supplier-confirmed invoice required")]
+fn legacy_payment_call_cannot_bypass_invoice_confirmation() {
+    let mut v = setup();
+    testing_env!(context("operator.testnet").build());
+    v.request_payment(
+        "PO-001".into(),
+        "no-invoice".into(),
+        U64(1),
+        "b".repeat(64),
+        None,
+    )
+    .detach();
+}
+
+#[test]
+#[should_panic(expected = "Supplier-confirmed invoice required")]
+fn changed_invoice_reference_requires_a_new_supplier_confirmation() {
+    let mut v = setup();
+    let mut invoice = test_invoice(&v);
+    testing_env!(context("supplier.testnet").build());
+    v.confirm_invoice("PO-001".into(), invoice.clone());
+    invoice.reference = "RENAMED".into();
+    testing_env!(context("operator.testnet").build());
+    v.request_payment(
+        "PO-001".into(),
+        "changed".into(),
+        U64(1),
+        "b".repeat(64),
+        Some(invoice),
+    )
+    .detach();
+}
+
+#[test]
+#[should_panic(expected = "Payment differs from confirmed invoice")]
+fn payment_cannot_exceed_the_supplier_confirmed_invoice_quantity() {
+    let mut v = setup();
+    let mut invoice = test_invoice(&v);
+    invoice.quantity = U64(20);
+    invoice.amount = U128(200_000_000);
+    testing_env!(context("supplier.testnet").build());
+    v.confirm_invoice("PO-001".into(), invoice.clone());
+    testing_env!(context("operator.testnet").build());
+    v.request_payment(
+        "PO-001".into(),
+        "too-much".into(),
+        U64(30),
+        "b".repeat(64),
+        Some(invoice),
+    )
+    .detach();
+}
+
+#[test]
+#[should_panic(expected = "Invoice amount does not match fixed price")]
+fn supplier_confirmation_cannot_change_the_agreed_price() {
+    let mut v = setup();
+    let mut invoice = test_invoice(&v);
+    invoice.amount = U128(999);
+    testing_env!(context("supplier.testnet").build());
+    v.confirm_invoice("PO-001".into(), invoice);
+}
+
+#[test]
+fn canonical_invoice_matches_cross_language_unicode_vector() {
+    testing_env!(context("vault.testnet").build());
+    let v = Vault::new(account("token.testnet"), "testnet".into());
+    let invoice = InvoicePayload {
+        order_id: "PO-CANONICAL-001".into(),
+        terms_version: 1,
+        terms_hash: "a".repeat(64),
+        document_hash: "b".repeat(64),
+        reference: "INV-É-01 / \"cartons\"".into(),
+        line_id: "cartons".into(),
+        quantity: U64(100),
+        token: account("token.testnet"),
+        amount: U128(1_000_000_000),
+    };
+    assert_eq!(
+        v.invoice_commitment(&invoice),
+        "f9d9f90d77f02bfc69526fd1e8dba3b692d5b04509f223a6642586a40c2bded8"
+    );
 }

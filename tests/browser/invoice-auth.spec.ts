@@ -117,6 +117,7 @@ test('hosted invoice extraction obtains a wallet session before sending invoice 
   await page.goto('/workspace');
   await page.getByRole('button', { name: order.id, exact: true }).click();
   await page.getByRole('button', { name: 'Review invoice', exact: true }).click();
+  await page.getByRole('button', { name: 'Invoice text', exact: true }).click();
   await page
     .getByRole('textbox', { name: 'Invoice source text' })
     .fill('Supplier invoice: 100 cartons at 10 aUSD');

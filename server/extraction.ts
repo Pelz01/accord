@@ -76,6 +76,7 @@ export async function extract(o: Order, text: string, mode: ExtractionMode): Pro
   const invoice = parsed.data;
   if (
     invoice.orderId !== o.id ||
+    invoice.quantity > o.ordered ||
     invoice.lineId !== o.lineId ||
     invoice.amountBaseUnits !== value(invoice.quantity, o.unitPrice)
   )

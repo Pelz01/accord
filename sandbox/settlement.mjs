@@ -90,10 +90,23 @@ try {
     });
   }
   async function pay(contract, id, requestId, quantity = '40') {
+    const o = await contract.view('get_order', { order_id: id });
+    const invoice = {
+      order_id: id,
+      terms_version: 1,
+      terms_hash: o.terms_hash,
+      document_hash: 'b'.repeat(64),
+      reference: 'INV-' + id,
+      line_id: o.terms.line_id,
+      quantity: o.terms.ordered,
+      token: token.accountId,
+      amount: (BigInt(o.terms.ordered) * BigInt(o.terms.unit_price)).toString(),
+    };
+    await supplier.call(contract, 'confirm_invoice', { order_id: id, invoice });
     const result = await operator.callRaw(
       contract,
       'request_payment',
-      { order_id: id, request_id: requestId, quantity, audit_hash: 'b'.repeat(64) },
+      { order_id: id, request_id: requestId, quantity, audit_hash: 'b'.repeat(64), invoice },
       { gas: '150000000000000' },
     );
     evidence.receipts.push({

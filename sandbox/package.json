@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node settlement.mjs && node recovery.mjs"
+    "test": "node settlement.mjs && node recovery.mjs && node invoices.mjs"
   },
   "dependencies": {
     "near-workspaces": "5.0.0",

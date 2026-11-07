@@ -18,7 +18,7 @@ export function productionApp(
   )
     throw new Error('Set an HTTPS frontend origin.');
   if (proxySecret.length < 32) throw new Error('A strong proxy secret is required.');
-  const app = Fastify({ logger: false, bodyLimit: 40000 });
+  const app = Fastify({ logger: false, bodyLimit: 2_900_000 });
   const sessions = new WalletSessions(ledger.db, origin);
   let windowStart = Date.now(),
     writes = 0;
@@ -42,10 +42,7 @@ export function productionApp(
       if (++writes > 120)
         return reply.code(429).send({ error: 'Too many requests. Please try again shortly.' });
     }
-    if (
-      request.method === 'POST' &&
-      /^\/api\/chain\/orders\/[^/]+\/extract(?:\?|$)/.test(request.url)
-    )
+    if (/^\/api\/chain\/orders\/[^/]+\/(?:extract|documents|invoices)(?:[/?]|$)/.test(request.url))
       sessions.account(request.headers.authorization);
   });
   app.setErrorHandler((error, _request, reply) => {
@@ -65,6 +62,9 @@ export function productionApp(
       authRequired: true,
       authorizeInvoice: (request, order) =>
         sessions.authorizeInvoice(request.headers.authorization, order),
+      authorizeAccess: (request, order) => {
+        sessions.authorizeOrder(request.headers.authorization, order);
+      },
     }),
   );
   return app;

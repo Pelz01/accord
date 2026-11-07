@@ -110,7 +110,7 @@ export class WalletSessions {
       throw new DomainError('Wallet authorization expired. Please sign in again.', 401);
     return row.account;
   }
-  authorizeInvoice(authorization: string | undefined, order: ChainOrder) {
+  authorizeOrder(authorization: string | undefined, order: ChainOrder) {
     const account = this.account(authorization);
     if (
       ![order.buyer, order.terms.supplier, order.terms.receiver, order.terms.operator].includes(
@@ -118,6 +118,10 @@ export class WalletSessions {
       )
     )
       throw new DomainError('This wallet is not authorized for this purchase order.', 403);
+    return account;
+  }
+  authorizeInvoice(authorization: string | undefined, order: ChainOrder) {
+    this.authorizeOrder(authorization, order);
     const minute = Math.floor(this.clock() / 60000),
       day = Math.floor(this.clock() / 86400000);
     const quotas = [

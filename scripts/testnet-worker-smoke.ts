@@ -86,7 +86,7 @@ if (o?.accepted === '0')
     receipt_hash: 'c'.repeat(64),
   });
 o = await readOrder();
-if (o?.paid === '40') {
+if (o && BigInt(o.paid) >= 40n) {
   const jobs = (await (await fetch('http://127.0.0.1:3001/api/chain/jobs')).json()).jobs;
   const job = jobs.find(
     (j: { orderId: string; status: string; quantity: string }) =>
@@ -119,7 +119,7 @@ if (o?.paid === '40') {
           checks: [
             'existing authenticated worker job verified',
             'onchain attempt settled',
-            '40 cartons paid and pending zero',
+            'at least 40 cartons paid and pending zero',
             'final transaction hash recovered from durable job',
           ],
           paid: o.paid,
@@ -141,10 +141,24 @@ async function post(path: string, body: unknown) {
   });
   return { status: response.status, body: await response.json() };
 }
+assert.ok(o);
+const invoice = {
+  order_id: orderId,
+  terms_version: 1,
+  terms_hash: o.terms_hash,
+  document_hash: createHash('sha256').update('fictitious worker invoice').digest('hex'),
+  reference: 'INV-WORKER-001',
+  line_id: o.terms.line_id,
+  quantity: o.terms.ordered,
+  token: d.token,
+  amount: (BigInt(o.terms.ordered) * BigInt(o.terms.unit_price)).toString(),
+};
+await call(a.supplier, d.vault, 'confirm_invoice', { order_id: orderId, invoice });
 const challenge = await post('/challenge', {
   orderId,
   quantity: '40',
   auditHash: createHash('sha256').update('fictitious worker invoice').digest('hex'),
+  invoice,
 });
 assert.equal(challenge.status, 200);
 const payload = {

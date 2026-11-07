@@ -59,7 +59,7 @@ export type Deployment = {
   wasmSha256: Record<string, string>;
   accounts: Record<string, string>;
   trackedRequestIds?: string[];
-  features?: 'recovery-v1'[];
+  features?: ('recovery-v1' | 'invoice-v1' | 'documents-v1')[];
 };
 export type ChainState = {
   authRequired?: boolean;
@@ -68,6 +68,7 @@ export type ChainState = {
   orders: ChainOrder[];
   attempts: ChainAttempt[];
   recoveries?: Record<string, ChainRecovery>;
+  confirmations?: Record<string, import('./invoices').InvoiceConfirmation[]>;
   operatorReady: boolean;
   liveAiAvailable: boolean;
 };

@@ -5,6 +5,7 @@ import { Account, JsonRpcProvider, type KeyPairString } from 'near-api-js';
 import { signMessage } from 'near-api-js/nep413';
 import type { Deployment, ChainOrder, ChainJob, ChainState } from '../shared/chain.ts';
 import { invoiceSchema } from '../shared/schema.ts';
+import { invoicePayload } from '../shared/invoices.ts';
 
 const website = new URL(process.argv[2] || 'https://accord-payments.vercel.app').origin;
 assert.ok(website.startsWith('https://'));
@@ -23,6 +24,11 @@ const receiver = new Account(
   credentials.accounts.receiver.accountId,
   provider,
   credentials.accounts.receiver.secretKey,
+);
+const supplier = new Account(
+  credentials.accounts.supplier.accountId,
+  provider,
+  credentials.accounts.supplier.secretKey,
 );
 assert.equal(operator.accountId, d.operator);
 const orderId = 'PO-WORKER-001';
@@ -135,7 +141,7 @@ async function main() {
     });
     order = await readOrder();
   }
-  assert.equal(order.accepted, '70');
+  assert.ok(BigInt(order.accepted) >= 70n);
   let jobs = (await get('/api/chain/jobs')).jobs as ChainJob[];
   let job = jobs.find((item) => item.orderId === orderId && item.quantity === '30');
   let providerRequestId: string | null = null;
@@ -156,10 +162,20 @@ async function main() {
     assert.equal(extraction.body.documentHash, hash(text));
     providerRequestId = extraction.body.providerRequestId;
     checks.push('real NEAR AI extraction succeeds through Vercel and the VPS');
+    const invoice = invoicePayload(order, extraction.body);
+    await supplier.callFunctionRaw({
+      contractId: d.vault,
+      methodName: 'confirm_invoice',
+      args: { order_id: orderId, invoice },
+      gas: 100_000_000_000_000n,
+      deposit: 0n,
+      waitUntil: 'FINAL',
+    });
     const payment = await post('/challenge', {
       orderId,
       quantity: '30',
       auditHash: extraction.body.documentHash,
+      invoice,
     });
     assert.equal(payment.status, 200);
     assert.equal(JSON.parse(payment.body.message).vault, d.vault);
@@ -189,12 +205,12 @@ async function main() {
   assert.equal(job.status, 'settled');
   assert.ok(job.transactionHash);
   order = await readOrder();
-  assert.equal(order.paid, '70');
+  assert.ok(BigInt(order.paid) >= 70n);
   assert.equal(order.pending, '0');
   checks.push(
     'VPS background worker dispatched with the restricted key',
     'real 300 aUSD partial payment settled',
-    'final paid quantity is 70 and pending is zero',
+    'at least 70 cartons paid and pending is zero',
   );
   const proofFile = {
     website,

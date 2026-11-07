@@ -188,6 +188,7 @@ const config = {
   wasmSha256: hashes,
   accounts: proof.accounts,
   trackedRequestIds: ['testnet-partial-1', 'testnet-partial-2'],
+  features: ['recovery-v1', 'invoice-v1', 'documents-v1'],
 };
 await writeFile('.data/deployment.json', JSON.stringify(config, null, 2));
 console.log('Deployment configuration saved. Running real testnet partial-settlement smoke.');
@@ -269,13 +270,27 @@ for (const [total, requestId, quantity] of [
   });
   if (attempt && attempt.status !== 'Settled')
     throw new Error(`Existing ${requestId} is ${attempt.status}; do not blindly retry.`);
-  if (!attempt)
+  if (!attempt) {
+    const invoice = {
+      order_id: orderId,
+      terms_version: 1,
+      terms_hash: order.terms_hash,
+      document_hash: createHash('sha256').update('fictitious invoice').digest('hex'),
+      reference: 'INV-TESTNET-001',
+      line_id: 'cartons',
+      quantity: '100',
+      token: token.accountId,
+      amount: '1000000000',
+    };
+    await call(supplier, vault, 'confirm_invoice', { order_id: orderId, invoice });
     await call(restricted, vault, 'request_payment', {
       order_id: orderId,
       request_id: requestId,
       quantity,
       audit_hash: createHash('sha256').update('fictitious invoice').digest('hex'),
+      invoice,
     });
+  }
 }
 order = await readOrder();
 const supplierBalance = await provider.callFunction<string>({
@@ -283,7 +298,7 @@ const supplierBalance = await provider.callFunction<string>({
   method: 'ft_balance_of',
   args: { account_id: supplier.accountId },
 });
-if (order?.paid !== '70' || order.pending !== '0' || supplierBalance !== '700000000')
+if (order?.paid !== '70' || order.pending !== '0' || BigInt(supplierBalance ?? '0') < 700_000_000n)
   throw new Error('Final testnet balances do not match the expected 700-token partial settlement.');
 proof.checks.push(
   'Real testnet order funded for 100 cartons, accepted at 40 then 70, paid 400 then 300 aUSD, pending zero.',

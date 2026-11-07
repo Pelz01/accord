@@ -84,6 +84,25 @@ test('Vercel proxy forwards only allowed API paths and replaces untrusted origin
       1,
     );
     process.env.ACCORD_API_URL = 'http://backend.example';
+    process.env.ACCORD_API_URL = 'https://backend.example/accord/';
+    assert.equal(
+      (await send('/api/proxy?__accord_path=chain/orders/PO-1/documents', 'x'.repeat(50000)))
+        .status,
+      200,
+    );
+    assert.equal(
+      (await send('/api/proxy?__accord_path=chain/orders/PO-1/extract', 'x'.repeat(50000))).status,
+      413,
+    );
+    assert.equal(
+      (
+        await send(
+          '/api/proxy?__accord_path=chain/orders/PO-1/documents/11111111-1111-4111-8111-111111111111&download=1',
+        )
+      ).status,
+      200,
+    );
+    process.env.ACCORD_API_URL = 'http://backend.example';
     assert.equal((await send('/api/proxy?__accord_path=health')).status, 503);
     process.env.ACCORD_API_URL = 'https://backend.example/accord/';
     globalThis.fetch = async () =>

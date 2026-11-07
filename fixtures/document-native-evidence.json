@@ -1,0 +1,51 @@
+{
+  "at": "2026-11-07T10:33:07.750Z",
+  "environment": "native-document-tools",
+  "poppler": "pdfinfo version 24.02.0",
+  "tesseract": "tesseract 5.3.4",
+  "checks": [
+    {
+      "name": "invoice-text.pdf",
+      "status": "PASS",
+      "source": "pdf-text",
+      "pages": 1,
+      "sha256": "9747ca16d807e07b55626a4d8c71f10ebd0bbb265459d8a3e1bd6396b072f832",
+      "milliseconds": 174,
+      "text": "INVOICE\nSYNTHETIC TEST DOCUMENT - NO CUSTOMER INFORMATION\n\n\n\n\nPurchase order\n\nPO-WORKER-001\n\nInvoice reference\n\nINV-PDF-001\n\nLine\n\ncartons\n\nItem\n\nPacking cartons\n\nQuantity\n\n100 cartons\n\nToken\n\naUSD\n\nUnit price\n\n10 aUSD\n\nTotal\n\n1000 aUSD\n\nAmount in six-decimal base units\n\n1000000000\n\n\n\n\nAccord document processing verification"
+    },
+    {
+      "name": "invoice-scanned.pdf",
+      "status": "PASS",
+      "source": "ocr",
+      "pages": 1,
+      "sha256": "097a681848e3bff8d407143d54216316cdc635e92e90c0f64a0a31d958535a07",
+      "milliseconds": 797,
+      "text": "SYNTHETIC TEST DOCUMENT - NO CUSTOMER INFORMATION\nPurchase order\nPO-WORKER-001\nInvoice reference\nINV-PDF-001\nLine\ncartons\nItem\nPacking cartons\nQuantity\n100 cartons\nToken\naUSD\nUnit price\n10 aUSD\nTotal\n1000 aUSD\nAmount in six-decimal base units\n1000000000\nAccord document processing verification"
+    },
+    {
+      "name": "invoice-scan.png",
+      "status": "PASS",
+      "source": "ocr",
+      "pages": 1,
+      "sha256": "0dca92672c23748db824a1743e241ad4a4a203ecca8842d79c1124203d2855f3",
+      "milliseconds": 613,
+      "text": "SYNTHETIC TEST DOCUMENT - NO CUSTOMER INFORMATION\nPurchase order\nPO-WORKER-001\nInvoice reference\nINV-PDF-001\nLine\ncartons\nItem\nPacking cartons\nQuantity\n100 cartons\nToken\naUSD\nUnit price\n10 aUSD\nTotal\n1000 aUSD\nAmount in six-decimal base units\n1000000000\nAccord document processing verification"
+    },
+    {
+      "name": "six-page PDF rejected",
+      "status": "PASS"
+    },
+    {
+      "name": "unsupported file content rejected",
+      "status": "PASS"
+    },
+    {
+      "name": "corrupt PDF rejected",
+      "status": "PASS"
+    },
+    {
+      "name": "oversized document rejected",
+      "status": "PASS"
+    }
+  ]
+}

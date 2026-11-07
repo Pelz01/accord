@@ -1,0 +1,17 @@
+{
+  "network": "testnet",
+  "vault": "vault.testnet",
+  "payload": {
+    "order_id": "PO-CANONICAL-001",
+    "terms_version": 1,
+    "terms_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "document_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "reference": "INV-É-01 / \"cartons\"",
+    "line_id": "cartons",
+    "quantity": "100",
+    "token": "token.testnet",
+    "amount": "1000000000"
+  },
+  "canonical": "[\"accord-invoice-v1\",\"testnet\",\"vault.testnet\",\"PO-CANONICAL-001\",1,\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"INV-É-01 / \\\"cartons\\\"\",\"cartons\",\"100\",\"token.testnet\",\"1000000000\"]",
+  "sha256": "f9d9f90d77f02bfc69526fd1e8dba3b692d5b04509f223a6642586a40c2bded8"
+}

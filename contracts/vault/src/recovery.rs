@@ -218,7 +218,7 @@ impl Vault {
 #[near]
 impl Vault {
     pub fn get_version(&self) -> String {
-        "2.1.0-recovery".into()
+        "2.2.0-invoices".into()
     }
 
     pub fn get_recovery(&self, order_id: String) -> RecoveryState {

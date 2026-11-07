@@ -16,11 +16,26 @@ import {
 } from './ledger.ts';
 import { extract, sampleDocument } from './extraction.ts';
 import { registerChain } from './chain.ts';
+import { WalletSessions } from './sessions.ts';
 
 const roles = ['buyer', 'supplier', 'receiver', 'operator'] as const;
 export function buildApp(ledger: Ledger, { worker = true }: { worker?: boolean } = {}) {
-  const app = Fastify({ logger: false, bodyLimit: 40_000 });
-  app.register(async (child) => registerChain(child, ledger, { worker }));
+  const app = Fastify({ logger: false, bodyLimit: 2_900_000 });
+  const sessions = new WalletSessions(
+    ledger.db,
+    process.env.ACCORD_FRONTEND_ORIGIN || 'http://127.0.0.1:5173',
+  );
+  sessions.register(app);
+  app.register(async (child) =>
+    registerChain(child, ledger, {
+      worker,
+      authRequired: true,
+      authorizeAccess: (req, order) => {
+        sessions.authorizeOrder(req.headers.authorization, order);
+      },
+      authorizeInvoice: (req, order) => sessions.authorizeInvoice(req.headers.authorization, order),
+    }),
+  );
   // Loopback-only simulation API. Actor switching is a demo aid, never wallet authentication.
   app.addHook('onRequest', async (req, reply) => {
     const host = req.headers.host ?? '';

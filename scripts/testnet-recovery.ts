@@ -176,7 +176,7 @@ async function main() {
   }
   deployed = await provider.viewContractCode({ contractId: d.vault });
   assert.equal(sha(deployed.code), expected);
-  assert.equal(await view('get_version'), '2.1.0-recovery');
+  assert.equal(await view('get_version'), '2.2.0-invoices');
   d.wasmSha256.vault = expected;
   d.features = ['recovery-v1'];
   await writeFile('.data/deployment.json', JSON.stringify(d, null, 2) + '\n');
