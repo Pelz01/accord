@@ -58,7 +58,7 @@ npm ci
 npm test
 ```
 
-Checks run on the development machine. The optional GitHub workflow is manual-only and pinned to Ubuntu 24.04; a push does not start it.
+Checks run on the development machine. GitHub Actions is disabled for this repository; pushes do not start remote checks.
 
 npm run build produces the frontend and dist/server/index.js hosted Worker. The build excludes the internal simulator from the production JavaScript. The development-only /dev/simulator route is an isolated deterministic test harness with an actor selector; its tests do not count as wallet authorization or chain evidence. It has no customer navigation.
 
