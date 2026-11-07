@@ -1,0 +1,23 @@
+{
+  "network": "testnet",
+  "rpcUrl": "https://test.rpc.fastnear.com",
+  "vault": "vault.accord-v2-8e0a631d.testnet",
+  "token": "token.accord-v2-8e0a631d.testnet",
+  "operator": "operator.accord-v2-8e0a631d.testnet",
+  "wasmSha256": {
+    "vault": "def2bdad8270f66707caf87d464b5d4c453619a5ffd7a1d56a9f708a118399b2",
+    "token": "e6c7c764a85117b25d65bee5f4ca0bcd3459795cb8b00a538f8f8090869bfa4b"
+  },
+  "accounts": {
+    "vault": "vault.accord-v2-8e0a631d.testnet",
+    "token": "token.accord-v2-8e0a631d.testnet",
+    "buyer": "buyer.accord-v2-8e0a631d.testnet",
+    "supplier": "supplier.accord-v2-8e0a631d.testnet",
+    "receiver": "receiver.accord-v2-8e0a631d.testnet",
+    "operator": "operator.accord-v2-8e0a631d.testnet"
+  },
+  "trackedRequestIds": [
+    "testnet-partial-1",
+    "testnet-partial-2"
+  ]
+}

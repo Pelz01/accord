@@ -1,0 +1,15 @@
+{
+  "name": "accord-sandbox-tests",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node settlement.mjs"
+  },
+  "dependencies": {
+    "near-workspaces": "5.0.0",
+    "tar": "7.5.22"
+  },
+  "overrides": {
+    "tar": "7.5.22"
+  }
+}

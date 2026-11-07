@@ -1,0 +1,13 @@
+[package]
+name = "accord-test-token"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+near-sdk = { workspace = true, features = ["legacy"] }
+near-contract-standards.workspace = true
+borsh.workspace = true

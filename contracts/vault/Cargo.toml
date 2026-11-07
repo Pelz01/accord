@@ -1,0 +1,20 @@
+[package]
+name = "accord-vault"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[features]
+# Sandbox-only build artifact; never enable for a deployment.
+fault-injection = []
+
+[dependencies]
+near-sdk = { workspace = true, features = ["legacy"] }
+near-contract-standards.workspace = true
+borsh.workspace = true
+
+[dev-dependencies]
+near-sdk = { workspace = true, features = ["unit-testing", "legacy"] }

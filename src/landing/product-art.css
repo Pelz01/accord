@@ -1,0 +1,108 @@
+.product-stage {
+  margin: 48px 0 0;
+  padding: 48px 40px 24px;
+  border-radius: 10px;
+  isolation: isolate;
+  overflow: hidden;
+}
+.product-stage::before,
+.product-stage::after {
+  content: none;
+}
+.product-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: -1;
+}
+.product-stage .product-window {
+  width: 86%;
+  border: 1px solid #ffffffb3;
+  box-shadow: 0 24px 60px -20px #18241c66;
+}
+.product-stage .floating-receipt {
+  top: 245px;
+  right: 30px;
+  animation: none;
+}
+.product-stage .stage-controls {
+  margin-top: 25px;
+  padding: 14px 18px;
+  background: #fbfcf7f5;
+  border: 1px solid #ffffffa6;
+  border-radius: 5px;
+  color: #4f6344;
+}
+.product-stage .stage-controls > label,
+.product-stage .stage-controls > label > span,
+.product-stage .stage-controls button {
+  color: #516447;
+}
+.workflow-visual {
+  min-height: 520px;
+  border-radius: 6px;
+}
+.workflow-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 67% center;
+}
+.workflow-visual .workflow-document {
+  position: absolute;
+  left: 24px;
+  bottom: 25px;
+  width: 65%;
+  max-width: 330px;
+  box-shadow: 0 15px 40px #19241940;
+}
+.workflow-visual .workflow-floating-tag {
+  top: 22px;
+  bottom: auto;
+  left: 22px;
+  right: auto;
+  background: #fbfcf7f5;
+  color: #345139;
+}
+@media (max-width: 1050px) {
+  .product-stage {
+    padding: 32px 24px 20px;
+  }
+  .product-stage .product-window {
+    width: 94%;
+  }
+  .product-stage .floating-receipt {
+    right: 15px;
+    top: 235px;
+  }
+}
+@media (max-width: 760px) {
+  .product-stage {
+    margin-top: 36px;
+    padding: 70px 12px 12px;
+    border-radius: 6px;
+  }
+  .product-backdrop {
+    object-position: 63% center;
+  }
+  .product-stage .product-window {
+    width: 100%;
+  }
+  .product-stage .stage-controls {
+    margin-top: 12px;
+    padding: 12px;
+  }
+  .workflow-visual {
+    min-height: 480px;
+  }
+  .workflow-visual .workflow-document {
+    left: 18px;
+    bottom: 22px;
+    width: 76%;
+  }
+}

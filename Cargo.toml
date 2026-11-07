@@ -1,0 +1,15 @@
+[workspace]
+members = ["contracts/vault", "contracts/test-token"]
+resolver = "2"
+
+[workspace.dependencies]
+near-sdk = "=5.29.1"
+near-contract-standards = "=5.29.1"
+borsh = "1.5"
+
+[profile.release]
+codegen-units = 1
+opt-level = "z"
+lto = true
+panic = "abort"
+overflow-checks = true

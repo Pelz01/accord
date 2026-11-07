@@ -1,0 +1,16 @@
+{
+  "network": "testnet",
+  "at": "2026-11-06T23:21:25.459Z",
+  "vault": "vault.accord-v2-8e0a631d.testnet",
+  "orderId": "PO-WORKER-001",
+  "requestId": "6e8a0915-0236-4511-a297-d2f44ecaf7ac",
+  "transactionHash": "ACXH4sQ2rncuYCfmEDk8hWCFzBmJ4MhZ7FUgs7hfL6Qz",
+  "checks": [
+    "existing authenticated worker job verified",
+    "onchain attempt settled",
+    "40 cartons paid and pending zero",
+    "final transaction hash recovered from durable job"
+  ],
+  "paid": "40",
+  "pending": "0"
+}

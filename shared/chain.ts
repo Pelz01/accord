@@ -1,0 +1,64 @@
+export type ChainTerms = {
+  supplier: string;
+  receiver: string;
+  operator: string;
+  payout: string;
+  line_id: string;
+  description: string;
+  unit: string;
+  ordered: string;
+  unit_price: string;
+  expires_at: string;
+};
+export type ChainOrder = {
+  id: string;
+  buyer: string;
+  token: string;
+  terms: ChainTerms;
+  terms_hash: string;
+  accepted_terms: boolean;
+  funded: string;
+  accepted: string;
+  paid: string;
+  pending: string;
+  sequence: string;
+  attempts: number;
+};
+export type ChainAttempt = {
+  request_id: string;
+  order_id: string;
+  quantity: string;
+  amount: string;
+  recipient: string;
+  audit_hash: string;
+  status: 'Reserved' | 'Settled' | 'TransferFailed';
+};
+export type Deployment = {
+  network: 'testnet' | 'mainnet';
+  rpcUrl: string;
+  vault: string;
+  token: string;
+  operator: string;
+  wasmSha256: Record<string, string>;
+  accounts: Record<string, string>;
+  trackedRequestIds?: string[];
+};
+export type ChainState = {
+  configured: boolean;
+  deployment: Deployment | null;
+  orders: ChainOrder[];
+  attempts: ChainAttempt[];
+  operatorReady: boolean;
+  liveAiAvailable: boolean;
+};
+export function chainAvailable(o: ChainOrder) {
+  return BigInt(o.accepted) - BigInt(o.paid) - BigInt(o.pending);
+}
+export function ordersForAccount(orders: ChainOrder[], account: string | null) {
+  if (!account) return [];
+  return orders.filter((o) =>
+    [o.buyer, o.terms.supplier, o.terms.receiver, o.terms.operator, o.terms.payout].includes(
+      account,
+    ),
+  );
+}

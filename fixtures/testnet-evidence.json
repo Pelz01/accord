@@ -1,0 +1,152 @@
+{
+  "network": "testnet",
+  "at": "2026-11-06T23:12:06.822Z",
+  "vault": "vault.accord-v2-8e0a631d.testnet",
+  "token": "token.accord-v2-8e0a631d.testnet",
+  "accounts": {
+    "vault": "vault.accord-v2-8e0a631d.testnet",
+    "token": "token.accord-v2-8e0a631d.testnet",
+    "buyer": "buyer.accord-v2-8e0a631d.testnet",
+    "supplier": "supplier.accord-v2-8e0a631d.testnet",
+    "receiver": "receiver.accord-v2-8e0a631d.testnet",
+    "operator": "operator.accord-v2-8e0a631d.testnet"
+  },
+  "wasmSha256": {
+    "vault": "def2bdad8270f66707caf87d464b5d4c453619a5ffd7a1d56a9f708a118399b2",
+    "token": "e6c7c764a85117b25d65bee5f4ca0bcd3459795cb8b00a538f8f8090869bfa4b"
+  },
+  "transactions": [
+    {
+      "label": "deploy_vault",
+      "hash": "7fzMvSvuj6DzFU8DQ1oZBXafcuSHJFcBC1ynyjwzRd2h",
+      "status": {
+        "SuccessValue": ""
+      }
+    },
+    {
+      "label": "deploy_token",
+      "hash": "Fp8CdUEYqxs5Wty7EnWtC7xk8yJkAZ9Ym3pAww6rW4zb",
+      "status": {
+        "SuccessValue": ""
+      }
+    },
+    {
+      "label": "new",
+      "hash": "5J9XqCa1Mj3qBk2Zi1PwbXxvtcGzxJ76TqLW5Z9fzacw",
+      "status": {
+        "SuccessValue": ""
+      }
+    },
+    {
+      "label": "new",
+      "hash": "77tAzny8fQTn5gaMv2Y25fb3hJc1KYrJPMnWZcWbVo7w",
+      "status": {
+        "SuccessValue": ""
+      }
+    },
+    {
+      "label": "storage_deposit",
+      "hash": "9HRGhphtYGxm2SRPtB495Yg7Q1isWWKuFmaC47tDowFa",
+      "status": {
+        "SuccessValue": "eyJ0b3RhbCI6IjEyNTAwMDAwMDAwMDAwMDAwMDAwMDAiLCJhdmFpbGFibGUiOiIwIn0="
+      }
+    },
+    {
+      "label": "storage_deposit",
+      "hash": "EFJpQTdKjgQS6pDKqT2yFw3gLRAMkXpFHPgJawLcosuS",
+      "status": {
+        "SuccessValue": "eyJ0b3RhbCI6IjEyNTAwMDAwMDAwMDAwMDAwMDAwMDAiLCJhdmFpbGFibGUiOiIwIn0="
+      }
+    },
+    {
+      "label": "add_restricted_operator_key",
+      "hash": "8oBZsQUorC6yyhh1n321Mgyx4HvTnoRWYbQP5c3xKHQ1",
+      "status": {
+        "SuccessValue": ""
+      }
+    },
+    {
+      "label": "create_order",
+      "hash": "AyjTM7BhFJLsHXTnk2tfatJzfREqHzyhjSRsC4tVYxRo",
+      "status": {
+        "SuccessValue": "eyJpZCI6IlBPLVRFU1RORVQtMDAxIiwiYnV5ZXIiOiJidXllci5hY2NvcmQtdjItOGUwYTYzMWQudGVzdG5ldCIsInRva2VuIjoidG9rZW4uYWNjb3JkLXYyLThlMGE2MzFkLnRlc3RuZXQiLCJ0ZXJtcyI6eyJzdXBwbGllciI6InN1cHBsaWVyLmFjY29yZC12Mi04ZTBhNjMxZC50ZXN0bmV0IiwicmVjZWl2ZXIiOiJyZWNlaXZlci5hY2NvcmQtdjItOGUwYTYzMWQudGVzdG5ldCIsIm9wZXJhdG9yIjoib3BlcmF0b3IuYWNjb3JkLXYyLThlMGE2MzFkLnRlc3RuZXQiLCJwYXlvdXQiOiJzdXBwbGllci5hY2NvcmQtdjItOGUwYTYzMWQudGVzdG5ldCIsImxpbmVfaWQiOiJjYXJ0b25zIiwiZGVzY3JpcHRpb24iOiJGaWN0aXRpb3VzIHBhY2tpbmcgY2FydG9ucyIsInVuaXQiOiJjYXJ0b24iLCJvcmRlcmVkIjoiMTAwIiwidW5pdF9wcmljZSI6IjEwMDAwMDAwIiwiZXhwaXJlc19hdCI6IjE3OTQ2MTE1NTkxMDUwMDAwMDAifSwidGVybXNfaGFzaCI6ImNlYjRlMTc0MzU1NjA0MWMyNjZhMWI2ZjQyYzhlMjJjYzAyNjFjZTAyZjhjZmRkYTdjNDQwMzczNGM4ZDZkNWMiLCJhY2NlcHRlZF90ZXJtcyI6ZmFsc2UsImZ1bmRlZCI6IjAiLCJhY2NlcHRlZCI6IjAiLCJwYWlkIjoiMCIsInBlbmRpbmciOiIwIiwic2VxdWVuY2UiOiIwIiwiYXR0ZW1wdHMiOjB9"
+      }
+    },
+    {
+      "label": "accept_order",
+      "hash": "ENov8MxGU1KxV8KuQBXJNMZmQU9yztPHDgdA4jcq12kv",
+      "status": {
+        "SuccessValue": ""
+      }
+    },
+    {
+      "label": "ft_transfer_call",
+      "hash": "6bHou9vD3eVHJK5eLM4o4i7oPrwUnSqsLsd6LRtx9tCn",
+      "status": {
+        "SuccessValue": "IjEwMDAwMDAwMDAi"
+      }
+    },
+    {
+      "label": "confirm_delivery",
+      "hash": "4RuuB5w2edkFboT49raETesa3vWgRNU1hsDipCqw1uGj",
+      "status": {
+        "SuccessValue": ""
+      }
+    },
+    {
+      "label": "deploy_vault",
+      "hash": "Pfm2rF81wnJNQXAgKbufCpQQeiqBzjzsjdZcsCF3vcy",
+      "status": {
+        "SuccessValue": ""
+      }
+    },
+    {
+      "label": "deploy_token",
+      "hash": "HNLPnrKm2nkpu6AMvj1XPTtMUjmMPcSC8y1TAafaxfdr",
+      "status": {
+        "SuccessValue": ""
+      }
+    },
+    {
+      "label": "renew_operator_allowance",
+      "hash": "CDvtQu8hdMESMGp9gMiUdXoJbHdfxRjiv7GJNxLbinhb",
+      "status": {
+        "SuccessValue": ""
+      }
+    },
+    {
+      "label": "add_restricted_operator_key",
+      "hash": "6YxsizJ9mEcxk6FHrpLUiHUWUhBnVyZfAAxNQJzaei41",
+      "status": {
+        "SuccessValue": ""
+      }
+    },
+    {
+      "label": "request_payment",
+      "hash": "GTntahDMfctnQyW8UauV2t7vF27swdgFh98jrw1f63tQ",
+      "status": {
+        "SuccessValue": "IlNldHRsZWQi"
+      }
+    },
+    {
+      "label": "confirm_delivery",
+      "hash": "3HkqYeP4K7KTvQ3NLQYazj1ZDrHtcELZhzNjrD6vHS72",
+      "status": {
+        "SuccessValue": ""
+      }
+    },
+    {
+      "label": "request_payment",
+      "hash": "EDdo6pkNvffgXguaKPqXjvgfpJ7WDtzy34CvSERWTmgJ",
+      "status": {
+        "SuccessValue": "IlNldHRsZWQi"
+      }
+    }
+  ],
+  "checks": [
+    "Restricted operator key is scoped to request_payment on the tested vault.",
+    "Restricted operator key is scoped to request_payment on the tested vault.",
+    "Real testnet order funded for 100 cartons, accepted at 40 then 70, paid 400 then 300 aUSD, pending zero.",
+    "Restricted key cannot call confirm_delivery."
+  ]
+}

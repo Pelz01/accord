@@ -1,0 +1,3 @@
+[target.wasm32-unknown-unknown]
+# near-sdk-env requires this to use NEAR host functions, including panic_utf8.
+rustflags = ["--cfg", "near"]
