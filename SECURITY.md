@@ -8,7 +8,7 @@ The buyer creates and funds an order, a separate supplier accepts immutable econ
 
 The connected browser uses NEAR wallets for direct calls. Operator dispatch requires a signed NEP-413 challenge bound to network, vault, request ID, order, quantity, document hash, and expiry. Challenges expire after five minutes and can be consumed only once. The signer must own the operator account. A restricted function-call key may call only request_payment on the deployed vault. Its allowance limits gas, not token expenditure; the contract enforces the financial boundary.
 
-The development-only simulator has separate deterministic role headers. It is excluded from the production frontend and is not an authentication mechanism. Its Fastify server binds to loopback and rejects unexpected Host/Origin headers. Do not expose that development server as the hosted product. The separate hosted Worker uses D1 jobs/challenges, same-origin checks, and secret environment bindings; its live deployment is still awaiting verification.
+The development-only simulator has separate deterministic role headers. It is excluded from the production frontend and is not an authentication mechanism. Its Fastify server binds to loopback and rejects unexpected Host/Origin headers. Do not expose that development server as the hosted product. The separate hosted Worker uses D1 jobs/challenges, same-origin checks, and secret environment bindings; its live deployment is still awaiting verification. Public invoice processing still needs request-level wallet authorization and rate limits before enabling a provider credential there.
 
 Wallet filtering is a navigation aid. Orders, quantities, prices, and attempts are public onchain. Connecting a wallet does not make these records private.
 
@@ -26,7 +26,7 @@ Creation retains 1 native NEAR separately from the token budget, with no P0 refu
 
 Invoice text is untrusted, bounded to 32 KiB, and sent only to the fixed NEAR AI Cloud endpoint. The model has no tools or signing keys. Strict schema checks and order matching happen outside the model. React renders document text as text. Provider credentials remain server-side; never put them in VITE\_ variables.
 
-P0 document hashes are audit references. They do not authenticate invoices or maintain invoice-specific paid/pending accounting. A fresh request can use later accepted order entitlement even with an older invoice. P1 supplier invoice commitments, private uploads, OCR, and a real recorded provider fixture remain unimplemented. Live extraction has no synthetic fallback.
+P0 document hashes are audit references. They do not authenticate invoices or maintain invoice-specific paid/pending accounting. A fresh request can use later accepted order entitlement even with an older invoice. P1 supplier invoice commitments, private uploads, and OCR remain unimplemented. A real provider response to a synthetic verification invoice is recorded with provenance in fixtures/near-ai-extraction.json. Live extraction has no synthetic fallback. Requests are bounded to 512 output tokens; invoice JSON is independently validated and matched to fixed terms.
 
 ## Deployment control
 

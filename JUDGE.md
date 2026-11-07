@@ -28,6 +28,12 @@ For contract checks, run cargo test --locked -p accord-vault. For real cross-con
 
 scripts/testnet-bootstrap.ts, scripts/testnet-deploy.ts, and scripts/testnet-worker-smoke.ts support a disposable testnet deployment. They use ignored .data credentials, never mainnet. The deploy script requires artifacts to match the passing sandbox evidence before deployment. Do not rerun a money-out smoke against customer funds.
 
+## Live invoice extraction
+
+Live NEAR AI Cloud extraction is verified with the configured server credential and z-ai/glm-5.3-flash. The recorded input is synthetic, and the model response is real. fixtures/near-ai-extraction.json contains the document hash, parsed fields, provider request IDs, timing, successful app HTTP result, and incomplete-invoice rejection. The testnet order did not change.
+
+For a new live check, run npx tsx scripts/near-ai-smoke.ts --http --negative while the server is running. This explicitly calls the provider. Unit tests replay the recorded response and test malformed output, mismatched prices, upstream failures, and rejection sentinels without live requests. Browser wallet signing still requires its separate end-to-end verification.
+
 ## Remaining gates
 
-Live NEAR AI credentials and a recorded provider fixture; hosted Worker/D1 deployment verification; mainnet network wiring and deployment; recovery/storage/upgrade review. P1 invoice confirmation and P2 closure/refunds are not included. No hackathon submission or social post has been made.
+Hosted Worker/D1 and hosted AI integration verification; mainnet network wiring and deployment; recovery/storage/upgrade review. P1 invoice confirmation and P2 closure/refunds are not included. No hackathon submission or social post has been made.

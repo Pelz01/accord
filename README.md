@@ -35,7 +35,9 @@ The payment agent cannot change recipients, prices, accepted terms, or delivery 
 
 ## Invoice extraction
 
-Set NEAR_AI_API_KEY in ignored .env to enable server-side NEAR AI Cloud extraction. The connected product accepts invoice text and uses the live adapter; it does not substitute generated sample results. The response must match a strict schema and the order's fixed fields. A successful real provider call and sanitized recorded fixture are still outstanding because credentials have not been configured. PDF upload and OCR are not implemented.
+Set NEAR_AI_API_KEY in ignored .env to enable server-side NEAR AI Cloud extraction. The connected product accepts invoice text and uses the live adapter; it does not substitute generated sample results. The response must match a strict schema and the order's fixed fields. Live extraction and the running app endpoint have been verified using GLM-5.3 Flash. The sanitized real response, input hash, and provider request IDs are recorded in fixtures/near-ai-extraction.json. The request uses JSON mode; schema and fixed-order checks remain independent of the model. Incomplete invoices fail review. PDF upload and OCR are not implemented.
+
+The default NEAR_AI_MODEL is z-ai/glm-5.3-flash. To repeat the explicit live check, run npx tsx scripts/near-ai-smoke.ts --http --negative with the API server running. This makes real provider requests and rewrites the synthetic-input evidence fixture. Ordinary unit tests replay the captured response without contacting the provider.
 
 ## Code and verification
 
@@ -68,6 +70,6 @@ Rust is pinned to 1.99.1; Windows contract development uses Ubuntu/WSL. The sand
 
 P0 supports one line per order, integer quantities, fixed six-decimal test-token amounts, exact funding, partial deliveries and payments, bounded attempts, and distinct role accounts. Creation retains 1 native NEAR for bounded storage/outgoing call deposits separately from token funding.
 
-P1 supplier invoice commitments and P2 closure/refunds are not implemented. Invoice hashes are audit references, not proof of authenticity or invoice-specific entitlement. Remaining tokens and uncertain reservations have no user recovery path yet. Mainnet requires explicit deployment/network integration, recovery and storage review, live provider validation, and further transaction testing.
+P1 supplier invoice commitments and P2 closure/refunds are not implemented. Invoice hashes are audit references, not proof of authenticity or invoice-specific entitlement. Remaining tokens and uncertain reservations have no user recovery path yet. Mainnet requires explicit deployment/network integration, recovery and storage review, hosted provider validation, and further transaction testing.
 
 Target: ready before 10 November 2026, meaning by the end of 9 November in Lagos. See [JUDGE.md](JUDGE.md), [SECURITY.md](SECURITY.md), and [FOUNDATION.md](FOUNDATION.md) for reproduction, authority boundaries, and executed evidence. MIT licensed. Built for the NEAR Hackathon.

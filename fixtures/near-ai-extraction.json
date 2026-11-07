@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "kind": "recorded-live-near-ai-extraction",
+  "input": {
+    "synthetic": true,
+    "text": "Synthetic verification invoice for Accord integration testing.\nSupplier: supplier.accord-v2-8e0a631d.testnet\nPurchase order: PO-TESTNET-001\nInvoice reference: INV-ACCORD-AI-001\nLine: cartons\nItem: Fictitious packing cartons\nQuantity: 100 cartons\nUnit price: 10 aUSD\nToken: aUSD\nTotal: 1,000 aUSD\nAmount in six-decimal base units: 1000000000",
+    "sha256": "2d8cb25b2927f29bd081d534f2168b90375a23cd5c5a013c6b7dba6e6a41d3b7"
+  },
+  "order": {
+    "id": "PO-TESTNET-001",
+    "lineId": "cartons",
+    "unitPrice": "10000000",
+    "ordered": 100
+  },
+  "provider": {
+    "endpoint": "https://cloud-api.near.ai/v1/chat/completions",
+    "model": "z-ai/glm-5.3-flash",
+    "requestId": "897d07ba-6ae2-4579-820d-9ebdb2a9479e",
+    "recordedAt": "2026-11-07T08:26:03.891Z",
+    "durationMs": 5050
+  },
+  "invoice": {
+    "orderId": "PO-TESTNET-001",
+    "reference": "INV-ACCORD-AI-001",
+    "lineId": "cartons",
+    "quantity": 100,
+    "token": "aUSD",
+    "amountBaseUnits": "1000000000"
+  },
+  "httpVerification": {
+    "status": 200,
+    "providerRequestId": "1ac0968c-404f-4e10-9189-24e6775e969a",
+    "recordedAt": "2026-11-07T08:26:52.645Z",
+    "durationMs": 2293
+  },
+  "incompleteInvoiceRejected": true,
+  "checks": [
+    "real provider call",
+    "strict invoice schema",
+    "order and line match",
+    "fixed price matches",
+    "input hash matches",
+    "testnet ledger unchanged",
+    "running application HTTP endpoint verified"
+  ]
+}
