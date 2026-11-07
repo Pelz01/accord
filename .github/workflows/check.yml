@@ -1,5 +1,6 @@
 name: Verify Accord
-on: [push, pull_request]
+on:
+  workflow_dispatch:
 jobs:
   application:
     runs-on: ubuntu-latest
