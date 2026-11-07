@@ -1,10 +1,14 @@
 node_modules/
 dist/
+dist-api/
 target/
 .env
 .env.*
 !.env.example
 .data/
+.vercel/
 playwright-report/
 test-results/
 *.log
+
+.vercel

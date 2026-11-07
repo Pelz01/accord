@@ -1,5 +1,5 @@
 import './wallet-gate.css';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
@@ -23,7 +23,7 @@ import {
   chainAvailable,
   ordersForAccount,
 } from '../../shared/chain';
-import { type CreateOrder, type Extraction, money } from '../../shared/schema';
+import { type CreateOrder, type Extraction, money, createSchema } from '../../shared/schema';
 import { Badge, Metric } from '../components/primitives';
 import { ModalShell } from '../components/ModalShell';
 import { CreateForm } from '../components/CreateOrderForm';
@@ -60,6 +60,7 @@ export function TestnetWorkspace() {
     [quantity, setQuantity] = useState(''),
     [transaction, setTransaction] = useState('');
   const [jobs, setJobs] = useState<ChainJob[]>([]);
+  const session = useRef<{ accountId: string; token: string; expires: number } | null>(null);
   const [view, setView] = useState<'orders' | 'payments'>('orders');
   const refresh = useCallback(async () => {
     if (!account) return;
@@ -73,6 +74,7 @@ export function TestnetWorkspace() {
     if (j.ok) setJobs((await j.json()).jobs);
   }, [account]);
   useEffect(() => {
+    session.current = null;
     if (!account) {
       setState(null);
       setSelected(null);
@@ -114,15 +116,49 @@ export function TestnetWorkspace() {
       setBusy(false);
     }
   }
-  async function post(path: string, body: unknown) {
+  async function post(path: string, body: unknown, headers: Record<string, string> = {}) {
     const r = await fetch(`/api/chain${path}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...headers },
       body: JSON.stringify(body),
     });
     const data = await r.json();
     if (!r.ok) throw new Error(data.error ?? 'Request failed.');
     return data;
+  }
+  async function extractInvoice() {
+    if (!order || !account) throw new Error('Connect your wallet and open an order first.');
+    const headers: Record<string, string> = {};
+    if (state?.authRequired) {
+      if (
+        !session.current ||
+        session.current.accountId !== account ||
+        session.current.expires <= Date.now()
+      ) {
+        const challenge = await post('/session/challenge', { accountId: account });
+        const signed = await (
+          await walletConnector().wallet()
+        ).signMessage({
+          message: challenge.message,
+          recipient: challenge.recipient,
+          nonce: Uint8Array.from(atob(challenge.nonce), (c) => c.charCodeAt(0)),
+          network: 'testnet',
+          signerId: account,
+        });
+        session.current = await post('/session', { challengeId: challenge.id, ...signed });
+      }
+      headers.Authorization = `Bearer ${session.current!.token}`;
+    }
+    try {
+      return await post(
+        `/orders/${encodeURIComponent(order.id)}/extract`,
+        { text, mode: 'live' },
+        headers,
+      );
+    } catch (error) {
+      session.current = null;
+      throw error;
+    }
   }
   async function call(method: string, args: Record<string, unknown>, deposit = '0') {
     if (!d) throw new Error('Testnet deployment is not configured.');
@@ -130,6 +166,9 @@ export function TestnetWorkspace() {
   }
   async function create(input: CreateOrder) {
     if (!account || !d) throw new Error('Connect your wallet first.');
+    input = createSchema.parse(input);
+    if (new Set([account, input.supplier, input.receiver, input.operator]).size !== 4)
+      throw new Error('Buyer, supplier, receiver and operator must use separate accounts.');
     const id = `PO-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
     await call(
       'create_order',
@@ -867,6 +906,7 @@ export function TestnetWorkspace() {
               role="buyer"
               buyerAccount={account ?? ''}
               testnet
+              operatorAccount={d?.operator}
               onCreate={(input) => run(() => create(input as CreateOrder))}
             />
           ) : order && modal === 'accept' ? (
@@ -1045,15 +1085,7 @@ export function TestnetWorkspace() {
                   <button
                     className="button primary"
                     disabled={busy}
-                    onClick={() =>
-                      run(
-                        async () =>
-                          setExtraction(
-                            await post(`/orders/${order.id}/extract`, { text, mode: 'live' }),
-                          ),
-                        false,
-                      )
-                    }
+                    onClick={() => run(async () => setExtraction(await extractInvoice()), false)}
                   >
                     {busy ? <Loader2 className="spin" size={15} /> : <FileText size={15} />}Extract
                     invoice

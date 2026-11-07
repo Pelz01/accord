@@ -1,0 +1,22 @@
+FROM node:24-bookworm-slim@sha256:01d566e8d94d8c619591d78652babfccd3c6992a3dffa9ed5ab39e11cf6c70e9 AS build
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY server ./server
+COPY shared ./shared
+COPY api ./api
+COPY tests ./tests
+COPY fixtures ./fixtures
+RUN npm test
+RUN npm run build:api
+
+FROM node:24-bookworm-slim@sha256:01d566e8d94d8c619591d78652babfccd3c6992a3dffa9ed5ab39e11cf6c70e9
+ENV NODE_ENV=production
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev --ignore-scripts
+COPY --from=build /app/dist-api ./dist-api
+COPY scripts/backup-api.mjs ./scripts/backup-api.mjs
+USER node
+EXPOSE 3001
+CMD ["node", "dist-api/index.js"]

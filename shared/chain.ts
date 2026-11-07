@@ -44,6 +44,7 @@ export type Deployment = {
   trackedRequestIds?: string[];
 };
 export type ChainState = {
+  authRequired?: boolean;
   configured: boolean;
   deployment: Deployment | null;
   orders: ChainOrder[];

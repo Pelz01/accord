@@ -1,5 +1,12 @@
 import { readFile } from 'node:fs/promises';
-import { Account, JsonRpcProvider, type KeyPairString } from 'near-api-js';
+import {
+  Account,
+  JsonRpcProvider,
+  KeyPairSigner,
+  actions,
+  baseEncode,
+  type KeyPairString,
+} from 'near-api-js';
 import { verifyMessage } from 'near-api-js/nep413';
 import { randomBytes, randomUUID } from 'node:crypto';
 import { z } from 'zod';
@@ -9,9 +16,12 @@ import { ordersForAccount } from '../shared/chain.ts';
 import { accountSchema, type Order } from '../shared/schema.ts';
 import { Ledger, DomainError } from './ledger.ts';
 import { extract } from './extraction.ts';
+import type { InvoiceAuthorizer } from './sessions.ts';
 
 type KeyFile = { accountId: string; secretKey: KeyPairString; publicKey: string };
 type Job = {
+  vault?: string;
+  network?: string;
   id: string;
   orderId: string;
   quantity: string;
@@ -30,7 +40,9 @@ const provider = new JsonRpcProvider({ url: 'https://test.rpc.fastnear.com' });
 const recipient = 'Accord testnet operator';
 export async function deployment(): Promise<Deployment | null> {
   try {
-    const d = JSON.parse(await readFile('.data/deployment.json', 'utf8')) as Deployment;
+    const d = JSON.parse(
+      await readFile(process.env.ACCORD_DEPLOYMENT_PATH || '.data/deployment.json', 'utf8'),
+    ) as Deployment;
     if (
       d.network !== 'testnet' ||
       !accountSchema.safeParse(d.vault).success ||
@@ -76,7 +88,9 @@ async function requiredDeployment() {
   return d;
 }
 async function operatorKey(d: Deployment) {
-  const key = JSON.parse(await readFile('.data/operator-key.json', 'utf8')) as KeyFile;
+  const key = JSON.parse(
+    await readFile(process.env.ACCORD_OPERATOR_KEY_PATH || '.data/operator-key.json', 'utf8'),
+  ) as KeyFile;
   if (key.accountId !== d.operator)
     throw new DomainError('Operator account does not match deployment.', 503);
   const onchain = await provider.viewAccessKey({
@@ -96,7 +110,11 @@ async function operatorKey(d: Deployment) {
 export async function registerChain(
   app: FastifyInstance,
   ledger: Ledger,
-  { worker = true }: { worker?: boolean } = {},
+  {
+    worker = true,
+    authRequired = false,
+    authorizeInvoice,
+  }: { worker?: boolean; authRequired?: boolean; authorizeInvoice?: InvoiceAuthorizer } = {},
 ) {
   ledger.db.exec(
     `CREATE TABLE IF NOT EXISTS chain_jobs (id TEXT PRIMARY KEY,payload TEXT NOT NULL); CREATE TABLE IF NOT EXISTS chain_challenges (id TEXT PRIMARY KEY,payload TEXT NOT NULL,used INTEGER NOT NULL DEFAULT 0,expires INTEGER NOT NULL);`,
@@ -146,6 +164,7 @@ export async function registerChain(
         attempts,
         operatorReady,
         liveAiAvailable: !!process.env.NEAR_AI_API_KEY,
+        authRequired,
       };
     },
   );
@@ -161,6 +180,9 @@ export async function registerChain(
     const body = z
       .strictObject({ text: z.string().min(1).max(32768), mode: z.enum(['sample', 'live']) })
       .parse(req.body);
+    if (authRequired && body.mode !== 'live')
+      throw new DomainError('Use live invoice processing.', 400);
+    if (authorizeInvoice) await authorizeInvoice(req, order);
     return extract(asPreviewOrder(order), body.text, body.mode);
   });
   app.post('/api/chain/challenge', async (req) => {
@@ -213,6 +235,9 @@ export async function registerChain(
       request: z.infer<typeof requestSchema>;
       operator: string;
     };
+    const bound = JSON.parse(challenge.message) as { vault?: string; network?: string };
+    if (bound.vault !== d.vault || bound.network !== d.network)
+      throw new DomainError('The deployment changed. Authorize a fresh payment request.', 409);
     if (body.accountId !== challenge.operator || body.accountId !== d.operator)
       throw new DomainError('Only the designated operator can authorize this request.', 403);
     try {
@@ -231,6 +256,8 @@ export async function registerChain(
       throw new DomainError('Wallet signature or account ownership could not be verified.', 403);
     }
     const job: Job = {
+      vault: d.vault,
+      network: d.network,
       id: body.challengeId,
       orderId: challenge.request.orderId,
       quantity: challenge.request.quantity,
@@ -276,6 +303,12 @@ export async function registerChain(
             job.status === 'queued' || job.status === 'submitting' || job.status === 'unresolved',
         );
       for (const job of jobs) {
+        if (job.vault !== d.vault || job.network !== d.network) {
+          job.status = 'unresolved';
+          job.error = 'This request requires authorization for the current deployment.';
+          save(job);
+          continue;
+        }
         const attempt = await view<ChainAttempt | null>(d, 'get_attempt', { request_id: job.id });
         if (attempt) {
           job.status =
@@ -290,27 +323,50 @@ export async function registerChain(
         // A submitting job without visible state may be in flight. Never sign it again blindly.
         if (job.status !== 'queued') {
           job.status = 'unresolved';
+          if (job.transactionHash) {
+            try {
+              const status = await provider.viewTransactionStatus({
+                txHash: job.transactionHash,
+                accountId: d.operator,
+                waitUntil: 'FINAL',
+              });
+              if (typeof status.status === 'object' && 'Failure' in status.status) {
+                job.status = 'failed';
+                job.error = 'The contract rejected this request.';
+              }
+            } catch {
+              /* retain the unresolved record while the provider is unavailable */
+            }
+          }
           save(job);
           continue;
         }
         const key = await operatorKey(d);
+        const signer = KeyPairSigner.fromSecretKey(key.secretKey);
+        const account = new Account(key.accountId, provider, signer);
+        const transaction = await account.createTransaction({
+          receiverId: d.vault,
+          publicKey: key.publicKey,
+          actions: [
+            actions.functionCall(
+              'request_payment',
+              {
+                order_id: job.orderId,
+                request_id: job.id,
+                quantity: job.quantity,
+                audit_hash: job.auditHash,
+              },
+              150_000_000_000_000n,
+              0n,
+            ),
+          ],
+        });
+        const signed = await signer.signTransaction(transaction);
         job.status = 'submitting';
+        job.transactionHash = baseEncode(signed.txHash);
         save(job);
         try {
-          const result = await new Account(key.accountId, provider, key.secretKey).callFunctionRaw({
-            contractId: d.vault,
-            methodName: 'request_payment',
-            args: {
-              order_id: job.orderId,
-              request_id: job.id,
-              quantity: job.quantity,
-              audit_hash: job.auditHash,
-            },
-            gas: 150_000_000_000_000n,
-            deposit: 0n,
-            waitUntil: 'FINAL',
-          });
-          job.transactionHash = result.transaction.hash;
+          await provider.sendTransactionUntil(signed.signedTransaction, 'FINAL');
           const outcome = await view<ChainAttempt | null>(d, 'get_attempt', { request_id: job.id });
           job.status =
             outcome?.status === 'Settled'

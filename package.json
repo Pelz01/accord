@@ -8,7 +8,10 @@
   },
   "scripts": {
     "dev": "concurrently -k \"tsx watch server/index.ts\" \"vite --host 127.0.0.1\"",
-    "build": "tsc --noEmit && vite build && node scripts/build-hosted.mjs",
+    "build:frontend": "tsc --noEmit && vite build",
+    "build:api": "esbuild server/runtime.ts --bundle --platform=node --format=esm --target=node24 --packages=external --outfile=dist-api/index.js",
+    "start:api": "node dist-api/index.js",
+    "build": "npm run build:frontend && node scripts/build-hosted.mjs",
     "start": "tsx server/index.ts",
     "test": "tsx --test tests/*.test.ts",
     "test:ui": "playwright test",

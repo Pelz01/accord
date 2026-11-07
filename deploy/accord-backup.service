@@ -1,0 +1,9 @@
+[Unit]
+Description=Accord database backup
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+User=ubuntu
+ExecStart=/usr/bin/docker exec accord-api node /app/scripts/backup-api.mjs
