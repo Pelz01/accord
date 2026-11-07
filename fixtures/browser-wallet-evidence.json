@@ -78,5 +78,21 @@
     "Automation did not observe a browser download event; original bytes were verified through authenticated API download.",
     "Wallet approvals were completed by the user."
   ],
-  "mainnet": false
+  "mainnet": false,
+  "frontendDeployment": {
+    "id": "dpl_9n25hhpa3CTyJbSVtfFkyWybLMsn",
+    "sourceCommit": "c65e65f415e2b0b551a7e294a732f3f54d5cf8cf",
+    "url": "https://accord-payments.vercel.app",
+    "state": "Ready and promoted",
+    "refreshedBrowserVerified": true,
+    "workspaceChunk": "TestnetWorkspace-DZaLFYF5.js",
+    "deployedSessionRecoveryVerified": true
+  },
+  "validation": {
+    "applicationTests": 34,
+    "browserTests": 12,
+    "typescript": true,
+    "productionBuild": true,
+    "apiBundleSha256": "35d1ce045c6f245b68cae2ce9d2c9845534c269ad4395abf066c9fe9e37a8073"
+  }
 }

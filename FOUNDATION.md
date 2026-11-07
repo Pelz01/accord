@@ -64,6 +64,8 @@ The supplier proposed closure, then the buyer approved it through Intear. Transa
 
 This check exposed an expired-wallet state where the interface retained the account after the connector reported no accounts. Accord now clears the private session and returns to the wallet gate with a reconnect message. Two browser regression checks verify funding and private invoice access recover without exposing order metrics or sending an unauthenticated invoice request. All twelve browser checks and the 34 application checks pass.
 
+The frontend fix is source c65e65f and Vercel deployment dpl_9n25hhpa3CTyJbSVtfFkyWybLMsn, Ready and promoted to the public URL. Refreshing the real browser restored the buyer connection and showed the settled payment, Closed order and 60 aUSD refund. The API bundle remains unchanged at SHA-256 35d1ce045c6f245b68cae2ce9d2c9845534c269ad4395abf066c9fe9e37a8073; no API or contract redeployment was needed. GitHub Actions remains disabled with no runs.
+
 ## Design assets
 
 The landing uses warm neutrals, forest green, Manrope/Public Sans and Bodoni Moda. Layout research referenced Mercury, Ramp, and Brex; original generated photographs are integrated with real HTML product panels. The rest of the landing copy remains intact apart from the specific labels the user asked to remove.
