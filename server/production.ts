@@ -46,6 +46,10 @@ export function productionApp(
       sessions.account(request.headers.authorization);
   });
   app.setErrorHandler((error, _request, reply) => {
+    if ((error as { statusCode?: number }).statusCode === 413)
+      return reply
+        .code(413)
+        .send({ error: 'This document is too large. Upload a file no larger than 2 MB.' });
     if (error instanceof DomainError)
       return reply.code(error.status).send({ error: error.message });
     if (error instanceof z.ZodError)

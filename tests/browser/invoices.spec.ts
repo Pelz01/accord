@@ -5,7 +5,7 @@ import type { ChainOrder, ChainState } from '../../shared/chain';
 import { invoiceCommitment, type InvoicePayload, type SavedInvoice } from '../../shared/invoices';
 
 const order: ChainOrder = {
-  id: 'PO-INVOICE-001',
+  id: 'PO-WORKER-001',
   buyer: 'buyer.testnet',
   token: 'token.testnet',
   terms: {
@@ -36,7 +36,7 @@ const payload: InvoicePayload = {
   terms_version: 1,
   terms_hash: order.terms_hash,
   document_hash: hash,
-  reference: 'INV-SCANNED-001',
+  reference: 'INV-PDF-001',
   line_id: 'cartons',
   quantity: '100',
   token: order.token,
