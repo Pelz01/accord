@@ -44,9 +44,9 @@ Browser UI inspection confirmed the deployed landing page and wallet gate. A rea
 
 ## Recovery release
 
-The testnet contract is version 2.1.0-recovery. The atomic upgrade preserved all existing orders, tracked payment attempts and the vault token balance. PO-TESTNET-001 then refunded its remaining 300 aUSD in transaction 5RzNhuARA7TWu7wpXwSArDG2ohmXxZemKXUfPQS9LVdZ. Its final recovery state is Closed, refunded 300000000, refund_pending 0. The separate worker order remains Open with paid 70 and pending 0.
+The testnet contract is version 2.1.0-recovery. The atomic upgrade preserved all existing orders, tracked payment attempts and the vault token balance. PO-TESTNET-001 then refunded its remaining 300 aUSD in transaction 5RzNhuARA7TWu7wpXwSArDG2ohmXxZemKXUfPQS9LVdZ. Its final recovery state is Closed, refunded 300000000, refund_pending 0. The separate worker order remains Open with paid 70 and pending 0. The hosted API exposes these same recovery states and retained its completed worker jobs after the API update. The feature source is 98a65b5.
 
-Recipient acknowledgment recovers successful transfers with failed callbacks without sending funds again. It does not release unknown failed transfers. Both success-with-starved-callback paths and definitive refund failure/retry were exercised in real NEAR sandbox. Native storage/call deposits remain retained. P1 invoice commitments, PDF/OCR and final submission materials remain incomplete.
+Recipient acknowledgment recovers successful transfers with failed callbacks without sending funds again. It does not release unknown failed transfers. Both success-with-starved-callback paths and definitive refund failure/retry were exercised in real NEAR sandbox. Successful normal refund callbacks in the sandbox used at most 2,161,564,721,322 gas against the 20 Tgas allocation. Native storage/call deposits remain retained. P1 invoice commitments, PDF/OCR and final submission materials remain incomplete.
 
 ## Design assets
 

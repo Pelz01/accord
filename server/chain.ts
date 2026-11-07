@@ -338,6 +338,7 @@ export async function registerChain(
               : attempt.status === 'TransferFailed'
                 ? 'failed'
                 : 'unresolved';
+          if (job.status === 'settled' || job.status === 'failed') job.error = null;
           save(job);
           continue;
         }
@@ -395,6 +396,7 @@ export async function registerChain(
               : outcome?.status === 'TransferFailed'
                 ? 'failed'
                 : 'unresolved';
+          if (job.status === 'settled' || job.status === 'failed') job.error = null;
           save(job);
         } catch {
           job.status = 'unresolved';

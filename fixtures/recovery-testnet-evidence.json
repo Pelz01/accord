@@ -59,5 +59,20 @@
         }
       ]
     }
+  },
+  "hosted": {
+    "website": "https://accord-payments.vercel.app",
+    "featureSourceCommit": "98a65b5",
+    "vercelDeploymentId": "dpl_FAxxPqLhgvVH6iyZRGpY9c632nTB",
+    "serverDirectory": "/home/ubuntu/accord",
+    "container": "accord-api",
+    "verifiedAt": "2026-11-07T10:10:31.082Z",
+    "checks": [
+      "hosted API exposes the closed order and 300 aUSD refund",
+      "separate worker order remains open",
+      "completed worker jobs survived the API release",
+      "Vercel deployment is Ready and published recovery controls"
+    ],
+    "frontendReady": true
   }
 }
