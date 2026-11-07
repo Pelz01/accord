@@ -11,8 +11,19 @@
   ],
   "headers": [
     {
+      "source": "/",
+      "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+    },
+    {
+      "source": "/index.html",
+      "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+    },
+    {
       "source": "/workspace/:path*",
-      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, follow" }]
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, follow" },
+        { "key": "Cache-Control", "value": "no-cache" }
+      ]
     },
     {
       "source": "/(.*)",

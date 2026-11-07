@@ -1,0 +1,37 @@
+.load-recovery {
+  max-width: 620px;
+  min-height: 100dvh;
+  margin: auto;
+  padding: 48px 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 42px;
+}
+.load-recovery-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--ink);
+  font:
+    700 30px/1 Manrope,
+    sans-serif;
+  letter-spacing: -1.5px;
+}
+.load-recovery h1 {
+  font:
+    500 clamp(28px, 5vw, 38px)/1.25 Manrope,
+    sans-serif;
+  letter-spacing: -1.2px;
+  text-wrap: balance;
+}
+.load-recovery p {
+  color: #59665d;
+  font-size: 15px;
+  margin: 16px 0 28px;
+}
+.load-recovery .button {
+  min-height: 46px;
+  font-size: 14px;
+}
