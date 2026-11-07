@@ -74,6 +74,8 @@ Confirmed contract settlements and separately labeled recipient acknowledgments 
 
 All 42 application tests, TypeScript and frontend/API builds pass. All 17 browser checks pass, including five new reporting journeys. Print QA produced and visually verified one A4 page. These additions are read-only; no contract upgrade or new transfer was needed. Real-wallet signing coverage and mainnet gates remain as described above.
 
+Reporting source bb89e5a is deployed through Vercel dpl_3HcarQB9G46wHJY4JVSPAQQs3bCJ, Ready and promoted to the canonical URL. The VPS API bundle matches the local SHA-256 da2043845de06923f7b499259473f5cad875251bf341b99a5ff1a537185a92d0; its image passed application tests during the build, database backup integrity passed before replacement, and both Accord services are healthy. The connected Intear buyer opened the live Payables and remittance views and downloaded a payment CSV with the recorded ACC-BROWSER-001 invoice and receipt. Live buyer/supplier reads confirm the closed order has 40 aUSD paid, 60 aUSD refunded and zero committed; source coverage is complete for the current records. No additional payment was made. GitHub Actions remains disabled with zero runs.
+
 ## Design assets
 
 The public brand leads with "Keep business moving." Supporting copy explains the product as "Orders, deliveries and payments, brought together. Less chasing. More progress." AI and contract controls are explained in context. The browser title, search description, Open Graph/X preview, app name, favicon and workspace footer follow this direction. The workspace uses its own "Workspace · Accord" tab title.
