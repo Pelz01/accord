@@ -1,12 +1,12 @@
 .recovery-section {
   padding: 26px;
-  border-top: 1px solid var(--line, #e2e6df);
+  border-top: 1px solid var(--line, #f4f1ed);
 }
 .recovery-section > p,
 .recovery-review-copy {
   font-size: 13px;
   line-height: 1.7;
-  color: var(--muted, #64705f);
+  color: var(--muted, #4e453d);
 }
 .refund-overview {
   display: grid;
@@ -22,7 +22,7 @@
 .refund-overview span,
 .refund-review > span {
   font-size: 11px;
-  color: var(--muted, #64705f);
+  color: var(--muted, #4e453d);
   overflow-wrap: anywhere;
 }
 .refund-overview strong {
@@ -35,7 +35,7 @@
 .refund-review small {
   font-size: 13px;
   font-weight: 400;
-  color: var(--muted, #64705f);
+  color: var(--muted, #4e453d);
 }
 .refund-overview .refund-account {
   font-size: 12px;
@@ -54,12 +54,12 @@
   display: grid;
   gap: 6px;
   padding: 14px 0;
-  border-top: 1px solid var(--line, #e2e6df);
+  border-top: 1px solid var(--line, #f4f1ed);
 }
 .close-proposal span,
 .close-proposal small {
   font-size: 11px;
-  color: var(--muted, #64705f);
+  color: var(--muted, #4e453d);
   overflow-wrap: anywhere;
 }
 .close-proposal strong {
@@ -74,7 +74,7 @@
   gap: 16px;
   margin-top: 22px;
   padding-top: 20px;
-  border-top: 1px solid var(--line, #e2e6df);
+  border-top: 1px solid var(--line, #f4f1ed);
 }
 .payment-recovery strong {
   display: block;
@@ -84,13 +84,13 @@
 .payment-recovery small {
   display: block;
   margin-top: 7px;
-  color: var(--muted, #64705f);
+  color: var(--muted, #4e453d);
   font-size: 11px;
   overflow-wrap: anywhere;
 }
 .refund-review {
   padding-bottom: 24px;
-  border-bottom: 1px solid var(--line, #e2e6df);
+  border-bottom: 1px solid var(--line, #f4f1ed);
 }
 .refund-review > strong {
   font-size: 38px;
@@ -110,7 +110,7 @@
   width: 16px;
   height: 16px;
   margin-top: 2px;
-  accent-color: var(--green, #284e37);
+  accent-color: var(--accent, #252321);
 }
 @media (max-width: 640px) {
   .recovery-section {

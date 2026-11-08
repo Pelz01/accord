@@ -1,3 +1,4 @@
+import { BrandMark } from '../components/BrandMark';
 import './wallet-gate.css';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
@@ -359,10 +360,7 @@ export function TestnetWorkspace() {
       <div className="wallet-gate">
         <header className="wallet-gate-header">
           <a className="gate-brand" href="/" aria-label="Accord home">
-            <span className="brand-symbol">
-              <i />
-              <i />
-            </span>
+            <BrandMark />
             accord<span>.</span>
           </a>
           <a className="gate-home-link" href="/">
@@ -374,10 +372,7 @@ export function TestnetWorkspace() {
           <div className="wallet-gate-art" aria-hidden="true">
             <div />
             <div />
-            <span className="brand-symbol">
-              <i />
-              <i />
-            </span>
+            <BrandMark />
           </div>
           <span className="eyebrow">LET’S GET IN AGREEMENT</span>
           <h1>Connect your wallet.</h1>
@@ -424,10 +419,7 @@ export function TestnetWorkspace() {
     <div className="app-shell testnet-shell">
       <aside className="sidebar">
         <a className="wordmark" href="/">
-          <span className="brand-symbol">
-            <i />
-            <i />
-          </span>
+          <BrandMark />
           accord<span className="wordmark-period">.</span>
         </a>
         <nav aria-label="Workspace navigation">

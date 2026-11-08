@@ -19,7 +19,7 @@
   line-height: 1.25;
 }
 .modal:has(.create-order-form) .modal-header p {
-  color: #59665d;
+  color: #4e453d;
   font-size: 13px;
   line-height: 1.6;
   margin-top: 7px;
@@ -31,7 +31,7 @@
   width: 36px;
   height: 36px;
   flex-shrink: 0;
-  color: #59665d;
+  color: #4e453d;
 }
 .create-order-form fieldset {
   border: 0;
@@ -49,7 +49,7 @@
 }
 .create-order-form .field {
   font-size: 13px;
-  color: #445348;
+  color: #4e453d;
   gap: 8px;
   margin-bottom: 16px;
 }
@@ -60,14 +60,14 @@
   color: var(--ink);
   padding: 11px 13px;
   background: var(--paper);
-  border-color: #d4dcd2;
+  border-color: #e8e2dc;
 }
 .create-order-form .field input::placeholder {
-  color: #6b776d;
+  color: #706c66;
   opacity: 1;
 }
 .create-order-form .field input:focus {
-  outline: 2px solid #286748;
+  outline: 2px solid #252321;
   outline-offset: 2px;
   box-shadow: none;
 }
@@ -87,7 +87,7 @@
 .payout-choice input {
   width: 17px;
   height: 17px;
-  accent-color: var(--green);
+  accent-color: var(--accent-deep);
   flex-shrink: 0;
   margin: 0;
 }
@@ -95,20 +95,20 @@
   margin-top: 13px;
 }
 .create-order-form .form-help {
-  color: #59665d;
+  color: #4e453d;
   font-size: 12px;
   line-height: 1.65;
   margin: 7px 0 0;
 }
 .assigned-operator {
   padding: 13px 15px;
-  border-left: 2px solid #a5b9a7;
-  background: #f0f3ed;
+  border-left: 2px solid #99928a;
+  background: #fffdfa;
   border-radius: 0 4px 4px 0;
 }
 .assigned-operator > span {
   font-size: 12px;
-  color: #59665d;
+  color: #4e453d;
 }
 .assigned-operator p {
   margin: 4px 0 0;
@@ -143,11 +143,11 @@
 .create-order-summary small {
   font-size: 13px;
   letter-spacing: 0;
-  color: #59665d;
+  color: #4e453d;
 }
 .create-order-summary > p {
   font-size: 12px;
-  color: #59665d;
+  color: #4e453d;
   margin: 9px 0 0;
   overflow-wrap: anywhere;
 }
@@ -155,7 +155,7 @@
   color: var(--ink);
 }
 .create-order-notes {
-  color: #59665d;
+  color: #4e453d;
   font-size: 12px;
   line-height: 1.7;
   margin: 19px 0 23px;
@@ -164,7 +164,7 @@
   margin: 10px 0 0;
 }
 .create-order-notes strong {
-  color: #445348;
+  color: #4e453d;
   font-weight: 500;
 }
 .create-order-notes p:has(svg) {

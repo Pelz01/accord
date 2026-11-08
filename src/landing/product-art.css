@@ -21,7 +21,7 @@
 .product-stage .product-window {
   width: 86%;
   border: 1px solid #ffffffb3;
-  box-shadow: 0 24px 60px -20px #18241c66;
+  box-shadow: 0 24px 60px -20px #25232166;
 }
 .product-stage .floating-receipt {
   top: 245px;
@@ -31,15 +31,15 @@
 .product-stage .stage-controls {
   margin-top: 25px;
   padding: 14px 18px;
-  background: #fbfcf7f5;
+  background: #fffdfaf5;
   border: 1px solid #ffffffa6;
   border-radius: 5px;
-  color: #4f6344;
+  color: #4e453d;
 }
 .product-stage .stage-controls > label,
 .product-stage .stage-controls > label > span,
 .product-stage .stage-controls button {
-  color: #516447;
+  color: #4e453d;
 }
 .workflow-visual {
   min-height: 520px;
@@ -59,15 +59,15 @@
   bottom: 25px;
   width: 65%;
   max-width: 330px;
-  box-shadow: 0 15px 40px #19241940;
+  box-shadow: 0 15px 40px #25232140;
 }
 .workflow-visual .workflow-floating-tag {
   top: 22px;
   bottom: auto;
   left: 22px;
   right: auto;
-  background: #fbfcf7f5;
-  color: #345139;
+  background: #fffdfaf5;
+  color: #252321;
 }
 @media (max-width: 1050px) {
   .product-stage {

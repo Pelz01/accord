@@ -22,7 +22,7 @@
   gap: 10px;
   align-items: center;
   background: transparent;
-  border: 1px solid var(--line, #dfe5db);
+  border: 1px solid var(--line, #f4f1ed);
   padding: 10px 14px;
   border-radius: 5px;
   text-align: left;
@@ -31,8 +31,8 @@
   color: var(--ink);
 }
 .invoice-records button[aria-pressed='true'] {
-  border-color: var(--green);
-  background: #edf1e6;
+  border-color: var(--accent-deep);
+  background: #f4f1ed;
 }
 .invoice-records small {
   display: block;
@@ -43,7 +43,7 @@
 .invoice-source-tabs {
   display: flex;
   gap: 18px;
-  border-bottom: 1px solid var(--line, #dfe5db);
+  border-bottom: 1px solid var(--line, #f4f1ed);
   padding: 0 0 12px;
 }
 .invoice-source-tabs button {
@@ -56,7 +56,7 @@
   cursor: pointer;
 }
 .invoice-source-tabs button[aria-pressed='true'] {
-  color: var(--green);
+  color: var(--accent-deep);
   font-weight: 600;
 }
 .invoice-upload {
@@ -68,9 +68,9 @@
   min-height: 410px;
   padding: 36px 24px;
   text-align: center;
-  border: 1px dashed #becbb8;
+  border: 1px dashed #d4c8bd;
   margin-top: 18px;
-  color: var(--green);
+  color: var(--accent-deep);
   cursor: pointer;
 }
 .invoice-upload strong {
@@ -99,7 +99,7 @@
   cursor: pointer;
 }
 .invoice-upload:focus-within {
-  outline: 2px solid var(--green);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
 .invoice-center-grid .invoice-document {
@@ -107,15 +107,15 @@
   padding: 16px;
 }
 .invoice-center .extracted-fields h3 {
-  color: #243c30;
+  color: #252321;
   font-size: 20px;
 }
 .invoice-center .extracted-fields dt {
-  color: #657469;
+  color: #4e453d;
   font-size: 12px;
 }
 .invoice-center .extracted-fields dd {
-  color: #30483b;
+  color: #252321;
   font-size: 12px;
   overflow-wrap: anywhere;
 }
@@ -146,7 +146,7 @@
   height: 400px;
   object-fit: contain;
   background: white;
-  border: 1px solid var(--line, #dfe5db);
+  border: 1px solid var(--line, #f4f1ed);
   margin-top: 14px;
 }
 .replace-invoice {
@@ -154,7 +154,7 @@
   position: relative;
   margin-top: 12px;
   font-size: 11px;
-  color: var(--green);
+  color: var(--accent-deep);
   cursor: pointer;
 }
 .replace-invoice input {
@@ -182,10 +182,10 @@
   height: 16px;
   flex-shrink: 0;
   margin: 3px 0 0;
-  accent-color: var(--green);
+  accent-color: var(--accent-deep);
 }
 .invoice-commitment {
-  border-top: 1px solid var(--line, #dfe5db);
+  border-top: 1px solid var(--line, #f4f1ed);
   margin-top: 24px;
   padding-top: 16px;
 }

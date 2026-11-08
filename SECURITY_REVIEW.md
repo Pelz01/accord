@@ -29,7 +29,7 @@ A prepared transaction that expires, changes key/code context or cannot be recon
 - Define and independently review unused-fund exit, disputes and receipt-recovery rules; receiver honesty and invoice authenticity are not established by these signatures.
 - Wire mainnet separately. Pin the real token's contract/code, decimals, issuer behavior and account-registration rules; do not deploy the test aUSD token as a customer payment asset.
 - Choose production upgrade governance and protected key custody. Generated testnet full-access keys are development authority; the production service should receive only its limited key.
-- Measure worst-case storage/gas and establish funding/allowance thresholds, alerts, incident ownership, worker pause and recovery procedures. The current bounded tests do not establish a production latency SLA.
+- Measure worst-case storage/gas and establish funding/allowance thresholds, permissionless-discovery gas-abuse budgets, alerts, incident ownership, worker pause and recovery procedures. The current bounded tests do not establish a production latency SLA.
 - Complete the updated two-customer-wallet flow in real browsers, including mobile, approvals, declined signatures and recovery. Prior four-role wallet evidence and current SDK checks do not substitute for this final journey.
 - Decide document/backup retention and customer privacy terms. Protected filesystem backups are not application-encrypted storage, and API expiry does not erase every backup.
 - Obtain independent contract/security review before meaningful customer value. Verify deployed bytecode/configuration after the final approved production release.
@@ -46,3 +46,9 @@ The main JavaScript npm audit reports zero known advisories, including developme
 4. Retain any saved transaction privately. Replays must be byte-identical and valid for the current authorized deployment; never sign replacement spending for an ambiguous job.
 5. Restore backups into a disposable copy first, verify integrity and records, and test writes before a planned restore. A stale database can omit authorization/jobs; reconcile with finalized onchain state before resuming. Never roll back the vault's financial state to match a backup.
 6. Resume only after the incident owner documents the receipts, remaining obligations, compatible release and narrowly scoped signer. This is an engineering runbook; production alerting, incident authority and retry tooling still need operational implementation.
+
+## Executed release checks
+
+58 application tests, 23 isolated browser journeys, 48 Rust unit tests and 42 real NEAR sandbox checks passed. TypeScript and production builds passed. The sandbox explicitly exercises a real scoped function-call key, customer one-yocto approvals, automatic/legacy storage preservation, starved payment/refund callbacks and exact saved-transaction replay after restart. The final tested vault SHA-256 is 2eb011ff5989660c2ce6939ad8bd616e77ca9d7df3fd10d87e0aa9980ac74f04.
+
+The testnet atomic upgrade preserved six existing orders and their financial records. PO-REVIEW-9DBFF04F then settled two automatic payments (40 and 20 aUSD) and returned the unused 40 aUSD through mutual closure. Its two worker jobs remained settled after an API restart; no pending amount remained. Signed authorization fields were absent from the public jobs API. A VPS backup was restored to a disposable copy and passed integrity, record and rolled-back-write checks. Public evidence: fixtures/security-review-evidence.json, fixtures/security-sandbox-evidence.json, fixtures/security-release-evidence.json and fixtures/security-hosted-evidence.json. These SDK and isolated-browser checks do not claim the outstanding real-wallet journey.

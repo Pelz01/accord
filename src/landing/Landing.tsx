@@ -1,3 +1,4 @@
+import { BrandMark } from '../components/BrandMark';
 import { useEffect, useRef, useState } from 'react';
 import {
   ArrowDown,
@@ -26,10 +27,7 @@ const firstPayment =
 function Brand({ light = false }: { light?: boolean }) {
   return (
     <a className={`landing-brand ${light ? 'light' : ''}`} href="/" aria-label="Accord home">
-      <span className="brand-symbol">
-        <i />
-        <i />
-      </span>
+      <BrandMark />
       accord<span>.</span>
     </a>
   );
@@ -476,10 +474,7 @@ export function Landing() {
               />
               <div className="workflow-document">
                 <div className="workflow-doc-top">
-                  <span className="brand-symbol">
-                    <i />
-                    <i />
-                  </span>
+                  <BrandMark />
                   <span>
                     {activeStep === 0
                       ? 'PURCHASE ORDER'

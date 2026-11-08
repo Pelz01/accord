@@ -83,7 +83,7 @@ export function RemittanceAdvice({
       <article className="remittance-advice" aria-label="Remittance advice">
         <header className="advice-header">
           <div className="advice-brand">
-            <img src="/brand/accord-mark.svg" alt="" />
+            <img src="/brand/accord-mark.svg?v=orange-1" alt="" />
             accord<span>.</span>
           </div>
           <span>NEAR {deployment.network}</span>

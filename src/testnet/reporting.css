@@ -29,7 +29,7 @@
   background: var(--paper);
   border: 1px solid var(--line);
   border-radius: 7px;
-  box-shadow: 0 10px 30px #203b2814;
+  box-shadow: 0 10px 30px #25232114;
 }
 .export-options button {
   display: flex;
@@ -43,7 +43,7 @@
   font-size: 12px;
 }
 .export-options button:hover {
-  background: var(--green-wash);
+  background: var(--accent-wash);
 }
 .report-balance {
   display: flex;
@@ -95,8 +95,8 @@
   white-space: nowrap;
 }
 .report-filters button.active {
-  background: var(--green-wash);
-  color: var(--green-deep);
+  background: var(--accent-wash);
+  color: var(--accent-deep);
 }
 .report-table {
   border-collapse: collapse;
@@ -108,7 +108,7 @@
   font-size: 10px;
   color: var(--muted);
   font-weight: 400;
-  background: #f4f6f052;
+  background: #fffdfa52;
   padding: 15px 22px;
 }
 .report-table td {
@@ -151,11 +151,11 @@
 }
 .report-open {
   padding: 8px;
-  color: var(--green);
+  color: var(--accent-deep);
   border-radius: 4px;
 }
 .report-open:hover {
-  background: var(--green-wash);
+  background: var(--accent-wash);
 }
 .report-footnote {
   display: flex;
@@ -168,11 +168,11 @@
 }
 .report-footnote svg {
   margin-top: 2px;
-  color: var(--green);
+  color: var(--accent-deep);
 }
 .report-notice {
   padding: 14px 17px;
-  border: 1px solid #dedfcf;
+  border: 1px solid #e8e2dc;
   border-radius: 5px;
   color: #6a674b;
   background: #f4f3e9;
@@ -227,7 +227,7 @@
 }
 .advice-brand > span {
   margin-left: -7px;
-  color: #668268;
+  color: #706c66;
 }
 .advice-header > span {
   font-size: 10px;
@@ -264,7 +264,7 @@
     500 38px/1.2 Manrope,
     sans-serif;
   letter-spacing: -1.6px;
-  color: var(--green);
+  color: var(--accent-deep);
   font-variant-numeric: tabular-nums;
 }
 .advice-amount strong small {
@@ -278,7 +278,7 @@
 }
 .advice-confirmation > span.badge {
   display: inline-flex;
-  color: var(--green);
+  color: var(--accent-deep);
   font-size: 10px;
 }
 .advice-confirmation p {
@@ -398,7 +398,7 @@
   overflow-wrap: anywhere;
 }
 .advice-verification a {
-  color: var(--green);
+  color: var(--accent-deep);
   line-height: 1.8;
 }
 .advice-verification a svg {
@@ -425,7 +425,7 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  color: var(--green);
+  color: var(--accent-deep);
   font-size: 11px;
   white-space: nowrap;
   margin-top: 9px;
@@ -588,7 +588,7 @@
     margin: 0;
     font-size: 16px;
     font-weight: 600;
-    color: var(--green);
+    color: var(--accent-deep);
     text-align: right;
   }
   .advice-verification dl > div {
@@ -617,7 +617,7 @@
   html,
   body {
     background: #fff !important;
-    color: #203d2d !important;
+    color: #252321 !important;
     font-size: 10pt !important;
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;

@@ -1,3 +1,4 @@
+import { BrandMark } from './components/BrandMark';
 import { Badge, Token, Metric } from './components/primitives';
 import { ModalShell } from './components/ModalShell';
 import { CreateForm } from './components/CreateOrderForm';
@@ -184,10 +185,7 @@ export function App() {
     <div className="app-shell">
       <aside className="sidebar">
         <a className="wordmark" href="/" aria-label="Accord home">
-          <span className="brand-symbol">
-            <i />
-            <i />
-          </span>
+          <BrandMark />
           accord<span className="wordmark-period">.</span>
         </a>
         <div className="workspace-label">

@@ -1,5 +1,5 @@
 .testnet-shell {
-  --muted: #59665d;
+  --muted: #4e453d;
   position: relative;
 }
 .testnet-shell .sidebar > .wordmark {
@@ -29,8 +29,8 @@
   color: var(--muted);
 }
 .workspace-environment > a:hover {
-  background: var(--green-wash);
-  color: var(--green);
+  background: var(--accent-wash);
+  color: var(--accent-deep);
 }
 .wallet-menu {
   position: relative;
@@ -43,7 +43,7 @@
   gap: 10px;
   min-height: 42px;
   padding: 9px 12px;
-  border: 1px solid #d7dfd4;
+  border: 1px solid #e8e2dc;
   border-radius: 6px;
   background: var(--paper);
   font-size: 13px;
@@ -61,12 +61,12 @@
 }
 .wallet-menu > summary > svg {
   flex-shrink: 0;
-  color: var(--green);
+  color: var(--accent-deep);
 }
 .wallet-menu > summary:hover,
 .wallet-menu[open] > summary {
-  border-color: #a5b9a7;
-  background: #f0f4ec;
+  border-color: #99928a;
+  background: #fffdfa;
 }
 .wallet-menu-panel {
   position: absolute;
@@ -77,7 +77,7 @@
   background: var(--paper);
   border: 1px solid var(--line);
   border-radius: 7px;
-  box-shadow: 0 10px 30px #203b2814;
+  box-shadow: 0 10px 30px #25232114;
 }
 .wallet-menu-panel > span {
   color: var(--muted);
@@ -101,14 +101,14 @@
   text-align: left;
 }
 .wallet-menu-panel > button:hover {
-  color: var(--green);
+  color: var(--accent-deep);
 }
 .testnet-shell .page-heading p {
   font-size: 14px;
   color: var(--muted);
 }
 .testnet-shell .metric-label {
-  color: #52614f;
+  color: #4e453d;
   font-size: 12px;
 }
 .testnet-shell .metric p {
@@ -152,16 +152,16 @@
 .testnet-shell .modal-header p,
 .testnet-shell .field-note,
 .testnet-shell .modal-description {
-  color: #59665d;
+  color: #4e453d;
 }
 .testnet-shell .field {
-  color: #445348;
+  color: #4e453d;
 }
 .testnet-shell .field input {
   color: var(--ink);
 }
 .testnet-shell .field input::placeholder {
-  color: #6b776d;
+  color: #706c66;
 }
 .order-cards {
   display: none;
@@ -282,7 +282,7 @@
     align-items: center;
     gap: 10px;
     min-height: 44px;
-    color: var(--green);
+    color: var(--accent-deep);
     font-size: 13px;
     font-weight: 500;
     overflow-wrap: anywhere;
@@ -310,7 +310,7 @@
     display: grid;
     gap: 3px;
     font-size: 12px;
-    color: #445348;
+    color: #4e453d;
     overflow-wrap: anywhere;
     margin: 0;
   }

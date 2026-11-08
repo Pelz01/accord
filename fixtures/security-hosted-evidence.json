@@ -1,0 +1,17 @@
+{
+  "checkedAt": "2026-11-08T14:12:43.604Z",
+  "apiRestart": "PASS",
+  "hash": "2eb011ff5989660c2ce6939ad8bd616e77ca9d7df3fd10d87e0aa9980ac74f04",
+  "operatorReady": true,
+  "orderId": "PO-REVIEW-9DBFF04F",
+  "paid": "6",
+  "pending": "0",
+  "refunded": "40000000",
+  "phase": "Closed",
+  "settledJobs": 2,
+  "signedAuthorizationsPublic": false,
+  "unrelatedService": 200,
+  "source": "59f0b9e",
+  "testHarnessFix": "c01ad4e",
+  "apiSha256": "e386a894d64fd173087bca0ee92567d789854931f6a6e148d0c578742cdee579"
+}

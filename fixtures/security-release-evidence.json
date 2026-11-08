@@ -1,0 +1,612 @@
+{
+  "network": "testnet",
+  "at": "2026-11-08T14:08:12.530Z",
+  "wasmSha256": "2eb011ff5989660c2ce6939ad8bd616e77ca9d7df3fd10d87e0aa9980ac74f04",
+  "vault": "vault.accord-v2-8e0a631d.testnet",
+  "orderId": "PO-REVIEW-9DBFF04F",
+  "buyer": "accord-review-cde1600d.testnet",
+  "supplier": "supplier.accord-v2-8e0a631d.testnet",
+  "transactions": [
+    {
+      "label": "atomic_security_upgrade",
+      "actor": "vault.accord-v2-8e0a631d.testnet",
+      "hash": "9MhdPjcUr4P5L1sfHiZg2UnU3kTXPN9QiGNr6cdaRT51"
+    },
+    {
+      "label": "create_automatic_order",
+      "actor": "accord-review-cde1600d.testnet",
+      "hash": "7eKqaRPNczYL667q2XHDqTSCKwCDMd9yS82RYizbjq9T"
+    },
+    {
+      "label": "accept_order",
+      "actor": "supplier.accord-v2-8e0a631d.testnet",
+      "hash": "BrAFp12mAXUczFgn26yJv6MdLhmfgPJEbwCrB1QdbvRy"
+    },
+    {
+      "label": "storage_deposit",
+      "actor": "accord-review-cde1600d.testnet",
+      "hash": "96Ap8ad1oU6rAPebumXP9UY92Xhph4KsLPEjs4Hatqxr"
+    },
+    {
+      "label": "ft_transfer",
+      "actor": "buyer.accord-v2-8e0a631d.testnet",
+      "hash": "svogFUQEQoQr9v3VqbmRBWNeMLLfNrQA2fMWVEASKLS"
+    },
+    {
+      "label": "ft_transfer_call",
+      "actor": "accord-review-cde1600d.testnet",
+      "hash": "Gy2ecsjAJyHD2SsXaCv8RnPS1hfNPnyJzQb7ognSoEgB"
+    },
+    {
+      "label": "confirm_delivery",
+      "actor": "accord-review-cde1600d.testnet",
+      "hash": "AQ6ZaxUJ216A3ydypUjgJcAzkFcgYf8DC1dSwLTQKs3W"
+    },
+    {
+      "label": "confirm_invoice",
+      "actor": "supplier.accord-v2-8e0a631d.testnet",
+      "hash": "FVdbubALYmcAJ34QzVn8UAFD5qxt6oVmNJCckuGoY2FR"
+    },
+    {
+      "label": "confirm_delivery",
+      "actor": "accord-review-cde1600d.testnet",
+      "hash": "2bXPr5S7jEEmX4ZjTiY1QWiLKkeYD67jbnrhMK6UiU3L"
+    },
+    {
+      "label": "confirm_invoice",
+      "actor": "supplier.accord-v2-8e0a631d.testnet",
+      "hash": "Fb7Cw4P8o6LW53ZXJT4wH6FFqjuSNK5xaLM8aggb1LV4"
+    },
+    {
+      "label": "propose_close",
+      "actor": "accord-review-cde1600d.testnet",
+      "hash": "48zL2xFfyerF9NgAX9TXfnJJ9Qzjp8mz32gZ819x5GCq"
+    },
+    {
+      "label": "accept_close",
+      "actor": "supplier.accord-v2-8e0a631d.testnet",
+      "hash": "FSBP47jCA9xxChmmQHfFqZR1eKYCUwm4sJyTzpknbq8e"
+    }
+  ],
+  "checks": [
+    "Atomic security upgrade preserved every order, payment attempt, recovery state, invoice, automatic capacity and token balance.",
+    "Buyer created, funded and confirmed delivery with one SDK fixture account; supplier used its own single account.",
+    "The real hosted worker paid 40 aUSD after supplier confirmation with no operator wallet login or NEP-413 payment authorization.",
+    "A later delivery did not reuse the already-paid four-carton invoice.",
+    "A second supplier invoice triggered only the remaining 20 aUSD; both deterministic jobs settled once.",
+    "Buyer and supplier mutually closed the order; 40 aUSD unused funding returned with no pending transfer."
+  ],
+  "beforeUpgrade": {
+    "previousHash": "f77df177a4f98defe366bc1924063773f3f1eff39a51794d4467a696a49493b5",
+    "orders": [
+      {
+        "id": "PO-TESTNET-001",
+        "buyer": "buyer.accord-v2-8e0a631d.testnet",
+        "token": "token.accord-v2-8e0a631d.testnet",
+        "terms": {
+          "supplier": "supplier.accord-v2-8e0a631d.testnet",
+          "receiver": "receiver.accord-v2-8e0a631d.testnet",
+          "operator": "operator.accord-v2-8e0a631d.testnet",
+          "payout": "supplier.accord-v2-8e0a631d.testnet",
+          "line_id": "cartons",
+          "description": "Fictitious packing cartons",
+          "unit": "carton",
+          "ordered": "100",
+          "unit_price": "10000000",
+          "expires_at": "1794611559105000000"
+        },
+        "terms_hash": "ceb4e1743556041c266a1b6f42c8e22cc0261ce02f8cfdda7c4403734c8d6d5c",
+        "accepted_terms": true,
+        "funded": "1000000000",
+        "accepted": "70",
+        "paid": "70",
+        "pending": "0",
+        "sequence": "2",
+        "attempts": 2
+      },
+      {
+        "id": "PO-WORKER-001",
+        "buyer": "buyer.accord-v2-8e0a631d.testnet",
+        "token": "token.accord-v2-8e0a631d.testnet",
+        "terms": {
+          "supplier": "supplier.accord-v2-8e0a631d.testnet",
+          "receiver": "receiver.accord-v2-8e0a631d.testnet",
+          "operator": "operator.accord-v2-8e0a631d.testnet",
+          "payout": "supplier.accord-v2-8e0a631d.testnet",
+          "line_id": "cartons",
+          "description": "Fictitious worker verification cartons",
+          "unit": "carton",
+          "ordered": "100",
+          "unit_price": "10000000",
+          "expires_at": "1794611964558000000"
+        },
+        "terms_hash": "262df9065f017e11337ad088e86f4aa248c3a266c39534a39526fa512fc39649",
+        "accepted_terms": true,
+        "funded": "1000000000",
+        "accepted": "80",
+        "paid": "80",
+        "pending": "0",
+        "sequence": "3",
+        "attempts": 3
+      },
+      {
+        "id": "PO-05AE2F8E",
+        "buyer": "testing33.testnet",
+        "token": "token.accord-v2-8e0a631d.testnet",
+        "terms": {
+          "supplier": "supplier.accord-v2-8e0a631d.testnet",
+          "receiver": "receiver.accord-v2-8e0a631d.testnet",
+          "operator": "operator.accord-v2-8e0a631d.testnet",
+          "payout": "supplier.accord-v2-8e0a631d.testnet",
+          "line_id": "cartons",
+          "description": "Packaged coffee",
+          "unit": "carton",
+          "ordered": "10",
+          "unit_price": "10000000",
+          "expires_at": "1794680251561000000"
+        },
+        "terms_hash": "fa950f7edda5dbeed1d41e21ac3b3ff758aaf0c2e1f19d1963a17a8535483298",
+        "accepted_terms": true,
+        "funded": "100000000",
+        "accepted": "4",
+        "paid": "4",
+        "pending": "0",
+        "sequence": "1",
+        "attempts": 1
+      },
+      {
+        "id": "PO-BROWSER-ROLES-294CAAFD",
+        "buyer": "buyer.accord-v2-8e0a631d.testnet",
+        "token": "token.accord-v2-8e0a631d.testnet",
+        "terms": {
+          "supplier": "testing33.testnet",
+          "receiver": "receiver.accord-v2-8e0a631d.testnet",
+          "operator": "operator.accord-v2-8e0a631d.testnet",
+          "payout": "testing33.testnet",
+          "line_id": "cartons",
+          "description": "Browser verification coffee cartons",
+          "unit": "carton",
+          "ordered": "10",
+          "unit_price": "10000000",
+          "expires_at": "1794350146771000000"
+        },
+        "terms_hash": "072aa399cc5323cc118b3a12861100faa84727b14a4d5c7a7267306729534944",
+        "accepted_terms": false,
+        "funded": "0",
+        "accepted": "0",
+        "paid": "0",
+        "pending": "0",
+        "sequence": "0",
+        "attempts": 0
+      },
+      {
+        "id": "PO-BROWSER-ROLES-96C10D79",
+        "buyer": "accord-browser-54d330c9.testnet",
+        "token": "token.accord-v2-8e0a631d.testnet",
+        "terms": {
+          "supplier": "testing33.testnet",
+          "receiver": "testng55.testnet",
+          "operator": "operator.accord-v2-8e0a631d.testnet",
+          "payout": "testing33.testnet",
+          "line_id": "cartons",
+          "description": "Browser verification coffee cartons",
+          "unit": "carton",
+          "ordered": "10",
+          "unit_price": "10000000",
+          "expires_at": "1794351042744000000"
+        },
+        "terms_hash": "a871b6414834de0df4c08dc1bdfc2db00d7d1228e7593d00d8c5bc6e072cd1e4",
+        "accepted_terms": true,
+        "funded": "100000000",
+        "accepted": "4",
+        "paid": "4",
+        "pending": "0",
+        "sequence": "1",
+        "attempts": 1
+      },
+      {
+        "id": "PO-AUTO-F02444AA",
+        "buyer": "accord-auto-9d46f2c9.testnet",
+        "token": "token.accord-v2-8e0a631d.testnet",
+        "terms": {
+          "supplier": "supplier.accord-v2-8e0a631d.testnet",
+          "receiver": "accord-auto-9d46f2c9.testnet",
+          "operator": "operator.accord-v2-8e0a631d.testnet",
+          "payout": "supplier.accord-v2-8e0a631d.testnet",
+          "line_id": "cartons",
+          "description": "Automatic payment coffee cartons",
+          "unit": "carton",
+          "ordered": "10",
+          "unit_price": "10000000",
+          "expires_at": "1794400268376000000"
+        },
+        "terms_hash": "80b5e60dfc772e3a8c177ea118c4c76b1b527e2815a6b80641682637126b69a9",
+        "accepted_terms": true,
+        "funded": "100000000",
+        "accepted": "6",
+        "paid": "6",
+        "pending": "0",
+        "sequence": "2",
+        "attempts": 2
+      }
+    ],
+    "recoveries": [
+      {
+        "phase": "Closed",
+        "proposal": null,
+        "refund_pending": "0",
+        "refunded": "300000000",
+        "refunds": [
+          {
+            "id": 1,
+            "amount": "300000000",
+            "recipient": "buyer.accord-v2-8e0a631d.testnet",
+            "status": "Settled"
+          }
+        ]
+      },
+      {
+        "phase": "Open",
+        "proposal": null,
+        "refund_pending": "0",
+        "refunded": "0",
+        "refunds": []
+      },
+      {
+        "phase": "Closed",
+        "proposal": null,
+        "refund_pending": "0",
+        "refunded": "60000000",
+        "refunds": [
+          {
+            "id": 1,
+            "amount": "60000000",
+            "recipient": "testing33.testnet",
+            "status": "Settled"
+          }
+        ]
+      },
+      {
+        "phase": "Open",
+        "proposal": null,
+        "refund_pending": "0",
+        "refunded": "0",
+        "refunds": []
+      },
+      {
+        "phase": "Open",
+        "proposal": null,
+        "refund_pending": "0",
+        "refunded": "0",
+        "refunds": []
+      },
+      {
+        "phase": "Closed",
+        "proposal": null,
+        "refund_pending": "0",
+        "refunded": "40000000",
+        "refunds": [
+          {
+            "id": 1,
+            "amount": "40000000",
+            "recipient": "accord-auto-9d46f2c9.testnet",
+            "status": "Settled"
+          }
+        ]
+      }
+    ],
+    "policies": [
+      {
+        "mode": "manual",
+        "invoices": []
+      },
+      {
+        "mode": "manual",
+        "invoices": []
+      },
+      {
+        "mode": "manual",
+        "invoices": []
+      },
+      {
+        "mode": "manual",
+        "invoices": []
+      },
+      {
+        "mode": "manual",
+        "invoices": []
+      },
+      {
+        "mode": "automatic",
+        "invoices": [
+          {
+            "commitment": "9ca3a227165847ab781b96a9fb7df974e2ad64fe83526ae944baf60e4eaedca2",
+            "available": "0"
+          },
+          {
+            "commitment": "5a10625a18bdccdcc7c3e90b25237ccf34d6e4fb566a7bbb3806a8b857e9805d",
+            "available": "0"
+          }
+        ]
+      }
+    ],
+    "confirmations": [
+      [],
+      [
+        {
+          "commitment": "3ece8f4e767f1effebded9fb09cc131e499e0afaaebb4421942fafbf4c1d57b5",
+          "supplier": "supplier.accord-v2-8e0a631d.testnet",
+          "invoice": {
+            "order_id": "PO-WORKER-001",
+            "terms_version": 1,
+            "terms_hash": "262df9065f017e11337ad088e86f4aa248c3a266c39534a39526fa512fc39649",
+            "document_hash": "097a681848e3bff8d407143d54216316cdc635e92e90c0f64a0a31d958535a07",
+            "reference": "INV-PDF-001",
+            "line_id": "cartons",
+            "quantity": "100",
+            "token": "token.accord-v2-8e0a631d.testnet",
+            "amount": "1000000000"
+          }
+        }
+      ],
+      [
+        {
+          "commitment": "8845e7b13206cb08e951501a54bd14f976f3f71962c6b64475182510bbceeb91",
+          "supplier": "supplier.accord-v2-8e0a631d.testnet",
+          "invoice": {
+            "order_id": "PO-05AE2F8E",
+            "terms_version": 1,
+            "terms_hash": "fa950f7edda5dbeed1d41e21ac3b3ff758aaf0c2e1f19d1963a17a8535483298",
+            "document_hash": "29e22607d5b97b774f68179e74e79aa0ecd71371e9182efb1b7724dc345ded23",
+            "reference": "ACC-BROWSER-001",
+            "line_id": "cartons",
+            "quantity": "4",
+            "token": "token.accord-v2-8e0a631d.testnet",
+            "amount": "40000000"
+          }
+        }
+      ],
+      [],
+      [
+        {
+          "commitment": "9b67044f5fe62479745fd2d06883e5ab509391324d42dba49c782ebde9780416",
+          "supplier": "testing33.testnet",
+          "invoice": {
+            "order_id": "PO-BROWSER-ROLES-96C10D79",
+            "terms_version": 1,
+            "terms_hash": "a871b6414834de0df4c08dc1bdfc2db00d7d1228e7593d00d8c5bc6e072cd1e4",
+            "document_hash": "fa65c15b341ae344a7f1d40fb2b6a436e046a9676687141ded8bb67f30f09f4e",
+            "reference": "ACC-ROLES-96C10D79",
+            "line_id": "cartons",
+            "quantity": "4",
+            "token": "token.accord-v2-8e0a631d.testnet",
+            "amount": "40000000"
+          }
+        }
+      ],
+      [
+        {
+          "commitment": "9ca3a227165847ab781b96a9fb7df974e2ad64fe83526ae944baf60e4eaedca2",
+          "supplier": "supplier.accord-v2-8e0a631d.testnet",
+          "invoice": {
+            "order_id": "PO-AUTO-F02444AA",
+            "terms_version": 1,
+            "terms_hash": "80b5e60dfc772e3a8c177ea118c4c76b1b527e2815a6b80641682637126b69a9",
+            "document_hash": "3108ba62838d4b7ef4bd0ed8015b3835c42f89a205a41b353b48be5943e343c8",
+            "reference": "INV-PO-AUTO-F02444AA-4",
+            "line_id": "cartons",
+            "quantity": "4",
+            "token": "token.accord-v2-8e0a631d.testnet",
+            "amount": "40000000"
+          }
+        },
+        {
+          "commitment": "5a10625a18bdccdcc7c3e90b25237ccf34d6e4fb566a7bbb3806a8b857e9805d",
+          "supplier": "supplier.accord-v2-8e0a631d.testnet",
+          "invoice": {
+            "order_id": "PO-AUTO-F02444AA",
+            "terms_version": 1,
+            "terms_hash": "80b5e60dfc772e3a8c177ea118c4c76b1b527e2815a6b80641682637126b69a9",
+            "document_hash": "463eada9f0a9648918870f29bc6ece9846ad6672d9515dbb8956f16b595a2ae6",
+            "reference": "INV-PO-AUTO-F02444AA-2",
+            "line_id": "cartons",
+            "quantity": "2",
+            "token": "token.accord-v2-8e0a631d.testnet",
+            "amount": "20000000"
+          }
+        }
+      ]
+    ],
+    "attempts": [
+      {
+        "request_id": "testnet-partial-1",
+        "order_id": "PO-TESTNET-001",
+        "quantity": "40",
+        "amount": "400000000",
+        "recipient": "supplier.accord-v2-8e0a631d.testnet",
+        "audit_hash": "7594a0dad2d64a79897a02481a1952ca823dde318b17dc5e3515757510b9abe1",
+        "status": "Settled"
+      },
+      {
+        "request_id": "testnet-partial-2",
+        "order_id": "PO-TESTNET-001",
+        "quantity": "30",
+        "amount": "300000000",
+        "recipient": "supplier.accord-v2-8e0a631d.testnet",
+        "audit_hash": "7594a0dad2d64a79897a02481a1952ca823dde318b17dc5e3515757510b9abe1",
+        "status": "Settled"
+      },
+      {
+        "request_id": "6e8a0915-0236-4511-a297-d2f44ecaf7ac",
+        "order_id": "PO-WORKER-001",
+        "quantity": "40",
+        "amount": "400000000",
+        "recipient": "supplier.accord-v2-8e0a631d.testnet",
+        "audit_hash": "57f1d9056ccf7b9dd19508fc8adbce92ff91e1183b6076f2cbd756958b05291f",
+        "status": "Settled"
+      },
+      {
+        "request_id": "727a3874-03e7-442b-85e9-0b724414e32a",
+        "order_id": "PO-WORKER-001",
+        "quantity": "30",
+        "amount": "300000000",
+        "recipient": "supplier.accord-v2-8e0a631d.testnet",
+        "audit_hash": "8a24dc32f5afe22bf00908564f1f521dfdcb8995d4ec631db841d4d5fc119ab4",
+        "status": "Settled"
+      },
+      {
+        "request_id": "089ef0d8-bbde-4de0-8623-f959e069dc83",
+        "order_id": "PO-WORKER-001",
+        "quantity": "10",
+        "amount": "100000000",
+        "recipient": "supplier.accord-v2-8e0a631d.testnet",
+        "audit_hash": "097a681848e3bff8d407143d54216316cdc635e92e90c0f64a0a31d958535a07",
+        "status": "Settled"
+      },
+      {
+        "request_id": "2d35cffa-fe1f-499c-acdd-d964738389ad",
+        "order_id": "PO-05AE2F8E",
+        "quantity": "4",
+        "amount": "40000000",
+        "recipient": "supplier.accord-v2-8e0a631d.testnet",
+        "audit_hash": "29e22607d5b97b774f68179e74e79aa0ecd71371e9182efb1b7724dc345ded23",
+        "status": "Settled"
+      },
+      {
+        "request_id": "3f4539f1-a969-46b0-b28b-7302cecd75fb",
+        "order_id": "PO-BROWSER-ROLES-96C10D79",
+        "quantity": "4",
+        "amount": "40000000",
+        "recipient": "testing33.testnet",
+        "audit_hash": "fa65c15b341ae344a7f1d40fb2b6a436e046a9676687141ded8bb67f30f09f4e",
+        "status": "Settled"
+      },
+      {
+        "request_id": "auto-9ee80779cc10d4ff60bac3972eb8da7e67fd2bbf",
+        "order_id": "PO-AUTO-F02444AA",
+        "quantity": "4",
+        "amount": "40000000",
+        "recipient": "supplier.accord-v2-8e0a631d.testnet",
+        "audit_hash": "3108ba62838d4b7ef4bd0ed8015b3835c42f89a205a41b353b48be5943e343c8",
+        "status": "Settled"
+      },
+      {
+        "request_id": "auto-593a47ef4f353e8ed34903fea5b7c16df9dccfa6",
+        "order_id": "PO-AUTO-F02444AA",
+        "quantity": "2",
+        "amount": "20000000",
+        "recipient": "supplier.accord-v2-8e0a631d.testnet",
+        "audit_hash": "463eada9f0a9648918870f29bc6ece9846ad6672d9515dbb8956f16b595a2ae6",
+        "status": "Settled"
+      }
+    ],
+    "tokenBalance": "260000000"
+  },
+  "invoiceReuseGuardChecked": true,
+  "jobs": [
+    {
+      "network": "testnet",
+      "vault": "vault.accord-v2-8e0a631d.testnet",
+      "id": "auto-f2772c3fd36b145b10adffa18d1ce92554bd2177",
+      "orderId": "PO-REVIEW-9DBFF04F",
+      "quantity": "4",
+      "auditHash": "2ae76f1a55692054249dbe844b2f60c2a7bc093dc6bf489ae2cba413af2d7cd2",
+      "status": "settled",
+      "transactionHash": "4AzD9KLe8Q9HiQD8xc1ePMonGB9qpkCyF3PogxMiyzeC",
+      "error": null,
+      "createdAt": "2026-11-08T14:10:17.309Z",
+      "invoice": {
+        "order_id": "PO-REVIEW-9DBFF04F",
+        "terms_version": 1,
+        "terms_hash": "04407561546378eff8d4d98a30a870dc7470fa8bdc61611b0a055b03334c6838",
+        "document_hash": "2ae76f1a55692054249dbe844b2f60c2a7bc093dc6bf489ae2cba413af2d7cd2",
+        "reference": "INV-PO-REVIEW-9DBFF04F-4",
+        "line_id": "cartons",
+        "quantity": "4",
+        "token": "token.accord-v2-8e0a631d.testnet",
+        "amount": "40000000"
+      },
+      "authorization": "automatic"
+    },
+    {
+      "network": "testnet",
+      "vault": "vault.accord-v2-8e0a631d.testnet",
+      "id": "auto-483195ff9f51d0a01a151a2fc77ae017829c4f11",
+      "orderId": "PO-REVIEW-9DBFF04F",
+      "quantity": "2",
+      "auditHash": "b9c5f4d94c6701d21d8ffe3c7780b068299fa4e0cc345e7595c5a146b673ae41",
+      "status": "settled",
+      "transactionHash": "B3vAjNyYq3vodcpqdTnzn2BFMp1PSbVRaSUawGuqTfKB",
+      "error": null,
+      "createdAt": "2026-11-08T14:11:17.324Z",
+      "invoice": {
+        "order_id": "PO-REVIEW-9DBFF04F",
+        "terms_version": 1,
+        "terms_hash": "04407561546378eff8d4d98a30a870dc7470fa8bdc61611b0a055b03334c6838",
+        "document_hash": "b9c5f4d94c6701d21d8ffe3c7780b068299fa4e0cc345e7595c5a146b673ae41",
+        "reference": "INV-PO-REVIEW-9DBFF04F-2",
+        "line_id": "cartons",
+        "quantity": "2",
+        "token": "token.accord-v2-8e0a631d.testnet",
+        "amount": "20000000"
+      },
+      "authorization": "automatic"
+    }
+  ],
+  "final": {
+    "order": {
+      "id": "PO-REVIEW-9DBFF04F",
+      "buyer": "accord-review-cde1600d.testnet",
+      "token": "token.accord-v2-8e0a631d.testnet",
+      "terms": {
+        "supplier": "supplier.accord-v2-8e0a631d.testnet",
+        "receiver": "accord-review-cde1600d.testnet",
+        "operator": "operator.accord-v2-8e0a631d.testnet",
+        "payout": "supplier.accord-v2-8e0a631d.testnet",
+        "line_id": "cartons",
+        "description": "Automatic payment coffee cartons",
+        "unit": "carton",
+        "ordered": "10",
+        "unit_price": "10000000",
+        "expires_at": "1794406177257000000"
+      },
+      "terms_hash": "04407561546378eff8d4d98a30a870dc7470fa8bdc61611b0a055b03334c6838",
+      "accepted_terms": true,
+      "funded": "100000000",
+      "accepted": "6",
+      "paid": "6",
+      "pending": "0",
+      "sequence": "2",
+      "attempts": 2
+    },
+    "recovery": {
+      "phase": "Closed",
+      "proposal": null,
+      "refund_pending": "0",
+      "refunded": "40000000",
+      "refunds": [
+        {
+          "id": 1,
+          "amount": "40000000",
+          "recipient": "accord-review-cde1600d.testnet",
+          "status": "Settled"
+        }
+      ]
+    },
+    "paymentPolicy": {
+      "mode": "automatic",
+      "invoices": [
+        {
+          "commitment": "54654bc7c1783a09a24eaae84b29fd2b489378b27c9ba86f30c44b1eb740b8a7",
+          "available": "0"
+        },
+        {
+          "commitment": "17cd9ef9e9c50382430eb7d67b2feeb73fdec39b2a3222ef3b22c4d755bb8a32",
+          "available": "0"
+        }
+      ]
+    }
+  },
+  "coverage": "Two SDK customer fixture accounts and the real restricted hosted worker; no browser signing or operator-message signature is claimed.",
+  "mainnet": false
+}

@@ -12,7 +12,7 @@ export class LoadBoundary extends Component<{ children: ReactNode }, { failed: b
     return (
       <main className="load-recovery">
         <a href="/" className="load-recovery-brand" aria-label="Accord home">
-          <img src="/brand/accord-mark.svg" alt="" width="31" height="31" />
+          <img src="/brand/accord-mark.svg?v=orange-1" alt="" width="31" height="31" />
           accord.
         </a>
         <section role="alert">
