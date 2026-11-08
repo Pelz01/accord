@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { mkdtemp, rm, rmdir } from 'node:fs/promises';
 import { join } from 'node:path';
+import { tmpdir } from 'node:os';
 import { KeyPair, KeyPairSigner, Transaction, actions, baseEncode } from 'near-api-js';
 import { Ledger } from '../server/ledger.ts';
 import { productionApp } from '../server/production.ts';
@@ -71,7 +72,7 @@ async function fixture() {
 
 test('a process restart after durable preparation broadcasts the saved authorization without signing again', async () => {
   const f = await fixture();
-  const dir = await mkdtemp(join(process.cwd(), '.data', 'worker-restart-'));
+  const dir = await mkdtemp(join(tmpdir(), 'accord-worker-restart-'));
   const path = join(dir, 'jobs.sqlite');
   let ledger = new Ledger(path);
   ledger.db.exec('CREATE TABLE chain_jobs(id TEXT PRIMARY KEY, payload TEXT NOT NULL)');
