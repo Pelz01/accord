@@ -132,22 +132,13 @@
     box-shadow 0.2s;
 }
 .landing-button.dark {
-  color: #ffffff;
-  background: #000000;
-  border: 1px solid #000000;
+  color: var(--button-label);
+  background: var(--button-fill);
+  border: 1px solid var(--button-fill);
 }
 .landing-button.dark:hover {
-  background: #202020;
-  border-color: #202020;
-}
-.landing-button.orange {
-  background: var(--land-accent);
-  border: 1px solid var(--land-accent);
-  color: #000000;
-}
-.landing-button.orange:hover {
-  background: #e63700;
-  border-color: #e63700;
+  background: var(--button-hover);
+  border-color: var(--button-hover);
 }
 .landing-button.outline {
   color: #000000;
@@ -541,8 +532,8 @@
   padding: 9px 11px;
   min-height: 30px;
   border-radius: 3px;
-  background: var(--land-accent);
-  color: #261b15;
+  background: var(--button-fill);
+  color: var(--button-label);
   font-size: 8px;
   white-space: nowrap;
 }

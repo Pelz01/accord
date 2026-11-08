@@ -10,6 +10,9 @@
   --accent: #ff3d00;
   --accent-deep: #ba2d00;
   --accent-wash: #fff0e9;
+  --button-fill: #000000;
+  --button-label: #ffffff;
+  --button-hover: #202020;
   --paper: #ffffff;
   --sidebar: #f5f4f1;
   --space-sm: 8px;
@@ -420,12 +423,12 @@ main {
   white-space: nowrap;
 }
 .button.primary {
-  background: var(--accent);
-  color: #261b15;
+  background: var(--button-fill);
+  color: var(--button-label);
   box-shadow: 0 1px 2px #25232120;
 }
 .button.primary:hover:not(:disabled) {
-  background: #e63700;
+  background: var(--button-hover);
 }
 .button.secondary {
   background: #fafbf7;

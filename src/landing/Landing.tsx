@@ -301,7 +301,7 @@ export function Landing() {
             <a className="landing-login" href="/workspace">
               Sign in
             </a>
-            <a className="landing-button orange small" href="/workspace">
+            <a className="landing-button dark small" href="/workspace">
               Open workspace
             </a>
             <button
