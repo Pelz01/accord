@@ -27,6 +27,20 @@ impl Vault {
         Self::automatic_orders().get(order_id).unwrap_or(false)
     }
 
+    pub(crate) fn require_customer_approval(&self, order_id: &String) {
+        if self.automatic(order_id) {
+            require!(
+                env::attached_deposit() == NearToken::from_yoctonear(1),
+                "Attach exactly 1 yoctoNEAR for wallet approval"
+            );
+        } else {
+            require!(
+                env::attached_deposit().is_zero(),
+                "Manual order approval requires zero deposit"
+            );
+        }
+    }
+
     pub(crate) fn invoice_available(&self, commitment: &String, quantity: u64) -> u64 {
         let used = Self::automatic_invoice_attempts()
             .get(commitment)

@@ -74,6 +74,8 @@ npm test
 
 Checks run on the development machine. GitHub Actions is disabled for this repository; pushes do not start remote checks.
 
+The internal contract, recovery and security review is recorded in SECURITY_REVIEW.md. It precedes mainnet and does not replace independent review. The security sandbox suite checks deposit-capable customer approvals, upgrade preservation and exact-transaction restart recovery. Reproduce the testnet security release with scripts/testnet-security.ts; the older automatic-release evidence remains a historical record.
+
 npm run build produces the frontend in dist and the VPS API in dist-api. The separate optional build:sites command produces the earlier Worker target. The build excludes the internal simulator from the production JavaScript. The development-only /dev/simulator route is an isolated deterministic test harness with an actor selector; its tests do not count as wallet authorization or chain evidence. It has no customer navigation.
 
 Rust is pinned to 1.99.1; Windows contract development uses Ubuntu/WSL. The sandbox uses pinned nearcore 2.14.0. Its negative-test fault-injection build must never be deployed. The build script restores the ordinary artifact afterward.

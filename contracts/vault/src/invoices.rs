@@ -118,11 +118,13 @@ impl Vault {
 
 #[near]
 impl Vault {
+    #[payable]
     pub fn confirm_invoice(
         &mut self,
         order_id: String,
         invoice: InvoicePayload,
     ) -> InvoiceConfirmation {
+        self.require_customer_approval(&order_id);
         let order = self.order(&order_id);
         self.active(&order);
         require!(

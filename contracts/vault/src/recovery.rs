@@ -219,7 +219,7 @@ impl Vault {
 #[near]
 impl Vault {
     pub fn get_version(&self) -> String {
-        "2.3.0-automatic".into()
+        "2.3.1-security".into()
     }
 
     pub fn get_recovery(&self, order_id: String) -> RecoveryState {
@@ -229,7 +229,9 @@ impl Vault {
 
     /// Either commercial party proposes; only the other party may accept.
     /// The full immutable order and all mutable counters bind both approvals.
+    #[payable]
     pub fn propose_close(&mut self, order_id: String) -> CloseProposal {
+        self.require_customer_approval(&order_id);
         let order = self.order(&order_id);
         let caller = env::predecessor_account_id();
         require!(
@@ -256,7 +258,9 @@ impl Vault {
         proposal
     }
 
+    #[payable]
     pub fn cancel_close(&mut self, order_id: String) {
+        self.require_customer_approval(&order_id);
         let order = self.order(&order_id);
         let caller = env::predecessor_account_id();
         require!(
@@ -273,11 +277,13 @@ impl Vault {
         event("close_cancelled", json!({"order_id":order_id}));
     }
 
+    #[payable]
     pub fn accept_close(
         &mut self,
         order_id: String,
         proposal_hash: String,
     ) -> PromiseOrValue<RefundDisposition> {
+        self.require_customer_approval(&order_id);
         let order = self.order(&order_id);
         let mut state = self.recovery(&order_id);
         self.close_ready(&order, &state);
@@ -315,7 +321,9 @@ impl Vault {
         }
     }
 
+    #[payable]
     pub fn retry_refund(&mut self, order_id: String) -> Promise {
+        self.require_customer_approval(&order_id);
         let order = self.order(&order_id);
         require!(env::predecessor_account_id() == order.buyer, "Buyer only");
         let state = self.recovery(&order_id);
@@ -341,11 +349,13 @@ impl Vault {
 
     /// Recipient consent can consume an unresolved reservation as paid. It can
     /// never release or reuse it. No caller can assert failure or change payout.
+    #[payable]
     pub fn acknowledge_payment(&mut self, request_id: String) {
         let mut attempt = self
             .attempts
             .get(&request_id)
             .unwrap_or_else(|| env::panic_str("Unknown attempt"));
+        self.require_customer_approval(&attempt.order_id);
         require!(
             env::predecessor_account_id() == attempt.recipient,
             "Payout recipient only"
@@ -378,7 +388,9 @@ impl Vault {
         event("payment_receipt_acknowledged", json!(&attempt));
     }
 
+    #[payable]
     pub fn acknowledge_refund(&mut self, order_id: String, refund_id: u32) -> RefundDisposition {
+        self.require_customer_approval(&order_id);
         let order = self.order(&order_id);
         require!(env::predecessor_account_id() == order.buyer, "Buyer only");
         let state = self.recovery(&order_id);

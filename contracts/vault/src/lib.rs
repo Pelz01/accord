@@ -222,7 +222,9 @@ impl Vault {
         order
     }
 
+    #[payable]
     pub fn accept_order(&mut self, order_id: String, terms_hash: String) {
+        self.require_customer_approval(&order_id);
         let mut order = self.order(&order_id);
         require!(
             env::predecessor_account_id() == order.terms.supplier,
@@ -245,6 +247,7 @@ impl Vault {
         );
     }
 
+    #[payable]
     pub fn confirm_delivery(
         &mut self,
         order_id: String,
@@ -252,6 +255,7 @@ impl Vault {
         cumulative_quantity: U64,
         receipt_hash: String,
     ) {
+        self.require_customer_approval(&order_id);
         let mut order = self.order(&order_id);
         self.active(&order);
         require!(

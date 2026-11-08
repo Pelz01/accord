@@ -17,6 +17,13 @@ if [ ! -f .data/wasm/vault-v2-invoices.wasm ]; then
   cp target/wasm32-unknown-unknown/release/accord_vault.wasm .data/wasm/vault-v2-invoices.wasm
   node scripts/optimize-wasm.mjs vault-v2-invoices
 fi
+if [ ! -f .data/wasm/vault-v2-automatic.wasm ]; then
+  automatic_dir="$(mktemp -d "$PWD/.data/legacy-automatic.XXXXXX")"
+  git archive e5566eb Cargo.toml Cargo.lock rust-toolchain.toml .cargo contracts | tar -x -C "$automatic_dir"
+  cargo build --locked --release --target wasm32-unknown-unknown --manifest-path "$automatic_dir/Cargo.toml" --target-dir "$PWD/target" -p accord-vault
+  cp target/wasm32-unknown-unknown/release/accord_vault.wasm .data/wasm/vault-v2-automatic.wasm
+  node scripts/optimize-wasm.mjs vault-v2-automatic
+fi
 cargo build --locked --release --target wasm32-unknown-unknown -p accord-vault -p accord-test-token
 cp target/wasm32-unknown-unknown/release/accord_vault.wasm .data/wasm/vault.wasm
 cp target/wasm32-unknown-unknown/release/accord_test_token.wasm .data/wasm/token.wasm

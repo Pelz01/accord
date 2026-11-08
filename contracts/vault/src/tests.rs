@@ -14,6 +14,11 @@ fn context(caller: &str) -> VMContextBuilder {
         .prepaid_gas(Gas::from_tgas(150));
     ctx
 }
+fn approval_context(caller: &str) -> VMContextBuilder {
+    let mut ctx = context(caller);
+    ctx.attached_deposit(NearToken::from_yoctonear(1));
+    ctx
+}
 fn setup() -> Vault {
     let mut ctx = context("buyer.testnet");
     ctx.attached_deposit(NearToken::from_near(1));
@@ -97,11 +102,11 @@ fn automatic_setup(receiver: &str) -> (Vault, InvoicePayload) {
     ctx.attached_deposit(NearToken::from_near(1));
     testing_env!(ctx.build());
     let o = v.create_automatic_order("PO-AUTO".into(), terms);
-    testing_env!(context("supplier.testnet").build());
+    testing_env!(approval_context("supplier.testnet").build());
     v.accept_order(o.id.clone(), o.terms_hash.clone());
     testing_env!(context("token.testnet").build());
     let _ = v.ft_on_transfer(account("buyer.testnet"), U128(1_000_000_000), o.id.clone());
-    testing_env!(context(receiver).build());
+    testing_env!(approval_context(receiver).build());
     v.confirm_delivery(o.id.clone(), U64(1), U64(4), "a".repeat(64));
     let invoice = InvoicePayload {
         order_id: o.id,
@@ -110,7 +115,7 @@ fn automatic_setup(receiver: &str) -> (Vault, InvoicePayload) {
         amount: U128(40_000_000),
         ..test_invoice(&v)
     };
-    testing_env!(context("supplier.testnet").build());
+    testing_env!(approval_context("supplier.testnet").build());
     v.confirm_invoice("PO-AUTO".into(), invoice.clone());
     (v, invoice)
 }
@@ -126,7 +131,7 @@ fn buyer_confirms_own_deliveries_and_existing_orders_stay_manual() {
 #[test]
 fn optional_receiver_can_confirm_delivery() {
     let (mut v, _) = automatic_setup("receiver.testnet");
-    testing_env!(context("receiver.testnet").build());
+    testing_env!(approval_context("receiver.testnet").build());
     v.confirm_delivery("PO-AUTO".into(), U64(2), U64(6), "c".repeat(64));
     assert_eq!(v.get_order("PO-AUTO".into()).unwrap().accepted.0, 6);
 }
@@ -135,7 +140,7 @@ fn optional_receiver_can_confirm_delivery() {
 #[should_panic(expected = "Receiver only")]
 fn appointing_a_receiver_does_not_also_authorize_the_buyer() {
     let (mut v, _) = automatic_setup("receiver.testnet");
-    testing_env!(context("buyer.testnet").build());
+    testing_env!(approval_context("buyer.testnet").build());
     v.confirm_delivery("PO-AUTO".into(), U64(2), U64(6), "c".repeat(64));
 }
 
@@ -198,7 +203,7 @@ fn a_paid_automatic_invoice_cannot_pay_for_a_later_delivery() {
     let (mut v, invoice) = automatic_setup("buyer.testnet");
     automatic_request(&mut v, &invoice, "auto-paid", 4);
     callback(&mut v, "auto-paid", PromiseResult::Successful(vec![]));
-    testing_env!(context("buyer.testnet").build());
+    testing_env!(approval_context("buyer.testnet").build());
     v.confirm_delivery("PO-AUTO".into(), U64(2), U64(6), "c".repeat(64));
     automatic_request(&mut v, &invoice, "auto-reuse", 2);
 }
@@ -758,4 +763,35 @@ fn new_supplier_invoice_confirmation_invalidates_close_proposal() {
     testing_env!(context("supplier.testnet").build());
     v.confirm_invoice("PO-001".into(), invoice);
     let _ = v.accept_close("PO-001".into(), proposal.hash);
+}
+
+#[test]
+#[should_panic(expected = "Attach exactly 1 yoctoNEAR")]
+fn automatic_delivery_rejects_zero_deposit() {
+    let (mut v, _) = automatic_setup("buyer.testnet");
+    testing_env!(context("buyer.testnet").build());
+    v.confirm_delivery("PO-AUTO".into(), U64(2), U64(6), "c".repeat(64));
+}
+#[test]
+#[should_panic(expected = "Attach exactly 1 yoctoNEAR")]
+fn automatic_invoice_rejects_zero_deposit() {
+    let (mut v, invoice) = automatic_setup("buyer.testnet");
+    testing_env!(context("supplier.testnet").build());
+    v.confirm_invoice("PO-AUTO".into(), invoice);
+}
+#[test]
+#[should_panic(expected = "Attach exactly 1 yoctoNEAR")]
+fn automatic_closure_rejects_excess_deposit() {
+    let (mut v, _) = automatic_setup("buyer.testnet");
+    let mut ctx = context("buyer.testnet");
+    ctx.attached_deposit(NearToken::from_yoctonear(2));
+    testing_env!(ctx.build());
+    v.propose_close("PO-AUTO".into());
+}
+#[test]
+#[should_panic(expected = "Manual order approval requires zero deposit")]
+fn legacy_delivery_keeps_zero_deposit_rule() {
+    let mut v = setup();
+    testing_env!(approval_context("receiver.testnet").build());
+    v.confirm_delivery("PO-001".into(), U64(2), U64(50), "a".repeat(64));
 }

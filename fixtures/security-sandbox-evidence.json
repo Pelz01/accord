@@ -1,0 +1,30 @@
+{
+  "at": "2026-11-08T14:03:15.163Z",
+  "environment": "local-near-sandbox",
+  "wasmSha256": {
+    "vault": "2eb011ff5989660c2ce6939ad8bd616e77ca9d7df3fd10d87e0aa9980ac74f04",
+    "previous": "f77df177a4f98defe366bc1924063773f3f1eff39a51794d4467a696a49493b5"
+  },
+  "checks": [
+    {
+      "name": "upgrade preserves automatic order, settled attempt, invoice capacity, recovery and token balance",
+      "status": "PASS"
+    },
+    {
+      "name": "all nine automatic customer approval methods reject zero deposit without mutating balances",
+      "status": "PASS"
+    },
+    {
+      "name": "real function-call key cannot approve delivery; full wallet with exactly one yocto succeeds",
+      "status": "PASS"
+    },
+    {
+      "name": "guarded recipient acknowledgments finalize uncertain payment and refund without reusing funds",
+      "status": "PASS"
+    },
+    {
+      "name": "restricted service recovers saved signed bytes after restart and settles exactly once",
+      "status": "PASS"
+    }
+  ]
+}

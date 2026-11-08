@@ -522,7 +522,7 @@ test('buyer confirms delivery with the same wallet and confirmed invoices need n
   page,
 }) => {
   const fixture = fixtures();
-  fixture.state.deployment!.features!.push('automatic-v1');
+  fixture.state.deployment!.features!.push('automatic-v1', 'customer-approval-v1');
   fixture.state.orders[0].terms.receiver = buyer;
   const commitment = await invoiceCommitment('testnet', 'vault.testnet', invoice);
   fixture.state.confirmations![base.id][0].commitment = commitment;
@@ -548,6 +548,7 @@ test('buyer confirms delivery with the same wallet and confirmed invoices need n
     .click();
   await expect(page.getByRole('dialog')).toHaveCount(0);
   expect(calls[0][1]).toBe('confirm_delivery');
+  expect(calls[0][3]).toBe('1');
   expect(calls[0][2]).toMatchObject({
     order_id: base.id,
     cumulative_quantity: '70',

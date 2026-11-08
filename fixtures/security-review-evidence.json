@@ -1,0 +1,54 @@
+{
+  "review": "internal engineering review",
+  "at": "2026-11-08T14:06:11.340Z",
+  "mainnetApproved": false,
+  "version": "2.3.1-security",
+  "wasmSha256": "2eb011ff5989660c2ce6939ad8bd616e77ca9d7df3fd10d87e0aa9980ac74f04",
+  "apiSha256": "e386a894d64fd173087bca0ee92567d789854931f6a6e148d0c578742cdee579",
+  "validation": {
+    "applicationTests": 58,
+    "browserTests": 23,
+    "rustUnitTests": 48,
+    "sandboxChecks": 42,
+    "typescriptAndProductionBuild": "PASS"
+  },
+  "dependencies": {
+    "npmKnownAdvisories": 0,
+    "cargoAdvisoryDatabase": {
+      "advisory-count": 1422,
+      "last-commit": "309392b18f6b17022f82c701f300433126901068",
+      "last-updated": "2026-11-06T16:34:32+01:00"
+    },
+    "remainingNativeTestOnlyAdvisories": [
+      {
+        "id": "RUSTSEC-2026-0387",
+        "package": "crypto-bigint",
+        "presentInNormalWasmDependencyTree": false
+      },
+      {
+        "id": "RUSTSEC-2024-0449",
+        "package": "unsafe-libyaml",
+        "presentInNormalWasmDependencyTree": false
+      },
+      {
+        "id": "RUSTSEC-2026-0253",
+        "package": "lru",
+        "presentInNormalWasmDependencyTree": false
+      }
+    ],
+    "weeAllocRemoved": true,
+    "findingsSuppressed": false
+  },
+  "backupRestore": {
+    "at": "2026-11-08T13:47:39.641Z",
+    "sha256": "eae0fcbbabc811d16ccd24436442d8363d06e6195e74466e67859b843ffc28c8",
+    "integrity": "PASS",
+    "copiedRecords": "PASS",
+    "rollbackWrite": "PASS",
+    "liveDatabaseModified": false
+  },
+  "githubActions": {
+    "enabled": false,
+    "runCount": 0
+  }
+}

@@ -29,6 +29,7 @@ import { Badge, Metric } from '../components/primitives';
 import { ModalShell } from '../components/ModalShell';
 import { CreateForm } from '../components/CreateOrderForm';
 import { walletConnector, accountId, sendCall } from './Wallet';
+import { customerApprovalDeposit } from '../../shared/customer-approval';
 import { PaymentHistory } from './PaymentHistory';
 import { PayablesOverview } from './PayablesOverview';
 import { RemittanceAdvice } from './RemittanceAdvice';
@@ -252,6 +253,16 @@ export function TestnetWorkspace() {
   }
   async function call(method: string, args: Record<string, unknown>, deposit = '0') {
     if (!d) throw new Error('Testnet deployment is not configured.');
+    const orderId =
+      typeof args.order_id === 'string'
+        ? args.order_id
+        : state?.attempts.find((attempt) => attempt.request_id === args.request_id)?.order_id;
+    if (deposit === '0')
+      deposit = customerApprovalDeposit(
+        d,
+        method,
+        orderId ? state?.paymentPolicies?.[orderId] : undefined,
+      );
     setTransaction(await sendCall(d.vault, method, args, deposit));
   }
   async function create(input: CreateOrder) {

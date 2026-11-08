@@ -1,12 +1,5 @@
 import { readFile } from 'node:fs/promises';
-import {
-  Account,
-  JsonRpcProvider,
-  KeyPairSigner,
-  actions,
-  baseEncode,
-  type KeyPairString,
-} from 'near-api-js';
+import { Account, KeyPairSigner, actions, type KeyPairString } from 'near-api-js';
 import { verifyMessage } from 'near-api-js/nep413';
 import { randomBytes, randomUUID } from 'node:crypto';
 import { z } from 'zod';
@@ -27,36 +20,30 @@ import type { InvoiceAuthorizer } from './sessions.ts';
 import { InvoiceFiles } from './documents.ts';
 import { RpcReadCache } from './read-cache.ts';
 import { automaticPaymentJob } from './automatic-payments.ts';
+import { FinalizedRpcProvider } from './rpc.ts';
+import { assertOperatorPolicy } from './operator-policy.ts';
+import {
+  HoldPaymentError,
+  paymentArguments,
+  publicPaymentJob,
+  runPaymentJob,
+  type StoredPaymentJob as Job,
+} from './payment-worker.ts';
 import {
   invoicePayload,
   invoicePayloadSchema,
   invoiceCommitment,
-  type InvoicePayload,
   type InvoiceConfirmation,
 } from '../shared/invoices.ts';
 
 type KeyFile = { accountId: string; secretKey: KeyPairString; publicKey: string };
-type Job = {
-  vault?: string;
-  network?: Deployment['network'];
-  id: string;
-  orderId: string;
-  quantity: string;
-  auditHash: string;
-  status: 'queued' | 'submitting' | 'settled' | 'failed' | 'unresolved';
-  transactionHash: string | null;
-  error: string | null;
-  createdAt: string;
-  invoice?: InvoicePayload;
-  authorization?: 'automatic';
-};
 const requestSchema = z.strictObject({
   orderId: z.string().min(1).max(64),
   quantity: z.string().regex(/^[1-9]\d{0,18}$/),
   auditHash: z.string().regex(/^[a-f0-9]{64}$/),
   invoice: invoicePayloadSchema.optional(),
 });
-const provider = new JsonRpcProvider({ url: 'https://test.rpc.fastnear.com' });
+const provider = new FinalizedRpcProvider({ url: 'https://test.rpc.fastnear.com' });
 const displayReads = new RpcReadCache();
 const recipient = 'Accord testnet operator';
 export async function deployment(): Promise<Deployment | null> {
@@ -130,14 +117,15 @@ async function operatorKey(d: Deployment) {
     accountId: key.accountId,
     publicKey: key.publicKey,
   });
-  if (
-    onchain.permission === 'FullAccess' ||
-    !('FunctionCall' in onchain.permission) ||
-    onchain.permission.FunctionCall.receiver_id !== d.vault ||
-    onchain.permission.FunctionCall.method_names.length !== 1 ||
-    onchain.permission.FunctionCall.method_names[0] !== 'request_payment'
-  )
-    throw new DomainError('Operator key is not narrowly scoped.', 503);
+  const target = await provider.viewAccount({
+    accountId: d.vault,
+    blockQuery: { finality: 'final' },
+  });
+  try {
+    assertOperatorPolicy(d, onchain.permission, target.code_hash);
+  } catch (error) {
+    throw new DomainError((error as Error).message, 503);
+  }
   return key;
 }
 export async function registerChain(
@@ -221,7 +209,7 @@ export async function registerChain(
       let operatorReady = false;
       try {
         await displayReads.read(
-          JSON.stringify([d.network, d.vault, d.operator, 'operator-ready']),
+          JSON.stringify([d.network, d.vault, d.operator, d.wasmSha256.vault, 'operator-ready']),
           () => operatorKey(d).then(() => true),
           15000,
         );
@@ -256,7 +244,7 @@ export async function registerChain(
   );
   app.get('/api/chain/jobs', async () => ({
     jobs: (ledger.db.prepare('SELECT payload FROM chain_jobs').all() as { payload: string }[]).map(
-      (row) => JSON.parse(row.payload),
+      (row) => publicPaymentJob(JSON.parse(row.payload) as Job),
     ),
   }));
   app.post<{ Params: { id: string } }>('/api/chain/orders/:id/extract', async (req) => {
@@ -437,7 +425,7 @@ export async function registerChain(
       ledger.db.exec('ROLLBACK');
       throw e;
     }
-    return job;
+    return publicPaymentJob(job);
   });
   let inFlight = false;
   let scannedAt = 0;
@@ -493,105 +481,53 @@ export async function registerChain(
             job.status === 'queued' || job.status === 'submitting' || job.status === 'unresolved',
         );
       for (const job of jobs) {
-        if (job.vault !== d.vault || job.network !== d.network) {
-          job.status = 'unresolved';
-          job.error = 'This request requires authorization for the current deployment.';
-          save(job);
-          continue;
-        }
-        const attempt = await view<ChainAttempt | null>(d, 'get_attempt', { request_id: job.id });
-        if (attempt) {
-          job.status =
-            attempt.status === 'Settled' || attempt.status === 'ReceiptAcknowledged'
-              ? 'settled'
-              : attempt.status === 'TransferFailed'
-                ? 'failed'
-                : 'unresolved';
-          if (job.status === 'settled' || job.status === 'failed') job.error = null;
-          save(job);
-          continue;
-        }
-        // A submitting job without visible state may be in flight. Never sign it again blindly.
-        if (job.status !== 'queued') {
-          job.status = 'unresolved';
-          if (job.transactionHash) {
-            try {
-              const status = await provider.viewTransactionStatus({
-                txHash: job.transactionHash,
-                accountId: d.operator,
-                waitUntil: 'FINAL',
-              });
-              if (typeof status.status === 'object' && 'Failure' in status.status) {
-                job.status = 'failed';
-                job.error = 'The contract rejected this request.';
-              }
-            } catch {
-              /* retain the unresolved record while the provider is unavailable */
-            }
-          }
-          save(job);
-          continue;
-        }
-        if (d.features?.includes('invoice-v1') && !job.invoice) {
-          job.status = 'unresolved';
-          job.error =
-            'This request needs a fresh authorization referencing a supplier-confirmed invoice.';
-          save(job);
-          continue;
-        }
-        if (
-          job.authorization === 'automatic' &&
-          (!d.features?.includes('automatic-v1') ||
-            (await view<ChainPaymentPolicy>(d, 'get_payment_policy', { order_id: job.orderId }))
-              .mode !== 'automatic')
-        ) {
-          job.status = 'unresolved';
-          job.error = 'Automatic payment is not enabled for this order.';
-          save(job);
-          continue;
-        }
-        const key = await operatorKey(d);
-        const signer = KeyPairSigner.fromSecretKey(key.secretKey);
-        const account = new Account(key.accountId, provider, signer);
-        const transaction = await account.createTransaction({
-          receiverId: d.vault,
-          publicKey: key.publicKey,
-          actions: [
-            actions.functionCall(
-              'request_payment',
-              {
-                order_id: job.orderId,
-                request_id: job.id,
-                quantity: job.quantity,
-                audit_hash: job.auditHash,
-                invoice: job.invoice ?? null,
-              },
-              150_000_000_000_000n,
-              0n,
-            ),
-          ],
+        await runPaymentJob(d, job, {
+          attempt: () => view<ChainAttempt | null>(d, 'get_attempt', { request_id: job.id }),
+          transactionStatus: async () => {
+            if (!job.transactionHash) throw new Error('No submitted transaction hash.');
+            return provider.viewTransactionStatus({
+              txHash: job.transactionHash,
+              accountId: d.operator,
+              waitUntil: 'FINAL',
+            });
+          },
+          prepare: async () => {
+            if (d.features?.includes('invoice-v1') && !job.invoice)
+              throw new HoldPaymentError(
+                'This request needs a fresh authorization referencing a supplier-confirmed invoice.',
+              );
+            if (
+              job.authorization === 'automatic' &&
+              (!d.features?.includes('automatic-v1') ||
+                (await view<ChainPaymentPolicy>(d, 'get_payment_policy', { order_id: job.orderId }))
+                  .mode !== 'automatic')
+            )
+              throw new HoldPaymentError('Automatic payment is not enabled for this order.');
+            const key = await operatorKey(d);
+            const signer = KeyPairSigner.fromSecretKey(key.secretKey);
+            const account = new Account(key.accountId, provider, signer);
+            const transaction = await account.createTransaction({
+              receiverId: d.vault,
+              publicKey: key.publicKey,
+              actions: [
+                actions.functionCall(
+                  'request_payment',
+                  paymentArguments(job),
+                  150_000_000_000_000n,
+                  0n,
+                ),
+              ],
+            });
+            return (await signer.signTransaction(transaction)).signedTransaction;
+          },
+          broadcast: async (transaction) => {
+            const key = await operatorKey(d);
+            if (transaction.transaction.publicKey.toString() !== key.publicKey)
+              throw new HoldPaymentError('Stored payment authorization needs review.');
+            return provider.sendTransactionUntil(transaction, 'FINAL');
+          },
+          save,
         });
-        const signed = await signer.signTransaction(transaction);
-        job.status = 'submitting';
-        job.transactionHash = baseEncode(signed.txHash);
-        save(job);
-        try {
-          await provider.sendTransactionUntil(signed.signedTransaction, 'FINAL');
-          const outcome = await view<ChainAttempt | null>(d, 'get_attempt', { request_id: job.id });
-          job.status =
-            outcome?.status === 'Settled' || outcome?.status === 'ReceiptAcknowledged'
-              ? 'settled'
-              : outcome?.status === 'TransferFailed'
-                ? 'failed'
-                : 'unresolved';
-          if (job.status === 'settled' || job.status === 'failed') job.error = null;
-          save(job);
-        } catch {
-          job.status = 'unresolved';
-          job.error =
-            'Submission outcome requires receipt reconciliation. No blind retry was made.';
-          save(job);
-        }
       }
     } catch {
       /* Provider outage leaves durable jobs unchanged for the next read. */

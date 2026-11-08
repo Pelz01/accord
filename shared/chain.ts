@@ -59,7 +59,13 @@ export type Deployment = {
   wasmSha256: Record<string, string>;
   accounts: Record<string, string>;
   trackedRequestIds?: string[];
-  features?: ('recovery-v1' | 'invoice-v1' | 'documents-v1' | 'automatic-v1')[];
+  features?: (
+    | 'recovery-v1'
+    | 'invoice-v1'
+    | 'documents-v1'
+    | 'automatic-v1'
+    | 'customer-approval-v1'
+  )[];
 };
 export type ChainPaymentPolicy = {
   mode: 'manual' | 'automatic';

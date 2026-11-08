@@ -1,7 +1,7 @@
 import { createHash, randomBytes, randomUUID } from 'node:crypto';
 import type { DatabaseSync } from 'node:sqlite';
 import type { FastifyInstance, FastifyRequest } from 'fastify';
-import { JsonRpcProvider } from 'near-api-js';
+import { FinalizedRpcProvider } from './rpc.ts';
 import { verifyMessage } from 'near-api-js/nep413';
 import { z } from 'zod';
 import { accountSchema } from '../shared/schema.ts';
@@ -166,7 +166,7 @@ async function verifyProof(proof: Proof, challenge: Challenge) {
       recipient: challenge.recipient,
     },
     signature: Buffer.from(proof.signature, 'base64'),
-    provider: new JsonRpcProvider({ url: 'https://test.rpc.fastnear.com' }),
+    provider: new FinalizedRpcProvider({ url: 'https://test.rpc.fastnear.com' }),
   });
 }
 export type InvoiceAuthorizer = (

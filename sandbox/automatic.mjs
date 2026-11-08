@@ -6,6 +6,8 @@ import { fileURLToPath } from 'node:url';
 import { prepareRuntime } from './runtime.mjs';
 await prepareRuntime();
 const wasm = (name) => fileURLToPath(new URL(`../.data/wasm/${name}.wasm`, import.meta.url));
+const approval = (actor, contract, method, args) =>
+  actor.call(contract, method, args, { attachedDeposit: '1' });
 const hash = (data) => createHash('sha256').update(data).digest('hex');
 const worker = await Worker.init();
 const proof = {
@@ -66,7 +68,12 @@ try {
       { attachedDeposit: '1000000000000000000000000' },
     );
     const order = await contract.view('get_order', { order_id: id });
-    await supplier.call(contract, 'accept_order', { order_id: id, terms_hash: order.terms_hash });
+    await supplier.call(
+      contract,
+      'accept_order',
+      { order_id: id, terms_hash: order.terms_hash },
+      { attachedDeposit: automatic ? '1' : '0' },
+    );
     await buyer.call(
       token,
       'ft_transfer_call',
@@ -93,7 +100,7 @@ try {
   const before = await vault.view('get_order', { order_id: 'legacy' });
   const balance = await token.view('ft_balance_of', { account_id: vault.accountId });
   await vault.deploy(wasm('vault'));
-  assert.equal(await vault.view('get_version', {}), '2.3.0-automatic');
+  assert.equal(await vault.view('get_version', {}), '2.3.1-security');
   assert.deepEqual(await vault.view('get_order', { order_id: 'legacy' }), before);
   assert.equal(await token.view('ft_balance_of', { account_id: vault.accountId }), balance);
   assert.equal((await vault.view('get_payment_policy', { order_id: 'legacy' })).mode, 'manual');
@@ -101,7 +108,7 @@ try {
   const o = await create(vault, 'automatic');
   assert.equal(o.terms.receiver, buyer.accountId);
   assert.equal((await vault.view('get_payment_policy', { order_id: o.id })).mode, 'automatic');
-  await buyer.call(vault, 'confirm_delivery', {
+  await approval(buyer, vault, 'confirm_delivery', {
     order_id: o.id,
     sequence: '1',
     cumulative_quantity: '4',
@@ -120,7 +127,7 @@ try {
       token: token.accountId,
       amount: (BigInt(quantity) * 10000000n).toString(),
     };
-    await supplier.call(contract, 'confirm_invoice', { order_id: order.id, invoice: payload });
+    await approval(supplier, contract, 'confirm_invoice', { order_id: order.id, invoice: payload });
     return payload;
   }
   async function payment(contract, order, payload, id, quantity, caller = operator) {
@@ -157,7 +164,7 @@ try {
   record(
     'restricted payment responsibility stays separate while the fixed supplier receives 40 aUSD',
   );
-  await buyer.call(vault, 'confirm_delivery', {
+  await approval(buyer, vault, 'confirm_delivery', {
     order_id: o.id,
     sequence: '2',
     cumulative_quantity: '6',
@@ -187,11 +194,14 @@ try {
     cumulative_quantity: '4',
     receipt_hash: 'd'.repeat(64),
   };
-  assert.equal((await buyer.callRaw(vault, 'confirm_delivery', delivery)).failed, true);
-  await receiver.call(vault, 'confirm_delivery', delivery);
+  assert.equal(
+    (await buyer.callRaw(vault, 'confirm_delivery', delivery, { attachedDeposit: '1' })).failed,
+    true,
+  );
+  await approval(receiver, vault, 'confirm_delivery', delivery);
   record('optional delegated receiving authorizes only the appointed warehouse account');
   const failed = await create(vault, 'failed', { payout: unregistered.accountId });
-  await buyer.call(vault, 'confirm_delivery', { ...delivery, order_id: failed.id });
+  await approval(buyer, vault, 'confirm_delivery', { ...delivery, order_id: failed.id });
   const failedInvoice = await invoice(vault, failed, '4', 'INV-RETRY');
   await payment(vault, failed, failedInvoice, 'unregistered-recipient', '4');
   assert.equal(
@@ -207,7 +217,7 @@ try {
   assert.equal((await vault.view('get_order', { order_id: failed.id })).paid, '4');
   record('definitive token failure releases invoice capacity; repaired transfer settles once');
   const uncertain = await create(starved, 'uncertain');
-  await buyer.call(starved, 'confirm_delivery', { ...delivery, order_id: uncertain.id });
+  await approval(buyer, starved, 'confirm_delivery', { ...delivery, order_id: uncertain.id });
   const uncertainInvoice = await invoice(starved, uncertain, '4', 'INV-UNCERTAIN');
   await payment(starved, uncertain, uncertainInvoice, 'starved-result', '4');
   assert.equal((await starved.view('get_order', { order_id: uncertain.id })).pending, '4');
@@ -216,7 +226,7 @@ try {
     '0',
   );
   record('successful transfer with a failed callback retains both order and invoice reservations');
-  await supplier.call(starved, 'acknowledge_payment', { request_id: 'starved-result' });
+  await approval(supplier, starved, 'acknowledge_payment', { request_id: 'starved-result' });
   assert.equal((await starved.view('get_order', { order_id: uncertain.id })).paid, '4');
   assert.equal(
     (await starved.view('get_payment_policy', { order_id: uncertain.id })).invoices[0].available,

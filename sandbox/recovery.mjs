@@ -269,7 +269,7 @@ try {
   assert.deepEqual(await read(legacy, 'upgrade'), oldOrder);
   assert.deepEqual(await legacy.view('get_attempt', { request_id: 'legacy-payment' }), oldAttempt);
   assert.equal(await balance(legacy), oldBalance);
-  assert.equal(await legacy.view('get_version', {}), '2.3.0-automatic');
+  assert.equal(await legacy.view('get_version', {}), '2.3.1-security');
   p = await proposal(legacy, 'upgrade');
   await approve(legacy, 'upgrade', p);
   assert.equal((await recovery(legacy, 'upgrade')).refunded, '600000000');
