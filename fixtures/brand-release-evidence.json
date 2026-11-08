@@ -1,0 +1,85 @@
+{
+  "source": "d0179d5",
+  "deployment": "dpl_9qJYDNniVD1j51rSX1BGCFB5dUPQ",
+  "url": "https://accord-payments.vercel.app",
+  "at": "2026-11-08T14:23:50.266Z",
+  "color": "#FF3D00",
+  "reference": {
+    "url": "https://www.brex.com/",
+    "observed": "Live Get started button computed background rgb(255, 61, 0)"
+  },
+  "liveBrowser": {
+    "headlineAccent": "rgb(255, 61, 0)",
+    "primaryButton": "rgb(255, 61, 0)",
+    "verified": true
+  },
+  "brand": "Custom Accord A monogram",
+  "validation": {
+    "isolatedBrowserSuite": 23,
+    "finalBrightLandingWalletChecks": 4,
+    "finalBrightWorkspaceCheck": 1,
+    "typescriptAndBuild": "PASS"
+  },
+  "assets": [
+    {
+      "path": "brand/accord-mark.svg",
+      "sha256": "a1aa732bd264d117f7e7c4b90bcf2c131b8392f6faf4aaaf22a65a05a3e86ce4",
+      "status": 200
+    },
+    {
+      "path": "favicon.svg",
+      "sha256": "112064d2a738fffef3b1b41fdac4141e78b02ed2b8d66c65f82bff93e1552df9",
+      "status": 200
+    },
+    {
+      "path": "favicon.ico",
+      "sha256": "f3f5c97a11396fb564617469d7de90a802d25f6ceb2d8e0aeaecb0bc5a5d099b",
+      "status": 200
+    },
+    {
+      "path": "favicon-16x16.png",
+      "sha256": "94f99fb5cde54b0656c4ef16c1181362d4e72aceec4fb58199edeef38e1717c7",
+      "status": 200
+    },
+    {
+      "path": "favicon-32x32.png",
+      "sha256": "629d477f8b80efc9be41b0a5c6a40cb57e453f418f5988715c6d440bc7b3c5e6",
+      "status": 200
+    },
+    {
+      "path": "favicon-48x48.png",
+      "sha256": "f37d3e43b2dcbbbb008e027507f008361c223e923aacff55541afc6e09c64204",
+      "status": 200
+    },
+    {
+      "path": "apple-touch-icon.png",
+      "sha256": "438d383b0b49c2a8538c4bea7f7f20700d5e340f8767ae6b0ae5476fb95d878d",
+      "status": 200
+    },
+    {
+      "path": "icon-192.png",
+      "sha256": "240d21258e149621a5f6f107ad4c140f771d3d2e3d40a9adfc5ec2329bfbc8f3",
+      "status": 200
+    },
+    {
+      "path": "icon-512.png",
+      "sha256": "25c706147d0ab2d479b82b6a3af14f0fab55db6eef68d33454a846974afe59c5",
+      "status": 200
+    },
+    {
+      "path": "icon-maskable-512.png",
+      "sha256": "31631f72bcc4c87f4f0a68f92c6b50bec450e87fe6db6e66d427c99325294622",
+      "status": 200
+    },
+    {
+      "path": "site.webmanifest",
+      "sha256": "aad3170f93282b5094505c6056a32e7a90e4b61d2d33138125992cf1992569cc",
+      "status": 200
+    },
+    {
+      "path": "images/accord-social.jpg",
+      "sha256": "e07fd899d434bc964e90ab0b0ec9dd7cfb78d3485eb6539c552d1ee950754aa8",
+      "status": 200
+    }
+  ]
+}
