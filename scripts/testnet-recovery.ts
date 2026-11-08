@@ -176,9 +176,9 @@ async function main() {
   }
   deployed = await provider.viewContractCode({ contractId: d.vault });
   assert.equal(sha(deployed.code), expected);
-  assert.equal(await view('get_version'), '2.2.0-invoices');
+  assert.equal(await view('get_version'), '2.3.0-automatic');
   d.wasmSha256.vault = expected;
-  d.features = ['recovery-v1'];
+  d.features = ['recovery-v1', 'invoice-v1', 'documents-v1', 'automatic-v1'];
   await writeFile('.data/deployment.json', JSON.stringify(d, null, 2) + '\n');
   await writeFile('fixtures/testnet-deployment.json', JSON.stringify(d, null, 2) + '\n');
   check('only the normal artifact verified by both sandbox suites was deployed');

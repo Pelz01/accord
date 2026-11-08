@@ -50,7 +50,13 @@ export function OrderCards({
                 </dd>
               </div>
               <div>
-                <dt>{closed ? 'Returned to buyer' : 'Ready to review'}</dt>
+                <dt>
+                  {closed
+                    ? 'Returned to buyer'
+                    : row.automatic
+                      ? 'Ready for payment'
+                      : 'Ready to review'}
+                </dt>
                 <dd>
                   {money(closed ? row.refunded : row.ready)} <small>aUSD</small>
                 </dd>

@@ -10,6 +10,7 @@ import { paymentRows } from './payments';
 
 export type PositionStatus =
   | 'Ready to review'
+  | 'Payment scheduled'
   | 'Invoice review needed'
   | 'Payment in progress'
   | 'Awaiting delivery'
@@ -23,6 +24,7 @@ export type PositionStatus =
   | 'Fulfilled';
 export type OrderPosition = {
   order: ChainOrder;
+  automatic: boolean;
   status: PositionStatus;
   funded: string;
   paid: string;
@@ -62,6 +64,7 @@ export function orderPositions(
             : order.terms.supplier === account || order.terms.payout === account)),
     )
     .map((order) => {
+      const policy = state.paymentPolicies?.[order.id];
       const price = BigInt(order.terms.unit_price);
       const funded = BigInt(order.funded);
       const paid = BigInt(order.paid) * price;
@@ -93,17 +96,33 @@ export function orderPositions(
       const open = !recovery || recovery.phase === 'Open';
       const fundedInFull = order.accepted_terms && funded === BigInt(order.terms.ordered) * price;
       const capacity = invoices.reduce((largest, i) => {
-        const amount = BigInt(i.invoice.quantity) * price;
-        return amount > largest ? amount : largest;
+        const quantity =
+          policy?.mode === 'automatic'
+            ? (policy.invoices.find((entry) => entry.commitment === i.commitment)?.available ?? '0')
+            : i.invoice.quantity;
+        const amount = BigInt(quantity) * price;
+        return policy?.mode === 'automatic'
+          ? largest + amount
+          : amount > largest
+            ? amount
+            : largest;
       }, 0n);
-      const ready = open && fundedInFull ? min(available, capacity) : 0n;
+      const automaticFailure = jobs.some(
+        (job) =>
+          job.orderId === order.id &&
+          job.authorization === 'automatic' &&
+          job.status === 'failed' &&
+          job.vault === state.deployment?.vault &&
+          job.network === state.deployment?.network,
+      );
+      const ready = open && fundedInFull && !automaticFailure ? min(available, capacity) : 0n;
       const invoiceReview = open && fundedInFull ? available - ready : 0n;
       const awaitingDelivery = open && fundedInFull ? max0(committed - acceptedUnpaid) : 0n;
       const refundHeld = !open ? committed : 0n;
       const unresolved = requests.some(
         (row) => row.status === 'Needs review' || row.status === 'Checking',
       );
-      const needsReview = unresolved || recovery?.phase === 'RefundFailed';
+      const needsReview = unresolved || automaticFailure || recovery?.phase === 'RefundFailed';
       const expired = !fundedInFull && BigInt(order.terms.expires_at) <= BigInt(now) * 1_000_000n;
       const status: PositionStatus =
         recovery?.phase === 'Closed'
@@ -121,7 +140,9 @@ export function orderPositions(
                     : !fundedInFull
                       ? 'Awaiting funding'
                       : ready > 0n
-                        ? 'Ready to review'
+                        ? state.paymentPolicies?.[order.id]?.mode === 'automatic'
+                          ? 'Payment scheduled'
+                          : 'Ready to review'
                         : invoiceReview > 0n
                           ? 'Invoice review needed'
                           : processing > 0n
@@ -131,6 +152,7 @@ export function orderPositions(
                               : 'Awaiting delivery';
       return {
         order,
+        automatic: policy?.mode === 'automatic',
         status,
         funded: funded.toString(),
         paid: paid.toString(),

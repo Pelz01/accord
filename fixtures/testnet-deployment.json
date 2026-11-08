@@ -5,7 +5,7 @@
   "token": "token.accord-v2-8e0a631d.testnet",
   "operator": "operator.accord-v2-8e0a631d.testnet",
   "wasmSha256": {
-    "vault": "0264bf45465b17859ca565d8a6bdc0a82a06b46761c5b6c903c73a34a7a34101",
+    "vault": "f77df177a4f98defe366bc1924063773f3f1eff39a51794d4467a696a49493b5",
     "token": "e6c7c764a85117b25d65bee5f4ca0bcd3459795cb8b00a538f8f8090869bfa4b"
   },
   "accounts": {
@@ -23,6 +23,7 @@
   "features": [
     "recovery-v1",
     "invoice-v1",
-    "documents-v1"
+    "documents-v1",
+    "automatic-v1"
   ]
 }

@@ -188,7 +188,7 @@ const config = {
   wasmSha256: hashes,
   accounts: proof.accounts,
   trackedRequestIds: ['testnet-partial-1', 'testnet-partial-2'],
-  features: ['recovery-v1', 'invoice-v1', 'documents-v1'],
+  features: ['recovery-v1', 'invoice-v1', 'documents-v1', 'automatic-v1'],
 };
 await writeFile('.data/deployment.json', JSON.stringify(config, null, 2));
 console.log('Deployment configuration saved. Running real testnet partial-settlement smoke.');

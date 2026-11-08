@@ -17,6 +17,7 @@ import type {
   ChainAttempt,
   ChainState,
   ChainRecovery,
+  ChainPaymentPolicy,
 } from '../shared/chain.ts';
 import { ordersForAccount } from '../shared/chain.ts';
 import { accountSchema, type Order } from '../shared/schema.ts';
@@ -25,6 +26,7 @@ import { extract } from './extraction.ts';
 import type { InvoiceAuthorizer } from './sessions.ts';
 import { InvoiceFiles } from './documents.ts';
 import { RpcReadCache } from './read-cache.ts';
+import { automaticPaymentJob } from './automatic-payments.ts';
 import {
   invoicePayload,
   invoicePayloadSchema,
@@ -36,7 +38,7 @@ import {
 type KeyFile = { accountId: string; secretKey: KeyPairString; publicKey: string };
 type Job = {
   vault?: string;
-  network?: string;
+  network?: Deployment['network'];
   id: string;
   orderId: string;
   quantity: string;
@@ -46,6 +48,7 @@ type Job = {
   error: string | null;
   createdAt: string;
   invoice?: InvoicePayload;
+  authorization?: 'automatic';
 };
 const requestSchema = z.strictObject({
   orderId: z.string().min(1).max(64),
@@ -105,8 +108,9 @@ function displayView<T>(d: Deployment, method: string, args: Record<string, unkn
     JSON.stringify([d.network, d.vault, method, args]),
     () => view<T>(d, method, args),
     (value) =>
-      method === 'get_attempt' &&
-      ['Settled', 'ReceiptAcknowledged'].includes((value as ChainAttempt | null)?.status ?? '')
+      (method === 'get_payment_policy' && (value as ChainPaymentPolicy)?.mode === 'manual') ||
+      (method === 'get_attempt' &&
+        ['Settled', 'ReceiptAcknowledged'].includes((value as ChainAttempt | null)?.status ?? ''))
         ? 60000
         : 5000,
   );
@@ -193,6 +197,16 @@ export async function registerChain(
             ),
           )
         : undefined;
+      const paymentPolicies = d.features?.includes('automatic-v1')
+        ? Object.fromEntries(
+            await Promise.all(
+              orders.map(async (o) => [
+                o.id,
+                await displayView<ChainPaymentPolicy>(d, 'get_payment_policy', { order_id: o.id }),
+              ]),
+            ),
+          )
+        : undefined;
       const jobs = (
         ledger.db.prepare('SELECT payload FROM chain_jobs').all() as { payload: string }[]
       ).map((row) => JSON.parse(row.payload) as Job);
@@ -222,6 +236,7 @@ export async function registerChain(
         attempts,
         recoveries,
         confirmations,
+        paymentPolicies,
         operatorReady,
         liveAiAvailable: !!process.env.NEAR_AI_API_KEY,
         authRequired,
@@ -425,6 +440,8 @@ export async function registerChain(
     return job;
   });
   let inFlight = false;
+  let scannedAt = 0;
+  let scanIndex = 0;
   const save = (job: Job) =>
     ledger.db
       .prepare('UPDATE chain_jobs SET payload=? WHERE id=?')
@@ -435,6 +452,38 @@ export async function registerChain(
     try {
       const d = await deployment();
       if (!d) return;
+      if (d.features?.includes('automatic-v1') && Date.now() - scannedAt >= 15000) {
+        scannedAt = Date.now();
+        const listed = await displayView<ChainOrder[]>(d, 'list_orders', {
+          ...(scanIndex ? { from_index: scanIndex } : {}),
+          limit: 50,
+        });
+        scanIndex = listed.length === 50 ? scanIndex + 50 : 0;
+        for (const o of listed) {
+          if (
+            o.terms.operator !== d.operator ||
+            !o.accepted_terms ||
+            BigInt(o.accepted) <= BigInt(o.paid) + BigInt(o.pending)
+          )
+            continue;
+          const policy = await displayView<ChainPaymentPolicy>(d, 'get_payment_policy', {
+            order_id: o.id,
+          });
+          if (policy.mode !== 'automatic') continue;
+          const recovery = await displayView<ChainRecovery>(d, 'get_recovery', { order_id: o.id });
+          const invoices = await displayView<InvoiceConfirmation[]>(d, 'list_invoices', {
+            order_id: o.id,
+          });
+          const existing = (
+            ledger.db.prepare('SELECT payload FROM chain_jobs').all() as { payload: string }[]
+          ).map((row) => JSON.parse(row.payload) as Job);
+          const job = await automaticPaymentJob(d, o, policy, recovery, invoices, existing);
+          if (job)
+            ledger.db
+              .prepare('INSERT OR IGNORE INTO chain_jobs (id,payload) VALUES (?,?)')
+              .run(job.id, JSON.stringify(job));
+        }
+      }
       const jobs = (
         ledger.db.prepare('SELECT payload FROM chain_jobs').all() as { payload: string }[]
       )
@@ -487,6 +536,17 @@ export async function registerChain(
           job.status = 'unresolved';
           job.error =
             'This request needs a fresh authorization referencing a supplier-confirmed invoice.';
+          save(job);
+          continue;
+        }
+        if (
+          job.authorization === 'automatic' &&
+          (!d.features?.includes('automatic-v1') ||
+            (await view<ChainPaymentPolicy>(d, 'get_payment_policy', { order_id: job.orderId }))
+              .mode !== 'automatic')
+        ) {
+          job.status = 'unresolved';
+          job.error = 'Automatic payment is not enabled for this order.';
           save(job);
           continue;
         }

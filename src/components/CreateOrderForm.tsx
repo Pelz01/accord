@@ -16,6 +16,7 @@ export function CreateForm({
   testnet = false,
   operatorAccount,
   recoveryEnabled = false,
+  automaticPayments = false,
 }: {
   onCreate: (input: unknown) => void;
   busy: boolean;
@@ -24,11 +25,13 @@ export function CreateForm({
   testnet?: boolean;
   operatorAccount?: string;
   recoveryEnabled?: boolean;
+  automaticPayments?: boolean;
 }) {
   const [unitPrice, setUnitPrice] = useState('10');
   const [qty, setQty] = useState(100);
   const [supplier, setSupplier] = useState('');
   const [paySupplier, setPaySupplier] = useState(true);
+  const [delegateDelivery, setDelegateDelivery] = useState(false);
   const price = priceInBaseUnits(unitPrice);
   const total =
     price !== null && Number.isSafeInteger(qty) && qty > 0
@@ -42,7 +45,7 @@ export function CreateForm({
       supplierName: form.get('supplierName') || supplier,
       supplier,
       payout: paySupplier ? supplier : form.get('payout'),
-      receiver: form.get('receiver'),
+      receiver: automaticPayments && !delegateDelivery ? buyerAccount : form.get('receiver'),
       operator: form.get('operator'),
       description: form.get('description'),
       ordered: qty,
@@ -149,22 +152,39 @@ export function CreateForm({
         </p>
       </fieldset>
       <fieldset disabled={busy}>
-        <legend>Your team</legend>
-        <label className="field">
-          Delivery reviewer
-          <input
-            name="receiver"
-            defaultValue={testnet ? '' : 'warehouse.testnet'}
-            placeholder="receiver.testnet"
-            required
-            minLength={2}
-            maxLength={64}
-            autoCapitalize="none"
-            autoCorrect="off"
-            spellCheck={false}
-          />
-        </label>
-        {operatorAccount ? (
+        <legend>Delivery confirmation</legend>
+        {automaticPayments && (
+          <>
+            <p className="form-help">You confirm deliveries with your connected wallet.</p>
+            <label className="same-supplier-toggle">
+              <input
+                type="checkbox"
+                checked={delegateDelivery}
+                onChange={(e) => setDelegateDelivery(e.target.checked)}
+              />
+              Assign someone else to confirm deliveries
+            </label>
+          </>
+        )}
+        {(!automaticPayments || delegateDelivery) && (
+          <label className="field">
+            Delivery reviewer
+            <input
+              name="receiver"
+              defaultValue={testnet ? '' : 'warehouse.testnet'}
+              placeholder="receiver.testnet"
+              required
+              minLength={2}
+              maxLength={64}
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+            />
+          </label>
+        )}
+        {automaticPayments ? (
+          <input type="hidden" name="operator" value={operatorAccount} />
+        ) : operatorAccount ? (
           <div className="assigned-operator">
             <span>Payment operator</span>
             <p>{operatorAccount}</p>
@@ -185,9 +205,11 @@ export function CreateForm({
             />
           </label>
         )}
-        <p className="form-help">
-          Buyer, supplier, delivery reviewer and payment operator each use a separate account.
-        </p>
+        {!automaticPayments && (
+          <p className="form-help">
+            Buyer, supplier, delivery reviewer and payment operator each use a separate account.
+          </p>
+        )}
       </fieldset>
       <div className="create-order-summary">
         <div>
@@ -201,6 +223,12 @@ export function CreateForm({
         </p>
       </div>
       <div className="create-order-notes">
+        {automaticPayments && (
+          <p>
+            Accord pays automatically after delivery and the supplier’s invoice are confirmed,
+            within this order’s agreed price and quantity.
+          </p>
+        )}
         {testnet && (
           <p>
             <strong>1 testnet NEAR storage deposit.</strong> Retained by the order contract; not

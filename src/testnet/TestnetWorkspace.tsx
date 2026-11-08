@@ -257,11 +257,19 @@ export function TestnetWorkspace() {
   async function create(input: CreateOrder) {
     if (!account || !d) throw new Error('Connect your wallet first.');
     input = createSchema.parse(input);
-    if (new Set([account, input.supplier, input.receiver, input.operator]).size !== 4)
-      throw new Error('Buyer, supplier, receiver and operator must use separate accounts.');
+    if (
+      account === input.supplier ||
+      account === input.operator ||
+      input.receiver === input.supplier ||
+      input.receiver === input.operator ||
+      input.supplier === input.operator
+    )
+      throw new Error(
+        'Choose separate buyer, supplier and delivery reviewer accounts. You can confirm your own deliveries.',
+      );
     const id = `PO-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
     await call(
-      'create_order',
+      d.features?.includes('automatic-v1') ? 'create_automatic_order' : 'create_order',
       {
         order_id: id,
         terms: {
@@ -334,6 +342,7 @@ export function TestnetWorkspace() {
             ? 'operator'
             : 'observer'
     : 'observer';
+  const automatic = Boolean(order && state?.paymentPolicies?.[order.id]?.mode === 'automatic');
   if (!account)
     return (
       <div className="wallet-gate">
@@ -692,7 +701,11 @@ export function TestnetWorkspace() {
                         <FileText size={22} />
                         <div>
                           No tracked attempts
-                          <small>Signed operator jobs appear here after dispatch.</small>
+                          <small>
+                            {automatic
+                              ? 'Payments appear here once delivery and the invoice are confirmed.'
+                              : 'Payment requests appear here after dispatch.'}
+                          </small>
                         </div>
                       </div>
                     )}
@@ -754,7 +767,7 @@ export function TestnetWorkspace() {
                             ? 'Supplier'
                             : role === 'receiver'
                               ? 'Delivery receiver'
-                              : 'Payment operator'}
+                              : 'Accord payments'}
                     </h2>
                     <p>
                       {account
@@ -786,7 +799,7 @@ export function TestnetWorkspace() {
                       BigInt(order.accepted) < BigInt(order.terms.ordered) && (
                         <button
                           className="button secondary full"
-                          disabled={busy || role !== 'receiver'}
+                          disabled={busy || account !== order.terms.receiver}
                           onClick={() => {
                             setTotal((BigInt(order.accepted) + 1n).toString());
                             setModal('receipt');
@@ -810,14 +823,15 @@ export function TestnetWorkspace() {
                     )}
                   </div>
                   <div className="terms-summary">
-                    <h3>Accepted authorities</h3>
+                    <h3>Order participants</h3>
                     <dl>
                       {Object.entries({
                         Buyer: order.buyer,
                         Supplier: order.terms.supplier,
                         'Fixed payout': order.terms.payout,
-                        Receiver: order.terms.receiver,
-                        Operator: order.terms.operator,
+                        ...(order.terms.receiver !== order.buyer
+                          ? { 'Delivery reviewer': order.terms.receiver }
+                          : {}),
                         Token: d?.token,
                       }).map(([k, v]) => (
                         <div key={k}>
@@ -877,7 +891,9 @@ export function TestnetWorkspace() {
                   icon={<ArrowUpRight size={16} />}
                 />
                 <Metric
-                  label="Ready to review"
+                  label={
+                    d?.features?.includes('automatic-v1') ? 'Ready for payment' : 'Ready to review'
+                  }
                   amount={totals.ready}
                   caption="Accepted and invoice confirmed"
                   accent
@@ -1016,13 +1032,15 @@ export function TestnetWorkspace() {
               testnet
               operatorAccount={d?.operator}
               recoveryEnabled={d?.features?.includes('recovery-v1')}
+              automaticPayments={d?.features?.includes('automatic-v1')}
               onCreate={(input) => run(() => create(input as CreateOrder))}
             />
           ) : order && modal === 'accept' ? (
             <>
               <p className="modal-description">
-                Accept the exact order commitment, fixed payout, unit price, and receiver authority.
-                Your wallet must match the supplier account.
+                Review the agreed price, payment account and delivery reviewer before accepting.
+                {automatic &&
+                  ' Accord pays automatically when delivery and your invoice are confirmed.'}
               </p>
               <div className="review-summary">
                 <dl>
@@ -1105,6 +1123,8 @@ export function TestnetWorkspace() {
               <p className="modal-description">
                 Previously accepted: {order.accepted}. Enter the new cumulative total, including
                 previous deliveries.
+                {automatic &&
+                  ' Confirming delivery allows payment against a supplier-confirmed invoice.'}
               </p>
               <label className="field">
                 New cumulative quantity
@@ -1131,6 +1151,7 @@ export function TestnetWorkspace() {
               confirmations={state?.confirmations?.[order.id] ?? []}
               busy={busy}
               operatorReady={state?.operatorReady ?? false}
+              automatic={automatic}
               liveAiAvailable={state?.liveAiAvailable ?? false}
               onBusy={setBusy}
               request={authorizedRequest}

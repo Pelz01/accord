@@ -89,6 +89,120 @@ fn callback(v: &mut Vault, id: &str, result: PromiseResult) -> CallbackDispositi
     v.on_payment_result(id.into())
 }
 
+fn automatic_setup(receiver: &str) -> (Vault, InvoicePayload) {
+    let mut v = setup();
+    let mut terms = v.get_order("PO-001".into()).unwrap().terms;
+    terms.receiver = account(receiver);
+    let mut ctx = context("buyer.testnet");
+    ctx.attached_deposit(NearToken::from_near(1));
+    testing_env!(ctx.build());
+    let o = v.create_automatic_order("PO-AUTO".into(), terms);
+    testing_env!(context("supplier.testnet").build());
+    v.accept_order(o.id.clone(), o.terms_hash.clone());
+    testing_env!(context("token.testnet").build());
+    let _ = v.ft_on_transfer(account("buyer.testnet"), U128(1_000_000_000), o.id.clone());
+    testing_env!(context(receiver).build());
+    v.confirm_delivery(o.id.clone(), U64(1), U64(4), "a".repeat(64));
+    let invoice = InvoicePayload {
+        order_id: o.id,
+        terms_hash: o.terms_hash,
+        quantity: U64(4),
+        amount: U128(40_000_000),
+        ..test_invoice(&v)
+    };
+    testing_env!(context("supplier.testnet").build());
+    v.confirm_invoice("PO-AUTO".into(), invoice.clone());
+    (v, invoice)
+}
+
+#[test]
+fn buyer_confirms_own_deliveries_and_existing_orders_stay_manual() {
+    let (v, _) = automatic_setup("buyer.testnet");
+    assert_eq!(v.get_order("PO-AUTO".into()).unwrap().accepted.0, 4);
+    assert_eq!(v.get_payment_policy("PO-AUTO".into()).mode, "automatic");
+    assert_eq!(v.get_payment_policy("PO-001".into()).mode, "manual");
+}
+
+#[test]
+fn optional_receiver_can_confirm_delivery() {
+    let (mut v, _) = automatic_setup("receiver.testnet");
+    testing_env!(context("receiver.testnet").build());
+    v.confirm_delivery("PO-AUTO".into(), U64(2), U64(6), "c".repeat(64));
+    assert_eq!(v.get_order("PO-AUTO".into()).unwrap().accepted.0, 6);
+}
+
+#[test]
+#[should_panic(expected = "Receiver only")]
+fn appointing_a_receiver_does_not_also_authorize_the_buyer() {
+    let (mut v, _) = automatic_setup("receiver.testnet");
+    testing_env!(context("buyer.testnet").build());
+    v.confirm_delivery("PO-AUTO".into(), U64(2), U64(6), "c".repeat(64));
+}
+
+#[test]
+#[should_panic(expected = "Separate authority accounts")]
+fn supplier_cannot_confirm_its_own_delivery() {
+    automatic_setup("supplier.testnet");
+}
+
+fn automatic_request(v: &mut Vault, invoice: &InvoicePayload, id: &str, quantity: u64) {
+    testing_env!(context("operator.testnet").build());
+    v.request_payment(
+        "PO-AUTO".into(),
+        id.into(),
+        U64(quantity),
+        invoice.document_hash.clone(),
+        Some(invoice.clone()),
+    )
+    .detach();
+}
+
+#[test]
+fn automatic_invoice_reservations_failures_and_settlement_use_chain_outcomes() {
+    let (mut v, invoice) = automatic_setup("buyer.testnet");
+    automatic_request(&mut v, &invoice, "auto-one", 2);
+    assert_eq!(
+        v.get_payment_policy("PO-AUTO".into()).invoices[0]
+            .available
+            .0,
+        2
+    );
+    callback(&mut v, "auto-one", PromiseResult::Failed);
+    assert_eq!(
+        v.get_payment_policy("PO-AUTO".into()).invoices[0]
+            .available
+            .0,
+        4
+    );
+    automatic_request(&mut v, &invoice, "auto-two", 4);
+    assert_eq!(
+        v.get_payment_policy("PO-AUTO".into()).invoices[0]
+            .available
+            .0,
+        0
+    );
+    callback(&mut v, "auto-two", PromiseResult::Successful(vec![]));
+    callback(&mut v, "auto-two", PromiseResult::Failed);
+    assert_eq!(
+        v.get_payment_policy("PO-AUTO".into()).invoices[0]
+            .available
+            .0,
+        0
+    );
+    assert_eq!(v.get_order("PO-AUTO".into()).unwrap().paid.0, 4);
+}
+
+#[test]
+#[should_panic(expected = "Confirmed invoice quantity already paid or reserved")]
+fn a_paid_automatic_invoice_cannot_pay_for_a_later_delivery() {
+    let (mut v, invoice) = automatic_setup("buyer.testnet");
+    automatic_request(&mut v, &invoice, "auto-paid", 4);
+    callback(&mut v, "auto-paid", PromiseResult::Successful(vec![]));
+    testing_env!(context("buyer.testnet").build());
+    v.confirm_delivery("PO-AUTO".into(), U64(2), U64(6), "c".repeat(64));
+    automatic_request(&mut v, &invoice, "auto-reuse", 2);
+}
+
 #[test]
 fn partial_delivery_settles_and_next_delivery_unlocks_only_increment() {
     let mut v = setup();

@@ -1,7 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 import type { ChainOrder, ChainState, ChainJob, ChainAttempt } from '../../shared/chain';
-import type { InvoicePayload } from '../../shared/invoices';
+import { invoiceCommitment, type InvoicePayload } from '../../shared/invoices';
 
 const buyer = 'buyer.testnet';
 const base: ChainOrder = {
@@ -466,3 +466,97 @@ for (const separatePayout of [false, true]) {
     expect(errors).toEqual([]);
   });
 }
+
+for (const delegate of [false, true]) {
+  test(`automatic order uses two customer wallets with ${delegate ? 'an optional warehouse reviewer' : 'buyer delivery confirmation'}`, async ({
+    page,
+  }) => {
+    const fixture = fixtures();
+    fixture.state.orders = [];
+    fixture.state.attempts = [];
+    fixture.jobs = [];
+    fixture.state.deployment!.features!.push('automatic-v1');
+    const errors = await setup(page, fixture);
+    const calls: unknown[][] = [];
+    await page.exposeFunction('recordAutomaticCall', (args: unknown[]) => calls.push(args));
+    await page.route('**/src/testnet/Wallet.ts*', (route) =>
+      route.fulfill({
+        contentType: 'application/javascript',
+        body: `export const accountId=async()=>"buyer.testnet"; export const walletConnector=()=>({on:()=>{},off:()=>{}}); export const sendCall=async(...args)=>{await window.recordAutomaticCall(args);return 'recorded-auto';};`,
+      }),
+    );
+    await page.goto('/workspace');
+    await page.getByRole('button', { name: 'New purchase order', exact: true }).click();
+    const dialog = page.getByRole('dialog');
+    await dialog.getByLabel('Item description').fill('Coffee cartons');
+    await dialog.getByLabel('Quantity (cartons)').fill('10');
+    await dialog.getByLabel('Supplier account', { exact: true }).fill('supplier.testnet');
+    await expect(dialog.getByLabel('Delivery reviewer', { exact: true })).toHaveCount(0);
+    await expect(dialog.locator('.assigned-operator')).toHaveCount(0);
+    await expect(dialog).toContainText('Accord pays automatically');
+    if (delegate) {
+      await dialog.getByLabel('Assign someone else to confirm deliveries').check();
+      await dialog.getByLabel('Delivery reviewer', { exact: true }).fill('warehouse.testnet');
+    }
+    await page.setViewportSize({ width: 390, height: 844 });
+    expect(await dialog.evaluate((el) => el.scrollWidth <= el.clientWidth)).toBe(true);
+    if (!delegate)
+      await page.screenshot({ path: 'test-results/two-wallet-create.png', fullPage: true });
+    await dialog.getByRole('button', { name: 'Create purchase order', exact: true }).click();
+    await expect(dialog).toHaveCount(0);
+    expect(calls).toHaveLength(1);
+    expect(calls[0][1]).toBe('create_automatic_order');
+    expect(calls[0][2]).toMatchObject({
+      terms: {
+        supplier: 'supplier.testnet',
+        payout: 'supplier.testnet',
+        receiver: delegate ? 'warehouse.testnet' : 'buyer.testnet',
+        operator: 'operator.testnet',
+      },
+    });
+    expect(errors).toEqual([]);
+  });
+}
+
+test('buyer confirms delivery with the same wallet and confirmed invoices need no operator wallet', async ({
+  page,
+}) => {
+  const fixture = fixtures();
+  fixture.state.deployment!.features!.push('automatic-v1');
+  fixture.state.orders[0].terms.receiver = buyer;
+  const commitment = await invoiceCommitment('testnet', 'vault.testnet', invoice);
+  fixture.state.confirmations![base.id][0].commitment = commitment;
+  fixture.state.paymentPolicies = {
+    [base.id]: { mode: 'automatic', invoices: [{ commitment, available: '70' }] },
+  };
+  const errors = await setup(page, fixture);
+  const calls: unknown[][] = [];
+  await page.exposeFunction('recordBuyerDelivery', (args: unknown[]) => calls.push(args));
+  await page.route('**/src/testnet/Wallet.ts*', (route) =>
+    route.fulfill({
+      contentType: 'application/javascript',
+      body: `export const accountId=async()=>"buyer.testnet";export const walletConnector=()=>({on:()=>{},off:()=>{}});export const sendCall=async(...args)=>{await window.recordBuyerDelivery(args);return 'recorded-delivery';};`,
+    }),
+  );
+  await page.goto('/workspace?view=orders&order=' + base.id);
+  await page.getByRole('button', { name: 'Confirm delivery', exact: true }).click();
+  await page.getByLabel('New cumulative quantity').fill('70');
+  await expect(page.getByRole('dialog')).toContainText('Confirming delivery allows payment');
+  await page
+    .getByRole('dialog')
+    .getByRole('button', { name: /Sign delivery/ })
+    .click();
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+  expect(calls[0][1]).toBe('confirm_delivery');
+  expect(calls[0][2]).toMatchObject({
+    order_id: base.id,
+    cumulative_quantity: '70',
+    sequence: '2',
+  });
+  await page.getByRole('button', { name: 'Review invoice', exact: true }).click();
+  await page.getByRole('button', { name: /INV-COFFEE-001 Supplier confirmed/ }).click();
+  await expect(page.getByRole('dialog')).toContainText('Accord pays automatically');
+  await expect(page.getByLabel('Quantity to pay')).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Authorize payment' })).toHaveCount(0);
+  expect(errors).toEqual([]);
+});

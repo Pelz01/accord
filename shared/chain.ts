@@ -59,7 +59,11 @@ export type Deployment = {
   wasmSha256: Record<string, string>;
   accounts: Record<string, string>;
   trackedRequestIds?: string[];
-  features?: ('recovery-v1' | 'invoice-v1' | 'documents-v1')[];
+  features?: ('recovery-v1' | 'invoice-v1' | 'documents-v1' | 'automatic-v1')[];
+};
+export type ChainPaymentPolicy = {
+  mode: 'manual' | 'automatic';
+  invoices: { commitment: string; available: string }[];
 };
 export type ChainState = {
   coverage?: { ordersComplete: boolean; attemptsComplete: boolean; orderLimit: number };
@@ -70,6 +74,7 @@ export type ChainState = {
   attempts: ChainAttempt[];
   recoveries?: Record<string, ChainRecovery>;
   confirmations?: Record<string, import('./invoices').InvoiceConfirmation[]>;
+  paymentPolicies?: Record<string, ChainPaymentPolicy>;
   operatorReady: boolean;
   liveAiAvailable: boolean;
 };
@@ -85,6 +90,7 @@ export type ChainJob = {
   error: string | null;
   createdAt: string;
   invoice?: import('./invoices').InvoicePayload;
+  authorization?: 'automatic';
 };
 export function chainAvailable(o: ChainOrder) {
   return BigInt(o.accepted) - BigInt(o.paid) - BigInt(o.pending);

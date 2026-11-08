@@ -12,6 +12,8 @@ mod recovery;
 pub use recovery::*;
 mod invoices;
 pub use invoices::*;
+mod automatic;
+pub use automatic::*;
 
 const MAX_ATTEMPTS: u32 = 64;
 // Provisional allocations; sandbox gas measurements remain a release gate.
@@ -131,6 +133,16 @@ impl Vault {
     /// One line per order in P0. Storage and outgoing-call deposits are separate from token funding.
     #[payable]
     pub fn create_order(&mut self, order_id: String, terms: Terms) -> Order {
+        self.create_order_inner(order_id, terms, false)
+    }
+
+    /// Automatic execution is agreed at creation and cannot be enabled on an old order.
+    #[payable]
+    pub fn create_automatic_order(&mut self, order_id: String, terms: Terms) -> Order {
+        self.create_order_inner(order_id, terms, true)
+    }
+
+    fn create_order_inner(&mut self, order_id: String, terms: Terms, automatic: bool) -> Order {
         bounded(&order_id, 64);
         bounded(&terms.line_id, 64);
         bounded(&terms.description, 160);
@@ -142,8 +154,8 @@ impl Vault {
         require!(self.orders.get(&order_id).is_none(), "Order exists");
         let buyer = env::predecessor_account_id();
         require!(
-            buyer != terms.supplier && buyer != terms.operator && buyer != terms.receiver,
-            "Separate buyer, supplier, receiver, operator accounts required"
+            buyer != terms.supplier && buyer != terms.operator,
+            "Buyer, supplier and payment service must be separate"
         );
         require!(
             terms.supplier != terms.operator
@@ -186,7 +198,11 @@ impl Vault {
             buyer,
             token: self.token.clone(),
             terms,
-            terms_hash: digest(&canonical),
+            terms_hash: if automatic {
+                digest(&near_sdk::borsh::to_vec(&("accord-automatic-v1", canonical)).unwrap())
+            } else {
+                digest(&canonical)
+            },
             accepted_terms: false,
             funded: U128(0),
             accepted: U64(0),
@@ -196,9 +212,12 @@ impl Vault {
             attempts: 0,
         };
         self.orders.insert(&order_id, &order);
+        if automatic {
+            Self::automatic_orders().insert(&order_id, &true);
+        }
         event(
             "order_created",
-            json!({"order_id": order_id, "terms_hash": order.terms_hash}),
+            json!({"order_id": order_id, "terms_hash": order.terms_hash, "automatic_payment": automatic}),
         );
         order
     }
@@ -303,6 +322,17 @@ impl Vault {
             env::prepaid_gas().as_gas() >= Gas::from_tgas(80).as_gas(),
             "Attach at least 80 Tgas"
         );
+        if self.automatic(&order_id) {
+            require!(
+                quantity.0 <= self.invoice_available(&commitment, invoice.quantity.0),
+                "Confirmed invoice quantity already paid or reserved"
+            );
+            let mut ids = Self::automatic_invoice_attempts()
+                .get(&commitment)
+                .unwrap_or_default();
+            ids.push(request_id.clone());
+            Self::automatic_invoice_attempts().insert(&commitment, &ids);
+        }
         let amount = order
             .terms
             .unit_price

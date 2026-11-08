@@ -45,6 +45,8 @@ export function PayablesOverview({
     [state, jobs, account, supplier],
   );
   const totals = positionTotals(positions);
+  const automatic = state.deployment?.features?.includes('automatic-v1');
+  const readyLabel = automatic ? 'Ready for payment' : 'Ready to review';
   const visible = positions.filter((row) => {
     const inFilter =
       filter === 'All orders' ||
@@ -129,7 +131,7 @@ export function PayablesOverview({
       </div>
       <div className="metrics report-metrics">
         <Metric
-          label="Ready to review"
+          label={readyLabel}
           amount={totals.ready}
           caption="Accepted, unreserved, invoice confirmed"
           icon={<FileCheck2 size={16} />}
@@ -200,7 +202,7 @@ export function PayablesOverview({
                 aria-pressed={filter === name}
                 onClick={() => setFilter(name)}
               >
-                {name}
+                {name === 'Ready to review' ? readyLabel : name}
               </button>
             ))}
           </div>
@@ -228,7 +230,7 @@ export function PayablesOverview({
                   <tr>
                     <th>Order / {supplier ? 'buyer' : 'supplier'}</th>
                     <th>Still committed</th>
-                    <th>Ready to review</th>
+                    <th>{readyLabel}</th>
                     <th>In progress</th>
                     <th>Status</th>
                     <th aria-label="Order actions" />
@@ -339,8 +341,9 @@ export function PayablesOverview({
       <div className="report-footnote">
         <Check size={14} />
         <p>
-          Ready amounts are available under a confirmed invoice. Review the invoice before
-          authorizing payment.
+          {automatic
+            ? 'Payments run after delivery and the supplier’s invoice are confirmed.'
+            : 'Ready amounts are available under a confirmed invoice. Review the invoice before authorizing payment.'}
         </p>
       </div>
     </>

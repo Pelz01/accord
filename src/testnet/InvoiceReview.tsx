@@ -32,6 +32,7 @@ export function InvoiceReview({
   request,
   onConfirm,
   onPayment,
+  automatic = false,
 }: {
   order: ChainOrder;
   deployment: Deployment;
@@ -44,6 +45,7 @@ export function InvoiceReview({
   request: (path: string, body?: unknown) => Promise<unknown>;
   onConfirm: (invoice: InvoicePayload) => Promise<void>;
   onPayment: (invoice: InvoicePayload, quantity: string) => Promise<void>;
+  automatic?: boolean;
 }) {
   const [text, setText] = useState(''),
     [document, setDocument] = useState<StoredDocument | null>(null),
@@ -394,7 +396,12 @@ export function InvoiceReview({
                   <dd>{order.terms.payout}</dd>
                 </div>
               </dl>
-              {approved ? (
+              {approved && automatic ? (
+                <p className="field-note" role="status">
+                  Accord pays automatically once the invoice and delivery are confirmed. Follow the
+                  payment in Payments.
+                </p>
+              ) : approved ? (
                 <>
                   <label className="field">
                     Quantity to pay
@@ -440,6 +447,8 @@ export function InvoiceReview({
                     />
                     I reviewed these fields against the invoice. The confirmed fields and document
                     hash will be public on NEAR.
+                    {automatic &&
+                      ' Eligible payment is made automatically after delivery confirmation.'}
                   </label>
                   <button
                     className="button primary full"
