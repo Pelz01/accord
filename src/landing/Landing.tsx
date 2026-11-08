@@ -1,8 +1,6 @@
 import { BrandMark } from '../components/BrandMark';
 import { useEffect, useRef, useState } from 'react';
 import {
-  ArrowDown,
-  ArrowRight,
   ArrowUpRight,
   Check,
   ChevronRight,
@@ -170,7 +168,7 @@ function ProductIllustration() {
               </div>
             </div>
             <button onClick={settle} disabled={pending || eligible === 0}>
-              {pending ? <span className="landing-spinner" /> : <ArrowUpRight size={14} />}
+              {pending && <span className="landing-spinner" />}
               <span>{pending ? 'Processing' : eligible ? 'Preview payment' : 'Settled'}</span>
             </button>
           </div>
@@ -202,7 +200,6 @@ function ProductIllustration() {
           }}
         >
           Reset example
-          <ArrowRight size={12} />
         </button>
       </div>
       <div className="floating-receipt" aria-hidden="true">
@@ -274,31 +271,13 @@ export function Landing() {
   const [menu, setMenu] = useState(false),
     [activeStep, setActiveStep] = useState(0),
     [openQuestion, setOpenQuestion] = useState<number | null>(0);
-  const root = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const elements = root.current?.querySelectorAll('.landing-reveal');
-    if (!elements) return;
-    const observer = new IntersectionObserver(
-      (entries) =>
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-            observer.unobserve(entry.target);
-          }
-        }),
-      { threshold: 0.12 },
-    );
-    elements.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, []);
   return (
-    <div className="landing" ref={root}>
+    <div className="landing">
       <div className="landing-announcement">
         <span>Business, in accord.</span>
         <span className="announcement-divider" />
         <a href={contractUrl} target="_blank" rel="noreferrer">
           Explore the payment trail
-          <ArrowUpRight size={12} />
         </a>
       </div>
       <header className="landing-header">
@@ -321,11 +300,9 @@ export function Landing() {
           <div className="landing-nav-actions">
             <a className="landing-login" href="/workspace">
               Sign in
-              <ArrowUpRight size={13} />
             </a>
-            <a className="landing-button dark small" href="/workspace">
+            <a className="landing-button orange small" href="/workspace">
               Open workspace
-              <ArrowUpRight size={14} />
             </a>
             <button
               className="landing-menu"
@@ -340,10 +317,7 @@ export function Landing() {
       </header>
       <main className="landing-main">
         <section className="landing-hero">
-          <div className="hero-kicker">
-            <span className="landing-dot" />
-            BUY. RECEIVE. PAY.
-          </div>
+          <div className="hero-kicker">BUY. RECEIVE. PAY.</div>
           <h1>
             Keep business <br />
             <em>moving.</em>
@@ -354,11 +328,9 @@ export function Landing() {
           <div className="hero-actions">
             <a className="landing-button dark" href="/workspace">
               Explore the workspace
-              <ArrowUpRight size={17} />
             </a>
-            <a className="landing-button text" href="#how-it-works">
+            <a className="landing-button outline" href="#how-it-works">
               See how it works
-              <ArrowDown size={15} />
             </a>
           </div>
           <ProductIllustration />
@@ -370,32 +342,22 @@ export function Landing() {
             <strong>Evidence you can inspect.</strong>
           </p>
           <a href={contractUrl} target="_blank" rel="noreferrer">
-            <span className="near-emblem">N</span>
             <span>
               NEAR TESTNET<small>Deployed payment contract</small>
             </span>
-            <ArrowUpRight size={15} />
           </a>
           <a href={firstPayment} target="_blank" rel="noreferrer">
-            <span className="proof-symbol">
-              <ArrowUpRight size={23} />
-            </span>
             <span>
               PARTIAL SETTLEMENT<small>Inspect a real 400 aUSD payment</small>
             </span>
-            <ArrowUpRight size={15} />
           </a>
           <a href="https://github.com/Pelz01/accord" target="_blank" rel="noreferrer">
-            <span className="proof-symbol">
-              <FileText size={23} />
-            </span>
             <span>
               OPEN SOURCE<small>Code and reproducible checks</small>
             </span>
-            <ArrowUpRight size={15} />
           </a>
         </div>
-        <section className="landing-problem landing-section landing-reveal">
+        <section className="landing-problem landing-section">
           <span className="landing-section-label">A BETTER AGREEMENT</span>
           <div className="problem-layout">
             <h2>
@@ -416,13 +378,12 @@ export function Landing() {
               </p>
               <a href="#how-it-works" className="landing-link">
                 Follow an order through Accord
-                <ArrowRight size={16} />
               </a>
             </div>
           </div>
         </section>
         <section className="landing-workflow landing-section" id="how-it-works">
-          <div className="workflow-heading landing-reveal">
+          <div className="workflow-heading">
             <div>
               <span className="landing-section-label">FROM AGREED TO PAID</span>
               <h2>
@@ -437,7 +398,7 @@ export function Landing() {
               Turn invoices into a clear next step.
             </p>
           </div>
-          <div className="workflow-body landing-reveal">
+          <div className="workflow-body">
             <div className="workflow-steps" role="tablist" aria-label="How Accord works">
               {steps.map((step, i) => (
                 <button
@@ -519,19 +480,9 @@ export function Landing() {
                     </div>
                   ))}
                 </div>
-                <div className="workflow-doc-stamp">
-                  <Check size={14} />
-                  {steps[activeStep].tag}
-                </div>
+                <div className="workflow-doc-stamp">{steps[activeStep].tag}</div>
               </div>
               <div className="workflow-floating-tag">
-                {activeStep === 0 ? (
-                  <FileCheck2 size={16} />
-                ) : activeStep === 1 ? (
-                  <PackageCheck size={16} />
-                ) : (
-                  <ShieldCheck size={16} />
-                )}
                 <span>
                   {activeStep === 0
                     ? 'Accepted by both parties'
@@ -545,7 +496,7 @@ export function Landing() {
         </section>
         <section className="landing-safeguards" id="safeguards">
           <div className="safeguards-inner">
-            <div className="safeguards-intro landing-reveal">
+            <div className="safeguards-intro">
               <span className="landing-section-label">AUTONOMY WITH BOUNDARIES</span>
               <h2>
                 Give your agent a job.
@@ -562,34 +513,29 @@ export function Landing() {
               </p>
               <a href={contractUrl} className="landing-link light" target="_blank" rel="noreferrer">
                 Inspect the deployed contract
-                <ArrowUpRight size={16} />
               </a>
             </div>
-            <div className="safeguards-list landing-reveal">
+            <div className="safeguards-list">
               {[
                 {
                   n: '01',
                   title: 'A recipient that stays put.',
                   text: 'The payout account is fixed in the supplier-accepted terms. The operator cannot send the payment somewhere else.',
-                  icon: LockKeyhole,
                 },
                 {
                   n: '02',
                   title: 'A limit that moves with delivery.',
                   text: 'Only accepted, unpaid, unreserved quantities are eligible. An oversized request is rejected.',
-                  icon: PackageCheck,
                 },
                 {
                   n: '03',
                   title: 'Room for uncertainty.',
                   text: 'Pending transfers reserve their entitlement. An unclear callback outcome keeps that reservation locked.',
-                  icon: ShieldCheck,
                 },
               ].map((c) => (
                 <div className="safeguard" key={c.n}>
                   <span>{c.n}</span>
                   <div>
-                    <c.icon size={20} />
                     <h3>{c.title}</h3>
                     <p>{c.text}</p>
                   </div>
@@ -597,11 +543,8 @@ export function Landing() {
               ))}
             </div>
           </div>
-          <div className="safeguards-watermark" aria-hidden="true">
-            accord.
-          </div>
         </section>
-        <section className="landing-equation landing-section landing-reveal">
+        <section className="landing-equation landing-section">
           <div>
             <span className="landing-section-label">THE RULE BEHIND EVERY PAYMENT</span>
             <h2>
@@ -635,7 +578,7 @@ export function Landing() {
           </div>
         </section>
         <section className="landing-questions landing-section" id="questions">
-          <div className="questions-heading landing-reveal">
+          <div className="questions-heading">
             <span className="landing-section-label">A FEW THINGS TO KNOW</span>
             <h2>
               Clear terms.
@@ -648,7 +591,7 @@ export function Landing() {
               Here’s how it works.
             </p>
           </div>
-          <div className="questions-list landing-reveal">
+          <div className="questions-list">
             {questions.map((item, i) => (
               <div className={openQuestion === i ? 'question open' : 'question'} key={item.q}>
                 <button
@@ -667,7 +610,6 @@ export function Landing() {
           </div>
         </section>
         <section className="landing-final">
-          <div className="landing-final-lines" aria-hidden="true" />
           <span className="landing-section-label">LET’S GET IN AGREEMENT</span>
           <h2>
             Put your next order
@@ -678,11 +620,9 @@ export function Landing() {
           <div>
             <a className="landing-button dark" href="/workspace">
               Open your workspace
-              <ArrowUpRight size={17} />
             </a>
-            <a className="landing-button text" href="#how-it-works">
+            <a className="landing-button outline" href="#how-it-works">
               See how it works
-              <ArrowRight size={15} />
             </a>
           </div>
         </section>
@@ -701,7 +641,6 @@ export function Landing() {
             <a href="/workspace">Workspace</a>
             <a href="https://github.com/Pelz01/accord" target="_blank" rel="noreferrer">
               GitHub
-              <ArrowUpRight size={12} />
             </a>
           </nav>
         </div>
