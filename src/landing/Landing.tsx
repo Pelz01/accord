@@ -351,8 +351,7 @@ export function Landing() {
             <em>moving.</em>
           </h1>
           <p className="hero-description">
-            Orders, deliveries and payments, brought together. <br />
-            Less chasing. More progress.
+            Manage purchase orders, confirm deliveries and pay suppliers in one place.
           </p>
           <div className="hero-actions">
             <a className="landing-button dark" href="/workspace">

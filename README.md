@@ -2,7 +2,7 @@
 
 **Keep business moving.**
 
-Orders, deliveries and payments, brought together. Less chasing. More progress.
+Manage purchase orders, confirm deliveries and pay suppliers in one place.
 
 Accord keeps buying teams and suppliers on the same page, from the first order to the final payment. AI prepares invoice details for review. Suppliers confirm them, buyers confirm delivery, and Accord handles eligible payments within the NEAR contract’s limits. A buyer can optionally appoint someone else to confirm deliveries.
 

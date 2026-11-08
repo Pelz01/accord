@@ -2,7 +2,7 @@
   "id": "/",
   "name": "Accord",
   "short_name": "Accord",
-  "description": "Orders, deliveries and payments, brought together. Keep business moving.",
+  "description": "Manage purchase orders, confirm deliveries and pay suppliers in one place.",
   "start_url": "/workspace",
   "scope": "/",
   "display": "standalone",

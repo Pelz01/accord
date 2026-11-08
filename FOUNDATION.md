@@ -112,7 +112,7 @@ Source e5566eb is Ready and promoted through Vercel dpl_HLsAUSf36VnJhM8pHxZYbhfA
 
 ## Design assets
 
-The public brand leads with "Keep business moving." Supporting copy explains the product as "Orders, deliveries and payments, brought together. Less chasing. More progress." AI and contract controls are explained in context. The browser title, search description, Open Graph/X preview, app name, favicon and workspace footer follow this direction. The workspace uses its own "Workspace · Accord" tab title.
+The public brand leads with "Keep business moving." Supporting copy explains the product as "Manage purchase orders, confirm deliveries and pay suppliers in one place." AI and contract controls are explained in context. The browser title, search description, Open Graph/X preview, app name, favicon and workspace footer follow this direction. The workspace uses its own "Workspace · Accord" tab title.
 
 public/brand/accord-mark.svg preserves the existing two-part mark. npm run build:brand derives SVG/ICO/PNG favicons, Apple/Android icons and the 1200 × 630 public/images/accord-social.jpg share image. The share image uses existing original photography and local fonts. The manifest opens the wallet-gated workspace; no service worker or offline transaction support is claimed. The public landing page has canonical and sitemap metadata, and the workspace/API responses are excluded from indexing.
 
