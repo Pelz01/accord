@@ -338,6 +338,9 @@
   margin: 8px 0 26px;
   table-layout: fixed;
 }
+.advice-line-mobile {
+  display: none;
+}
 .advice-lines th {
   padding: 12px 10px;
   font-size: 10px;
@@ -352,6 +355,7 @@
   overflow-wrap: anywhere;
   border-bottom: 1px solid var(--line);
   font-variant-numeric: tabular-nums;
+  white-space: normal;
 }
 .advice-lines th:first-child {
   width: 40%;
@@ -531,16 +535,61 @@
     grid-template-columns: 1fr;
     gap: 22px;
   }
-  .advice-lines th {
-    font-size: 9px;
-    padding-inline: 5px;
+  .advice-lines {
+    display: none;
   }
-  .advice-lines td {
-    font-size: 10px;
-    padding-inline: 5px;
+  .advice-line-mobile {
+    display: block;
+    margin: 8px 0 28px;
+    padding: 22px 0 0;
+    border-top: 1px solid var(--line);
+    overflow-wrap: anywhere;
   }
-  .advice-lines th:first-child {
-    width: 34%;
+  .advice-line-mobile h2 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.6;
+  }
+  .advice-line-mobile > p {
+    margin: 7px 0 22px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .advice-line-mobile dl {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px 20px;
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .advice-line-mobile dl > div {
+    min-width: 0;
+  }
+  .advice-line-mobile dt {
+    color: var(--muted);
+    font-size: 11px;
+  }
+  .advice-line-mobile dd {
+    margin: 8px 0 0;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .advice-line-mobile .advice-line-total {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 20px;
+    padding-block: 18px;
+    border-block: 1px solid var(--line);
+  }
+  .advice-line-total dd {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--green);
+    text-align: right;
   }
   .advice-verification dl > div {
     grid-template-columns: 1fr;
@@ -555,6 +604,12 @@
   }
 }
 @media print {
+  .advice-line-mobile {
+    display: none;
+  }
+  .advice-lines {
+    display: table;
+  }
   @page {
     size: A4;
     margin: 16mm;

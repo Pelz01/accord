@@ -265,7 +265,9 @@ test('supplier view scopes orders to the supplier or payout account and exports 
 test('confirmed remittance binds invoice, amount and receipt; print and CSV retain the same facts', async ({
   page,
 }) => {
-  const errors = await setup(page);
+  const fixture = fixtures();
+  fixture.state.orders[0].terms.description = 'Browser verification coffee cartons';
+  const errors = await setup(page, fixture);
   await page.goto('/workspace?view=payments');
   await expect(page.getByRole('link', { name: 'View remittance for paid-1' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'View remittance for pending-1' })).toHaveCount(0);
@@ -292,6 +294,8 @@ test('confirmed remittance binds invoice, amount and receipt; print and CSV reta
   expect(content).toContain('"Contract settlement"');
   expect(content).not.toContain('pending-1');
   await page.emulateMedia({ media: 'print' });
+  await expect(page.locator('.advice-lines')).toBeVisible();
+  await expect(page.getByRole('region', { name: 'Paid item' })).not.toBeVisible();
   await expect(page.locator('.sidebar')).not.toBeVisible();
   await expect(page.locator('.advice-actions')).not.toBeVisible();
   await page.pdf({
@@ -301,11 +305,24 @@ test('confirmed remittance binds invoice, amount and receipt; print and CSV reta
     preferCSSPageSize: true,
   });
   await page.emulateMedia({ media: 'screen' });
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.screenshot({ path: 'test-results/remittance-mobile.png', fullPage: true });
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
-    true,
-  );
+  for (const width of [320, 390, 760]) {
+    await page.setViewportSize({ width, height: 844 });
+    const item = page.getByRole('region', { name: 'Paid item' });
+    await expect(item).toBeVisible();
+    await expect(item).toContainText('Browser verification coffee cartons');
+    await expect(item).toContainText('20 cartons');
+    await expect(item).toContainText('200 aUSD');
+    await expect(page.locator('.advice-lines')).not.toBeVisible();
+    const description = await item.getByRole('heading').boundingBox();
+    const values = await item.locator('dl').boundingBox();
+    expect(values!.y).toBeGreaterThan(description!.y + description!.height);
+    expect(await item.evaluate((el) => el.scrollWidth <= el.clientWidth)).toBe(true);
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+    ).toBe(true);
+    if (width === 390)
+      await page.screenshot({ path: 'test-results/remittance-mobile.png', fullPage: true });
+  }
   await page.reload();
   await expect(page.getByRole('heading', { name: 'Remittance advice', exact: true })).toBeVisible();
   expect(errors).toEqual([]);

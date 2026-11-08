@@ -24,6 +24,7 @@ import { Ledger, DomainError } from './ledger.ts';
 import { extract } from './extraction.ts';
 import type { InvoiceAuthorizer } from './sessions.ts';
 import { InvoiceFiles } from './documents.ts';
+import { RpcReadCache } from './read-cache.ts';
 import {
   invoicePayload,
   invoicePayloadSchema,
@@ -53,6 +54,7 @@ const requestSchema = z.strictObject({
   invoice: invoicePayloadSchema.optional(),
 });
 const provider = new JsonRpcProvider({ url: 'https://test.rpc.fastnear.com' });
+const displayReads = new RpcReadCache();
 const recipient = 'Accord testnet operator';
 export async function deployment(): Promise<Deployment | null> {
   try {
@@ -97,6 +99,17 @@ export function asPreviewOrder(o: ChainOrder): Order {
 }
 async function view<T>(d: Deployment, method: string, args: Record<string, unknown>) {
   return provider.callFunction({ contractId: d.vault, method, args }) as Promise<T>;
+}
+function displayView<T>(d: Deployment, method: string, args: Record<string, unknown>) {
+  return displayReads.read<T>(
+    JSON.stringify([d.network, d.vault, method, args]),
+    () => view<T>(d, method, args),
+    (value) =>
+      method === 'get_attempt' &&
+      ['Settled', 'ReceiptAcknowledged'].includes((value as ChainAttempt | null)?.status ?? '')
+        ? 60000
+        : 5000,
+  );
 }
 async function requiredDeployment() {
   const d = await deployment();
@@ -157,7 +170,7 @@ export async function registerChain(
         };
       const account = accountSchema.safeParse(req.query.account);
       const listed = account.success
-        ? ((await view<ChainOrder[]>(d, 'list_orders', { limit: 50 })) ?? [])
+        ? ((await displayView<ChainOrder[]>(d, 'list_orders', { limit: 50 })) ?? [])
         : [];
       const orders = account.success ? ordersForAccount(listed, account.data) : [];
       const recoveries = d.features?.includes('recovery-v1')
@@ -165,7 +178,7 @@ export async function registerChain(
             await Promise.all(
               orders.map(async (order) => [
                 order.id,
-                await view<ChainRecovery>(d, 'get_recovery', { order_id: order.id }),
+                await displayView<ChainRecovery>(d, 'get_recovery', { order_id: order.id }),
               ]),
             ),
           )
@@ -175,7 +188,7 @@ export async function registerChain(
             await Promise.all(
               orders.map(async (o) => [
                 o.id,
-                await view<InvoiceConfirmation[]>(d, 'list_invoices', { order_id: o.id }),
+                await displayView<InvoiceConfirmation[]>(d, 'list_invoices', { order_id: o.id }),
               ]),
             ),
           )
@@ -188,12 +201,16 @@ export async function registerChain(
         await Promise.all(
           ids
             .slice(-100)
-            .map((id) => view<ChainAttempt | null>(d, 'get_attempt', { request_id: id })),
+            .map((id) => displayView<ChainAttempt | null>(d, 'get_attempt', { request_id: id })),
         )
       ).filter((v): v is ChainAttempt => !!v && orders.some((o) => o.id === v.order_id));
       let operatorReady = false;
       try {
-        await operatorKey(d);
+        await displayReads.read(
+          JSON.stringify([d.network, d.vault, d.operator, 'operator-ready']),
+          () => operatorKey(d).then(() => true),
+          15000,
+        );
         operatorReady = true;
       } catch {
         /* read-only mode remains available */

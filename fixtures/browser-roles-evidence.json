@@ -1,0 +1,203 @@
+{
+  "network": "testnet",
+  "checkedAt": "2026-11-08T09:55:18.861Z",
+  "frontend": "https://accord-payments.vercel.app",
+  "vault": "vault.accord-v2-8e0a631d.testnet",
+  "token": "token.accord-v2-8e0a631d.testnet",
+  "orderId": "PO-BROWSER-ROLES-96C10D79",
+  "coverage": {
+    "buyer": "Generated SDK fixture buyer; the separate real buyer journey is in fixtures/browser-wallet-evidence.json",
+    "supplier": "Real Intear browser wallet: terms acceptance, NEP-413 invoice sign-in and confirm_invoice",
+    "receiver": "Real Intear browser wallet: confirm_delivery",
+    "operator": "Real Intear browser wallet: NEP-413 payment authorization; restricted hosted worker sent request_payment"
+  },
+  "supplierReceiverOperatorBrowserVerified": true,
+  "buyerEvidence": "fixtures/browser-wallet-evidence.json",
+  "accounts": {
+    "buyer": "accord-browser-54d330c9.testnet",
+    "supplier": "testing33.testnet",
+    "receiver": "testng55.testnet",
+    "operator": "operator.accord-v2-8e0a631d.testnet"
+  },
+  "setupTransactions": [
+    {
+      "label": "create_order",
+      "hash": "67quwiFrHtZAK2orvLosh2Txe2FiKQURQoRLYzaGSxht",
+      "source": "SDK fixture setup",
+      "actor": "accord-browser-54d330c9.testnet"
+    },
+    {
+      "label": "storage_deposit",
+      "hash": "Dxe8xozFRBwqH3s6ubzXTrZKYuo56XcpZSyZs2Zd55Xg",
+      "source": "SDK fixture setup",
+      "actor": "accord-browser-54d330c9.testnet"
+    },
+    {
+      "label": "ft_transfer",
+      "hash": "14WeFur2DdYVJm56fDY6HNw6i3ow2cvBQ5bfoXCQSkEd",
+      "source": "SDK fixture setup",
+      "actor": "buyer.accord-v2-8e0a631d.testnet"
+    },
+    {
+      "label": "ft_transfer_call",
+      "hash": "AEbCjhLd7HZ8R2AfxetmAG2oHwuQzGCqeD4cPw6P1ffv",
+      "source": "SDK fixture setup",
+      "actor": "accord-browser-54d330c9.testnet"
+    }
+  ],
+  "verifiedBrowserTransactions": [
+    {
+      "role": "receiver",
+      "account": "testng55.testnet",
+      "transactionHash": "JDjpLJhP9uVUn4HgUswCs2mDSbwKU7QdAezwJ3g5LhvD",
+      "method": "confirm_delivery",
+      "args": {
+        "cumulative_quantity": "4",
+        "order_id": "PO-BROWSER-ROLES-96C10D79",
+        "receipt_hash": "f295d45925c8f2d4d4a81d3f08e2dac7e0b1d1720f695c8db9e2366bc9e05be4",
+        "sequence": "1"
+      },
+      "status": "SuccessValue"
+    },
+    {
+      "role": "supplier",
+      "account": "testing33.testnet",
+      "transactionHash": "8vY58YgymXDtP82bzuWR11pfkEX3c2LKomxMxW9aqcBq",
+      "method": "confirm_invoice",
+      "args": {
+        "invoice": {
+          "amount": "40000000",
+          "document_hash": "fa65c15b341ae344a7f1d40fb2b6a436e046a9676687141ded8bb67f30f09f4e",
+          "line_id": "cartons",
+          "order_id": "PO-BROWSER-ROLES-96C10D79",
+          "quantity": "4",
+          "reference": "ACC-ROLES-96C10D79",
+          "terms_hash": "a871b6414834de0df4c08dc1bdfc2db00d7d1228e7593d00d8c5bc6e072cd1e4",
+          "terms_version": 1,
+          "token": "token.accord-v2-8e0a631d.testnet"
+        },
+        "order_id": "PO-BROWSER-ROLES-96C10D79"
+      },
+      "status": "SuccessValue"
+    }
+  ],
+  "operator": {
+    "account": "operator.accord-v2-8e0a631d.testnet",
+    "userApproved": true,
+    "authorization": "NEP-413 browser wallet signature, verified by hosted API before dispatch",
+    "requestId": "3f4539f1-a969-46b0-b28b-7302cecd75fb",
+    "requestedAt": "2026-11-08T09:44:51.094Z",
+    "dispatch": {
+      "transactionHash": "32XtoAMepPzBtkYwis1kMy6Pb1YiE49MgyXgk8sCH9m6",
+      "method": "request_payment",
+      "signer": "operator.accord-v2-8e0a631d.testnet",
+      "args": {
+        "order_id": "PO-BROWSER-ROLES-96C10D79",
+        "request_id": "3f4539f1-a969-46b0-b28b-7302cecd75fb",
+        "quantity": "4",
+        "audit_hash": "fa65c15b341ae344a7f1d40fb2b6a436e046a9676687141ded8bb67f30f09f4e",
+        "invoice": {
+          "order_id": "PO-BROWSER-ROLES-96C10D79",
+          "terms_version": 1,
+          "terms_hash": "a871b6414834de0df4c08dc1bdfc2db00d7d1228e7593d00d8c5bc6e072cd1e4",
+          "document_hash": "fa65c15b341ae344a7f1d40fb2b6a436e046a9676687141ded8bb67f30f09f4e",
+          "reference": "ACC-ROLES-96C10D79",
+          "line_id": "cartons",
+          "quantity": "4",
+          "token": "token.accord-v2-8e0a631d.testnet",
+          "amount": "40000000"
+        }
+      },
+      "status": "SuccessValue"
+    }
+  },
+  "confirmation": {
+    "commitment": "9b67044f5fe62479745fd2d06883e5ab509391324d42dba49c782ebde9780416",
+    "supplier": "testing33.testnet",
+    "invoice": {
+      "order_id": "PO-BROWSER-ROLES-96C10D79",
+      "terms_version": 1,
+      "terms_hash": "a871b6414834de0df4c08dc1bdfc2db00d7d1228e7593d00d8c5bc6e072cd1e4",
+      "document_hash": "fa65c15b341ae344a7f1d40fb2b6a436e046a9676687141ded8bb67f30f09f4e",
+      "reference": "ACC-ROLES-96C10D79",
+      "line_id": "cartons",
+      "quantity": "4",
+      "token": "token.accord-v2-8e0a631d.testnet",
+      "amount": "40000000"
+    }
+  },
+  "attempt": {
+    "request_id": "3f4539f1-a969-46b0-b28b-7302cecd75fb",
+    "order_id": "PO-BROWSER-ROLES-96C10D79",
+    "quantity": "4",
+    "amount": "40000000",
+    "recipient": "testing33.testnet",
+    "audit_hash": "fa65c15b341ae344a7f1d40fb2b6a436e046a9676687141ded8bb67f30f09f4e",
+    "status": "Settled"
+  },
+  "final": {
+    "fundedBaseUnits": "100000000",
+    "acceptedQuantity": "4",
+    "paidQuantity": "4",
+    "pendingQuantity": "0",
+    "phase": "Open",
+    "refundedBaseUnits": "0",
+    "remainingBudgetBaseUnits": "60000000"
+  },
+  "checks": [
+    "Supplier accepted the fixed terms in Intear; accepted_terms verified on chain",
+    "Receiver confirmed four cartons through Intear; exact signer and arguments independently verified by RPC",
+    "Receiver form rejects cumulative quantity above the ordered ten cartons",
+    "Supplier signed invoice access and confirmed the reviewed four-carton / 40 aUSD invoice through Intear",
+    "Supplier wallet could not authorize an operator payment",
+    "Operator selected the public supplier-confirmed record without needing private invoice access",
+    "Five-carton operator input is invalid and disables authorization; no invalid transfer submitted",
+    "User approved the four-carton NEP-413 operator authorization in Intear",
+    "Exactly one worker job settled 40 aUSD to the fixed supplier with zero pending quantity",
+    "Real browser remittance displays confirmed settlement, recorded invoice and receipt",
+    "Real browser CSV download contains the exact quantity, base-unit amount, recipient, invoice and transaction hash"
+  ],
+  "csv": {
+    "browserDownloadObserved": true,
+    "fileName": "accord-remittance-3f4539f1-a969-46b0-b28b-7302cecd75fb.csv",
+    "sha256": "c271fc4715d123bb7c76e61ed7f46d65ec7d7865115ae7af947fc22d3893ecb0",
+    "verifiedFields": {
+      "snapshot_at_utc": "2026-11-08T09:45:27.803Z",
+      "source_payment_coverage": "unknown",
+      "network": "testnet",
+      "vault": "vault.accord-v2-8e0a631d.testnet",
+      "token_contract": "token.accord-v2-8e0a631d.testnet",
+      "token_symbol": "aUSD",
+      "token_decimals": "6",
+      "request_id": "3f4539f1-a969-46b0-b28b-7302cecd75fb",
+      "order_id": "PO-BROWSER-ROLES-96C10D79",
+      "buyer": "accord-browser-54d330c9.testnet",
+      "supplier": "testing33.testnet",
+      "recipient": "testing33.testnet",
+      "quantity": "4",
+      "unit": "carton",
+      "amount": "40",
+      "amount_base_units": "40000000",
+      "status": "Paid",
+      "confirmation_source": "Contract settlement",
+      "requested_at_utc": "2026-11-08T09:44:51.094Z",
+      "invoice_reference": "ACC-ROLES-96C10D79",
+      "document_sha256": "fa65c15b341ae344a7f1d40fb2b6a436e046a9676687141ded8bb67f30f09f4e",
+      "transaction_hash": "32XtoAMepPzBtkYwis1kMy6Pb1YiE49MgyXgk8sCH9m6"
+    }
+  },
+  "sourceCoverage": {
+    "ordersComplete": true,
+    "attemptsComplete": true,
+    "orderLimit": 50
+  },
+  "limitations": [
+    "Buyer creation and funding for this separate order used a generated SDK fixture account.",
+    "Browser signing approval was performed by the user; the payment transaction was sent by the restricted hosted worker.",
+    "Supplier acceptance was observed in the real browser and on-chain state; its transaction hash was not captured.",
+    "This order remains Open with 60 aUSD available for later deliveries or mutually approved closure; no refund is claimed.",
+    "The invoice input is synthetic text; scanned-PDF/OCR evidence is in the separate buyer journey.",
+    "This is executed testnet coverage, not an independent security audit or a mainnet release."
+  ],
+  "mainnet": false
+}

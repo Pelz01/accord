@@ -138,6 +138,27 @@ export function RemittanceAdvice({
             </div>
           )}
         </div>
+        <section className="advice-line-mobile" aria-label="Paid item">
+          <h2>{row.order.terms.description}</h2>
+          <p>Line: {row.order.terms.line_id}</p>
+          <dl>
+            <div>
+              <dt>Quantity</dt>
+              <dd>
+                {row.quantity} {row.order.terms.unit}
+                {row.quantity === '1' ? '' : 's'}
+              </dd>
+            </div>
+            <div>
+              <dt>Unit price</dt>
+              <dd>{money(row.order.terms.unit_price)} aUSD</dd>
+            </div>
+            <div className="advice-line-total">
+              <dt>Paid</dt>
+              <dd>{money(row.amount)} aUSD</dd>
+            </div>
+          </dl>
+        </section>
         <table className="advice-lines">
           <thead>
             <tr>
