@@ -76,6 +76,8 @@ Post-payment verification exposed public-RPC rate limiting during bursts of dash
 
 Mobile remittance now presents the full item description above quantity and unit price, with the paid total on its own row. Desktop and print retain the table. The existing browser journey checks the long description at 320, 390 and 760 pixels, prevents overflow and verifies print/CSV facts.
 
+Source 22ea4d7 is Ready and promoted through Vercel dpl_Ga6PvWAHK1P4fqS88HD2rN1RciZV. The connected live Intear operator browser verified the revised mobile item layout, original invoice reference and settled receipt. Its item content and scroll widths both measure 292 px. Public workspace JS/CSS hashes match the production build, HTML requires cache revalidation, and the API remains healthy. Concurrent supplier, receiver and operator state reads returned HTTP 200, paid four, pending zero and complete current source coverage. Both Accord containers are healthy, and the unrelated gateway health route remains HTTP 200. All 45 application and 20 browser checks pass. GitHub Actions remains disabled with zero runs.
+
 ## Payables, supplier reporting and remittance
 
 Buyer Payables and Supplier view share exact-integer order accounting with Payments. Queued requests and contract reservations are counted once; amounts needing review remain included in progress. Fully funded accepted goods need matching supplier confirmation before becoming ready for review. Confirmations are not added together or treated as an invoice-specific outstanding ledger. Closed-order refunds leave commitments; pending or failed refunds do not become fresh payment capacity.

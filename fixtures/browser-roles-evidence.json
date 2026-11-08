@@ -199,5 +199,96 @@
     "The invoice input is synthetic text; scanned-PDF/OCR evidence is in the separate buyer journey.",
     "This is executed testnet coverage, not an independent security audit or a mainnet release."
   ],
-  "mainnet": false
+  "mainnet": false,
+  "frontendDeployment": {
+    "source": "22ea4d7",
+    "deployment": "dpl_Ga6PvWAHK1P4fqS88HD2rN1RciZV",
+    "checkedAt": "2026-11-08T10:00:47.655Z",
+    "workspace": 200,
+    "htmlCacheControl": "no-cache",
+    "health": {
+      "ok": true,
+      "network": "testnet"
+    },
+    "checks": [
+      {
+        "asset": "index-BabJPdAi.css",
+        "status": 200,
+        "sha256": "99717250dd6b7a4927b8b9d7d5d11cd25ffee941d2f7b92e7857de3a58a875cb"
+      },
+      {
+        "asset": "index-CXglG2G6.js",
+        "status": 200,
+        "sha256": "f2050f196262da6fc910174aa79cd7314618e6876cbe39e35d0ec5f050374ef3"
+      },
+      {
+        "asset": "TestnetWorkspace-BFwXca9b.js",
+        "status": 200,
+        "sha256": "18653ff077a7e8bbcd6aa648301c83f5823a476c5126a4bb8ae7c869d604a0ce"
+      },
+      {
+        "asset": "TestnetWorkspace-J4Iht5RG.css",
+        "status": 200,
+        "sha256": "5eb1caa45d35c612444a06c0da121366d241bd79470508b247508dd147268633"
+      }
+    ]
+  },
+  "hostedReadChecks": {
+    "checkedAt": "2026-11-08T09:56:48.159Z",
+    "results": [
+      {
+        "account": "testing33.testnet",
+        "status": 200,
+        "elapsedMs": 1600,
+        "paid": "4",
+        "pending": "0",
+        "operatorReady": true,
+        "coverage": {
+          "ordersComplete": true,
+          "attemptsComplete": true,
+          "orderLimit": 50
+        }
+      },
+      {
+        "account": "testng55.testnet",
+        "status": 200,
+        "elapsedMs": 1454,
+        "paid": "4",
+        "pending": "0",
+        "operatorReady": true,
+        "coverage": {
+          "ordersComplete": true,
+          "attemptsComplete": true,
+          "orderLimit": 50
+        }
+      },
+      {
+        "account": "operator.accord-v2-8e0a631d.testnet",
+        "status": 200,
+        "elapsedMs": 1967,
+        "paid": "4",
+        "pending": "0",
+        "operatorReady": true,
+        "coverage": {
+          "ordersComplete": true,
+          "attemptsComplete": true,
+          "orderLimit": 50
+        }
+      }
+    ]
+  },
+  "validation": {
+    "applicationTests": 45,
+    "browserTests": 20,
+    "typescript": true,
+    "productionBuild": true,
+    "apiBundleSha256": "bd5952119afbe0863aa761412cc7a76cd9567374b459c7c8286dcfcdab03a6ef",
+    "vpsDatabaseBackupVerified": true,
+    "mobileRemittanceWidths": [320, 390, 760],
+    "liveMobileItemContentWidth": 292,
+    "liveMobileItemScrollWidth": 292,
+    "liveInvoiceAndReceiptPreserved": true,
+    "githubActionsEnabled": false,
+    "githubActionsRunCount": 0
+  }
 }
