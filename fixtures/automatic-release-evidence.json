@@ -364,5 +364,55 @@
     }
   },
   "coverage": "Two SDK customer fixture accounts and the real restricted hosted worker; no browser signing or operator-message signature is claimed.",
-  "mainnet": false
+  "mainnet": false,
+  "frontendDeployment": {
+    "source": "e5566eb",
+    "deployment": "dpl_HLsAUSf36VnJhM8pHxZYbhfAzP3D",
+    "checkedAt": "2026-11-08T12:56:18.576Z",
+    "workspace": 200,
+    "htmlCacheControl": "no-cache",
+    "health": {
+      "ok": true,
+      "network": "testnet"
+    },
+    "checks": [
+      {
+        "asset": "index-BabJPdAi.css",
+        "status": 200,
+        "sha256": "99717250dd6b7a4927b8b9d7d5d11cd25ffee941d2f7b92e7857de3a58a875cb"
+      },
+      {
+        "asset": "index-Dl0miSbB.js",
+        "status": 200,
+        "sha256": "69ae9c5c6354f4f1b8259020cdc9c136e5a1382667fca0596c0c89a91f5e125d"
+      },
+      {
+        "asset": "TestnetWorkspace-1Kxoxyss.js",
+        "status": 200,
+        "sha256": "8bc63c95f702f6ce362a7a7abfca57f838c1d2ae8212c8022b88fb9725f14e57"
+      },
+      {
+        "asset": "TestnetWorkspace-J4Iht5RG.css",
+        "status": 200,
+        "sha256": "5eb1caa45d35c612444a06c0da121366d241bd79470508b247508dd147268633"
+      }
+    ]
+  },
+  "validation": {
+    "applicationTests": 49,
+    "browserTests": 23,
+    "rustUnitTests": 44,
+    "sandboxChecks": 37,
+    "typescript": true,
+    "productionBuild": true,
+    "apiBundleSha256": "ca76fd2536808fe788f539764b161ca815572a93194c5dac10a8a985b391ca13",
+    "vpsBackupVerified": true,
+    "restartPreservedSettledJobs": true,
+    "liveFormDefaultDeliveryReviewerFields": 0,
+    "liveFormOperatorSetupFields": 0,
+    "liveFormOptionalDeliveryReviewerObserved": true,
+    "operatorBrowserSessionDisconnected": true,
+    "githubActionsEnabled": false,
+    "githubActionsRunCount": 0
+  }
 }
