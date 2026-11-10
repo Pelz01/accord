@@ -1,0 +1,81 @@
+{
+  "checkedAt": "2026-11-10T21:31:36.916Z",
+  "sourceCommit": "89df175",
+  "authorizedBudgetNear": "2",
+  "storageAmountPerByteYocto": "10000000000000000000",
+  "candidates": [
+    {
+      "name": "Current tested artifact",
+      "method": "Existing release; no changes.",
+      "bytes": 232955,
+      "sha256": "2eb011ff5989660c2ce6939ad8bd616e77ca9d7df3fd10d87e0aa9980ac74f04",
+      "codeStorageYocto": "2329550000000000000000000",
+      "codeStorageAloneExceedsCap": true,
+      "publicExportsUnchanged": true,
+      "importsUnchanged": true,
+      "adopted": false
+    },
+    {
+      "name": "Binaryen convergence",
+      "method": "Existing artifact; -Oz --converge with stripped debug, producers and target features.",
+      "bytes": 232448,
+      "sha256": "f7783cf35d082a9d0a0707cee374a32436838355dce47cd8b1ecbf7b1fa7a3f5",
+      "codeStorageYocto": "2324480000000000000000000",
+      "codeStorageAloneExceedsCap": true,
+      "publicExportsUnchanged": true,
+      "importsUnchanged": true,
+      "adopted": false
+    },
+    {
+      "name": "Convergence and function merging",
+      "method": "As above, plus --merge-similar-functions.",
+      "bytes": 232448,
+      "sha256": "f7783cf35d082a9d0a0707cee374a32436838355dce47cd8b1ecbf7b1fa7a3f5",
+      "codeStorageYocto": "2324480000000000000000000",
+      "codeStorageAloneExceedsCap": true,
+      "publicExportsUnchanged": true,
+      "importsUnchanged": true,
+      "adopted": false
+    },
+    {
+      "name": "Rust opt-level s",
+      "method": "Isolated original source; CARGO_PROFILE_RELEASE_OPT_LEVEL=s; same feature lowering and converged Binaryen -Oz.",
+      "bytes": 251278,
+      "sha256": "7e8387c3ab8b798f1dd08bf8c47e3f243fda9a43e00282c892290a163251695b",
+      "codeStorageYocto": "2512780000000000000000000",
+      "codeStorageAloneExceedsCap": true,
+      "publicExportsUnchanged": true,
+      "importsUnchanged": true,
+      "adopted": false
+    },
+    {
+      "name": "Rust opt-level 3",
+      "method": "Isolated original source; CARGO_PROFILE_RELEASE_OPT_LEVEL=3; same feature lowering and converged Binaryen -Oz.",
+      "bytes": 279861,
+      "sha256": "887b1f1d61acc513ee1f794d20e3fa8b919d8c578f9df4f2a01de6fbad8782a1",
+      "codeStorageYocto": "2798610000000000000000000",
+      "codeStorageAloneExceedsCap": true,
+      "publicExportsUnchanged": true,
+      "importsUnchanged": true,
+      "adopted": false
+    },
+    {
+      "name": "Typed JSON experiment",
+      "method": "Isolated source; typed event data, tuple invoice commitment serialization and direct hex formatting; original compiler profile, same feature lowering and converged Binaryen -Oz. Not behaviorally validated.",
+      "bytes": 222073,
+      "sha256": "9b9bbfeda58a557f160545cdd74c907c872333f30e9340a8bfd75886ea98fa7b",
+      "codeStorageYocto": "2220730000000000000000000",
+      "codeStorageAloneExceedsCap": true,
+      "publicExportsUnchanged": true,
+      "importsUnchanged": true,
+      "adopted": false
+    }
+  ],
+  "checks": [
+    "Original tested artifact hash unchanged.",
+    "All candidates parse as WASM and retain the same public exports; this does not establish behavioral equivalence.",
+    "Every candidate exceeds the two-NEAR ceiling for code storage alone, before account state, order deposit, gas, registrations or USDC."
+  ],
+  "decision": "No candidate adopted. No changes to payment limits, invoice limits, order deposits, allocator or deployed code. Mainnet remains blocked by the authorized budget.",
+  "transactionsSent": 0
+}

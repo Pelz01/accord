@@ -35,6 +35,25 @@ This exceeds the authorized ceiling. It excludes account/key state, gas, token r
 
 The existing artifact is testnet-only. Any mainnet-compatible rebuild or optimization needs a new size measurement, hash, security review and regression checks. Do not strip recovery or authorization features, replace the allocator with an unmaintained dependency, or treat a larger wallet balance as a larger spending authorization.
 
+### Investigation under the two-NEAR ceiling
+
+The owner confirmed that the total ceiling remains **2 NEAR**. Five alternatives were measured in ignored, isolated files; the original tested artifact and deployed release were preserved. Measurements and hashes are in [the cost-study evidence](fixtures/mainnet-cost-study.json).
+
+| Build | Bytes | NEAR for code storage alone |
+| --- | ---: | ---: |
+| Current tested artifact | 232,955 | 2.32955 |
+| Repeated Binaryen size optimization | 232,448 | 2.32448 |
+| Repeated optimization plus similar-function merging | 232,448 | 2.32448 |
+| Rust size profile `s`, then Binaryen | 251,278 | 2.51278 |
+| Rust optimization profile `3`, then Binaryen | 279,861 | 2.79861 |
+| Typed event/transfer JSON and invoice serialization experiment | 222,073 | 2.22073 |
+
+Every candidate parses as WASM and retains the public exports. That is a structural check, **not** behavioral or security validation. The serialization experiment has not passed regression or sandbox verification and is not a release candidate. None was adopted because each already exceeds the ceiling before any order deposit or operating costs.
+
+The retained order deposit covers future persistent invoice, payment and recovery records. Lowering it alone neither fixes the code-storage shortfall nor proves sufficient lifetime storage. Payment limits, invoice limits, refund rules and deposits remain unchanged. A substantially smaller implementation would require further design and review; there is no validated mainnet deployment plan within the current budget.
+
+[Global contracts](https://docs.near.org/smart-contracts/global-contracts) do not solve the first-publication cost: publishing new global code burns ten times the normal per-byte storage rate. Reusing an unrelated global contract is not equivalent to deploying Accord's verified payment rules.
+
 ## Implementation and verification still required
 
 1. Resolve the budget gate. Review a concrete allocation for deployment, one order, registrations, gas and token acquisition within the chosen ceiling. Confirm the USDC amount and controlled supplier account.
