@@ -24,6 +24,8 @@ Mutual closure refunds unused token funding to the original buyer after all acce
 
 A prepared transaction that expires, changes key/code context or cannot be reconciled remains held. Failed automatic jobs also require operational review; no operator repair endpoint silently resets them. Recovery does not guarantee eventual withdrawal when counterparties, token contracts or receipt evidence are unavailable.
 
+The separate [measured storage audit](STORAGE_AND_RECOVERY.md) confirms that the existing native order deposit has no per-buyer credit ledger, excess-return method or customer cleanup/refund path. An ordinary closed order retained 2,887 bytes (0.02887 NEAR backing); the maximum-field exercise retained 73,781 bytes (0.73781 NEAR), before the explicitly assumed comparison margin. The disposable owner-key teardown recovered native balance into a chosen beneficiary only after its controlled orders settled. That is not a production pause, depositor allocation mechanism or safe shutdown implementation for a live shared vault.
+
 ## Remaining mainnet gates
 
 - Define and independently review unused-fund exit, disputes and receipt-recovery rules; receiver honesty and invoice authenticity are not established by these signatures.

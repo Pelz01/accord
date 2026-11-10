@@ -20,6 +20,7 @@
     "test:sites": "node scripts/check-hosted.mjs",
     "verify:hosted": "tsx scripts/hosted-smoke.ts",
     "verify:mainnet:preflight": "tsx scripts/mainnet-preflight.ts",
+    "verify:mainnet:activity": "tsx scripts/mainnet-activity.ts",
     "verify:recovery:testnet": "tsx scripts/testnet-recovery.ts",
     "verify:invoices:testnet": "tsx scripts/testnet-invoices.ts",
     "verify:documents": "node scripts/documents-smoke.mjs",

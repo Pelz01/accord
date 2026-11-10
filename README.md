@@ -76,6 +76,8 @@ Checks run on the development machine. GitHub Actions is disabled for this repos
 
 The internal contract, recovery and security review is recorded in SECURITY_REVIEW.md. It precedes mainnet and does not replace independent review. The security sandbox suite checks deposit-capable customer approvals, upgrade preservation and exact-transaction restart recovery. Reproduce the testnet security release with scripts/testnet-security.ts; the older automatic-release evidence remains a historical record.
 
+For the separate code-level storage and native-deposit audit, run `npm run test:storage` inside `sandbox` in Linux/WSL after building the pinned artifacts. It measures ordinary and maximum-sized orders, records outcome gas charges and tests full-access-key teardown only on a disposable account. It does not implement production shutdown or customer deposit refunds. `npm run verify:mainnet:activity -- mainnett12.near` reads public account/history evidence without signing or sending any transaction.
+
 npm run build produces the frontend in dist and the VPS API in dist-api. The separate optional build:sites command produces the earlier Worker target. The build excludes the internal simulator from the production JavaScript. The development-only /dev/simulator route is an isolated deterministic test harness with an actor selector; its tests do not count as wallet authorization or chain evidence. It has no customer navigation.
 
 Rust is pinned to 1.99.1; Windows contract development uses Ubuntu/WSL. The sandbox uses pinned nearcore 2.14.0. Its negative-test fault-injection build must never be deployed. The build script restores the ordinary artifact afterward.
