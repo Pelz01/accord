@@ -1,0 +1,1982 @@
+{
+  "wasmSha256": "4dec1dc5acb8b3c2c75df77de705fb4ff8d6a27146c366b19d04e4b2c03dec94",
+  "suites": [
+    {
+      "suite": "sandbox-evidence",
+      "environment": "local-near-sandbox",
+      "runtime": "nearcore 2.14.0",
+      "at": "2026-11-10T22:34:47.131Z",
+      "wasmSha256": {
+        "vault": "4dec1dc5acb8b3c2c75df77de705fb4ff8d6a27146c366b19d04e4b2c03dec94",
+        "token": "eeba0d423c331fed25f2915722787cc159c977c0e52c1955049f82c147db0d8b",
+        "vault-starved": "75a562e09f7c99cb54b1a02748d50f1d10ea57acfafa751a375e64188ce852c8"
+      },
+      "checks": [
+        {
+          "name": "excess funding returned through standard resolver",
+          "status": "PASS"
+        },
+        {
+          "name": "real standard-token partial transfer and callback",
+          "status": "PASS",
+          "supplierBalance": "400000000"
+        },
+        {
+          "name": "request replay blocked",
+          "status": "PASS"
+        },
+        {
+          "name": "external callback invocation blocked",
+          "status": "PASS"
+        },
+        {
+          "name": "operator cannot authorize delivery",
+          "status": "PASS"
+        },
+        {
+          "name": "second delivery unlocks only incremental 30 cartons",
+          "status": "PASS"
+        },
+        {
+          "name": "external standard-token panic reaches callback and releases reservation",
+          "status": "PASS"
+        },
+        {
+          "name": "real transfer succeeds, starved callback fails, reservation remains locked",
+          "status": "PASS",
+          "supplierIncrement": "400000000",
+          "paid": "0",
+          "pending": "40"
+        },
+        {
+          "name": "cross-order counters remain isolated",
+          "status": "PASS"
+        }
+      ],
+      "receipts": [
+        {
+          "label": "partial-1",
+          "transactionHash": "7ZuHtgqnzspWbqyv3e5byKJXubt2GEGrmnzQdp9qNgfS",
+          "totalGasBurnt": "9286333632309",
+          "outcomes": [
+            {
+              "receiptId": "CZoBDvuZgs2Bk6TYoSbUrXsNVXGR5hHqJ1f5o9yPRhqv",
+              "executor": "dev-97812-35488.test.near",
+              "gasBurnt": "4324781848167",
+              "status": {
+                "SuccessReceiptId": "7djVA6dq5hmMa5294bPtbm1R7FXGRVUs4tkgwGwPWXpv"
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_reserved\",\"data\":[{\"request_id\":\"partial-1\",\"order_id\":\"partial\",\"quantity\":\"40\",\"amount\":\"400000000\",\"recipient\":\"supplier.test.near\",\"audit_hash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"status\":\"Reserved\"}]}",
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_invoice_bound\",\"data\":[{\"request_id\":\"partial-1\",\"commitment\":\"d50c000ad311f70aea079a9be8cbc4a355398031c9470d7b1cf7681f5e14e522\"}]}"
+              ]
+            },
+            {
+              "receiptId": "dAT1BXxHmfCsBEWdmovn3WJm2BqbsY9PHNqaj1vpWZM",
+              "executor": "dev-95988-71552.test.near",
+              "gasBurnt": "1728978461282",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"nep141\",\"version\":\"1.0.0\",\"event\":\"ft_transfer\",\"data\":[{\"old_owner_id\":\"dev-97812-35488.test.near\",\"new_owner_id\":\"supplier.test.near\",\"amount\":\"400000000\",\"memo\":\"partial-1\"}]}"
+              ]
+            },
+            {
+              "receiptId": "6JasosyvqmGsoZ6twoKHYfxowS4pcJGzLmHSdwPuhAQh",
+              "executor": "operator.test.near",
+              "gasBurnt": "223182562500",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": []
+            },
+            {
+              "receiptId": "7djVA6dq5hmMa5294bPtbm1R7FXGRVUs4tkgwGwPWXpv",
+              "executor": "dev-97812-35488.test.near",
+              "gasBurnt": "2454640626365",
+              "status": {
+                "SuccessValue": "IlNldHRsZWQi"
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_result\",\"data\":[{\"request_id\":\"partial-1\",\"order_id\":\"partial\",\"quantity\":\"40\",\"amount\":\"400000000\",\"recipient\":\"supplier.test.near\",\"audit_hash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"status\":\"Settled\"}]}"
+              ]
+            },
+            {
+              "receiptId": "3o4vWV1t3LTjJqdbDP1XUERJBHr4rcThAEJ49CiFpxBS",
+              "executor": "operator.test.near",
+              "gasBurnt": "223182562500",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": []
+            }
+          ],
+          "receiptFailures": []
+        },
+        {
+          "label": "partial-1",
+          "transactionHash": "CBgbPTUgMHrSyA4C4pmjTYoTZnmSiXRKat9w3Abq8t5n",
+          "totalGasBurnt": "2332342236609",
+          "outcomes": [
+            {
+              "receiptId": "2g6otJhAD72aRSZN4hRxCA9L4cJjkWzSJxo2pwXY3r9n",
+              "executor": "dev-97812-35488.test.near",
+              "gasBurnt": "2000822348829",
+              "status": {
+                "Failure": {
+                  "ActionError": {
+                    "index": 0,
+                    "kind": {
+                      "FunctionCallError": {
+                        "ExecutionError": "Smart contract panicked: Request already exists"
+                      }
+                    }
+                  }
+                }
+              },
+              "logs": []
+            }
+          ],
+          "receiptFailures": [
+            {
+              "ActionError": {
+                "index": 0,
+                "kind": {
+                  "FunctionCallError": {
+                    "ExecutionError": "Smart contract panicked: Request already exists"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "label": "partial-2",
+          "transactionHash": "24nzsbFT9VoPG74oLyQswtYH9azrQ7dRABTnNQSNdjW3",
+          "totalGasBurnt": "9311413632309",
+          "outcomes": [
+            {
+              "receiptId": "5bvaH7ZxndJN4NNYEV6TAqVmGpvnksuFzAsbhpXQ8FJw",
+              "executor": "dev-97812-35488.test.near",
+              "gasBurnt": "4345301848167",
+              "status": {
+                "SuccessReceiptId": "86zvDkFkPEEm1cxUvwUFTxa18tw1wtNhggoEjxFynA4m"
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_reserved\",\"data\":[{\"request_id\":\"partial-2\",\"order_id\":\"partial\",\"quantity\":\"30\",\"amount\":\"300000000\",\"recipient\":\"supplier.test.near\",\"audit_hash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"status\":\"Reserved\"}]}",
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_invoice_bound\",\"data\":[{\"request_id\":\"partial-2\",\"commitment\":\"d50c000ad311f70aea079a9be8cbc4a355398031c9470d7b1cf7681f5e14e522\"}]}"
+              ]
+            },
+            {
+              "receiptId": "3UJC9WNMKZsRni5DJQUvvqej4MFd8uHf57WjAvEtEGbj",
+              "executor": "dev-95988-71552.test.near",
+              "gasBurnt": "1728978461282",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"nep141\",\"version\":\"1.0.0\",\"event\":\"ft_transfer\",\"data\":[{\"old_owner_id\":\"dev-97812-35488.test.near\",\"new_owner_id\":\"supplier.test.near\",\"amount\":\"300000000\",\"memo\":\"partial-2\"}]}"
+              ]
+            },
+            {
+              "receiptId": "3HtRBZ2ojz7sqFAzV1dGGXq9968Ns9e2Ys8f2dPoidgk",
+              "executor": "operator.test.near",
+              "gasBurnt": "223182562500",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": []
+            },
+            {
+              "receiptId": "86zvDkFkPEEm1cxUvwUFTxa18tw1wtNhggoEjxFynA4m",
+              "executor": "dev-97812-35488.test.near",
+              "gasBurnt": "2459200626365",
+              "status": {
+                "SuccessValue": "IlNldHRsZWQi"
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_result\",\"data\":[{\"request_id\":\"partial-2\",\"order_id\":\"partial\",\"quantity\":\"30\",\"amount\":\"300000000\",\"recipient\":\"supplier.test.near\",\"audit_hash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"status\":\"Settled\"}]}"
+              ]
+            },
+            {
+              "receiptId": "4BaowY4LLPjEH6b39btQmKXomZzQDNsdWQ1Ed2uRsQG4",
+              "executor": "operator.test.near",
+              "gasBurnt": "223182562500",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": []
+            }
+          ],
+          "receiptFailures": []
+        },
+        {
+          "label": "transfer-fails",
+          "transactionHash": "D4BEEEWmpUvJevWVvHjCT8H65a2rc9jQQFMQqQCST4Nv",
+          "totalGasBurnt": "9268909202933",
+          "outcomes": [
+            {
+              "receiptId": "GuZmHKEkNPovLSbJb1gjg71SJP2DVLg47GA2Ehu6tcPN",
+              "executor": "dev-97812-35488.test.near",
+              "gasBurnt": "4367799053136",
+              "status": {
+                "SuccessReceiptId": "E37gsp7MGq7i8uHbVJuKnT5rHFtyM5nLswQXqfCMmDmr"
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_reserved\",\"data\":[{\"request_id\":\"transfer-fails\",\"order_id\":\"failed\",\"quantity\":\"40\",\"amount\":\"400000000\",\"recipient\":\"unregistered.test.near\",\"audit_hash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"status\":\"Reserved\"}]}",
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_invoice_bound\",\"data\":[{\"request_id\":\"transfer-fails\",\"commitment\":\"5d51e842c5907f874b9be05719429999823d429e249bc9f41b0484e8390a82b4\"}]}"
+              ]
+            },
+            {
+              "receiptId": "6nJgArwzKBksc9iYTDTvZWGEHfvLeJd393K537QeMpDC",
+              "executor": "dev-95988-71552.test.near",
+              "gasBurnt": "1435139045289",
+              "status": {
+                "Failure": {
+                  "ActionError": {
+                    "index": 0,
+                    "kind": {
+                      "FunctionCallError": {
+                        "ExecutionError": "Smart contract panicked: The account unregistered.test.near is not registered"
+                      }
+                    }
+                  }
+                }
+              },
+              "logs": []
+            },
+            {
+              "receiptId": "Hy7G9ugMMbrWeRPusW7YXHvcHXRK4d9n8wbeK5jDsfGS",
+              "executor": "dev-97812-35488.test.near",
+              "gasBurnt": "223182562500",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": []
+            },
+            {
+              "receiptId": "7HSpmUVAN8uTBPgwAmtD3YKCgEVh5fTM3NNz8MEe29QC",
+              "executor": "operator.test.near",
+              "gasBurnt": "223182562500",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": []
+            },
+            {
+              "receiptId": "E37gsp7MGq7i8uHbVJuKnT5rHFtyM5nLswQXqfCMmDmr",
+              "executor": "dev-97812-35488.test.near",
+              "gasBurnt": "2464760478083",
+              "status": {
+                "SuccessValue": "IlRyYW5zZmVyRmFpbGVkIg=="
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_result\",\"data\":[{\"request_id\":\"transfer-fails\",\"order_id\":\"failed\",\"quantity\":\"40\",\"amount\":\"400000000\",\"recipient\":\"unregistered.test.near\",\"audit_hash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"status\":\"TransferFailed\"}]}"
+              ]
+            },
+            {
+              "receiptId": "9z2sB3FLe73hrg1t5FbCr7ACyEDQvVWCD3iL2tq4qakx",
+              "executor": "operator.test.near",
+              "gasBurnt": "223182562500",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": []
+            }
+          ],
+          "receiptFailures": [
+            {
+              "ActionError": {
+                "index": 0,
+                "kind": {
+                  "FunctionCallError": {
+                    "ExecutionError": "Smart contract panicked: The account unregistered.test.near is not registered"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "label": "callback-starved",
+          "transactionHash": "3SFZ2iwiRfbFakKssnhss8SRLZdKj1MFCTCgvWs8qCaE",
+          "totalGasBurnt": "7731636631896",
+          "outcomes": [
+            {
+              "receiptId": "4ASTUMGjvqAiPyNiCfEQ4ctGJYoY8V9AT4VK2o5YCU8e",
+              "executor": "dev-99631-12288.test.near",
+              "gasBurnt": "4333118242204",
+              "status": {
+                "SuccessReceiptId": "CRRjtCdVxk1dBHtZACr4iqjyxYA1TrcELcYkCtN6B7Qu"
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_reserved\",\"data\":[{\"request_id\":\"callback-starved\",\"order_id\":\"starved\",\"quantity\":\"40\",\"amount\":\"400000000\",\"recipient\":\"supplier.test.near\",\"audit_hash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"status\":\"Reserved\"}]}",
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_invoice_bound\",\"data\":[{\"request_id\":\"callback-starved\",\"commitment\":\"3cfa88530008e9e8e7a025574bbdeda324f0e9a2d9b3cf1a5ddbf68c9c339c72\"}]}"
+              ]
+            },
+            {
+              "receiptId": "8K1MSzq4AXVNr5X5WoC1hkwKnR292vUahii3s5fdQq2W",
+              "executor": "dev-95988-71552.test.near",
+              "gasBurnt": "1732080610491",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"nep141\",\"version\":\"1.0.0\",\"event\":\"ft_transfer\",\"data\":[{\"old_owner_id\":\"dev-99631-12288.test.near\",\"new_owner_id\":\"supplier.test.near\",\"amount\":\"400000000\",\"memo\":\"callback-starved\"}]}"
+              ]
+            },
+            {
+              "receiptId": "G2qWzUBPwFJQwksEMciZ77LJzopQL4e8H2BgrS6qJz2E",
+              "executor": "operator.test.near",
+              "gasBurnt": "223182562500",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": []
+            },
+            {
+              "receiptId": "CRRjtCdVxk1dBHtZACr4iqjyxYA1TrcELcYkCtN6B7Qu",
+              "executor": "dev-99631-12288.test.near",
+              "gasBurnt": "888171296701",
+              "status": {
+                "Failure": {
+                  "ActionError": {
+                    "index": 0,
+                    "kind": {
+                      "FunctionCallError": {
+                        "ExecutionError": "Exceeded the prepaid gas."
+                      }
+                    }
+                  }
+                }
+              },
+              "logs": []
+            },
+            {
+              "receiptId": "5UeRg33wcaeVmeq4vwPRJz1pGHipQQn1e68udRsLezbr",
+              "executor": "operator.test.near",
+              "gasBurnt": "223182562500",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": []
+            }
+          ],
+          "receiptFailures": [
+            {
+              "ActionError": {
+                "index": 0,
+                "kind": {
+                  "FunctionCallError": {
+                    "ExecutionError": "Exceeded the prepaid gas."
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "label": "overlap",
+          "transactionHash": "617HLkuiPhmnbUFpozQz5g5AvFFteLv7bVt9n5osW1mq",
+          "totalGasBurnt": "2243434738333",
+          "outcomes": [
+            {
+              "receiptId": "D5pkrTWTd4eLbTcuBzHcPcWTvEjX1mtjy6yDJ69AHSJg",
+              "executor": "dev-99631-12288.test.near",
+              "gasBurnt": "1912010217983",
+              "status": {
+                "Failure": {
+                  "ActionError": {
+                    "index": 0,
+                    "kind": {
+                      "FunctionCallError": {
+                        "ExecutionError": "Smart contract panicked: Quantity exceeds available entitlement"
+                      }
+                    }
+                  }
+                }
+              },
+              "logs": []
+            }
+          ],
+          "receiptFailures": [
+            {
+              "ActionError": {
+                "index": 0,
+                "kind": {
+                  "FunctionCallError": {
+                    "ExecutionError": "Smart contract panicked: Quantity exceeds available entitlement"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "suite": "recovery-sandbox-evidence",
+      "environment": "local-near-sandbox",
+      "runtime": "nearcore 2.14.0",
+      "at": "2026-11-10T22:37:06.744Z",
+      "legacySourceCommit": "763e771",
+      "wasmSha256": {
+        "vault": "4dec1dc5acb8b3c2c75df77de705fb4ff8d6a27146c366b19d04e4b2c03dec94",
+        "token": "eeba0d423c331fed25f2915722787cc159c977c0e52c1955049f82c147db0d8b",
+        "vault-starved": "75a562e09f7c99cb54b1a02748d50f1d10ea57acfafa751a375e64188ce852c8",
+        "vault-v1": "def2bdad8270f66707caf87d464b5d4c453619a5ffd7a1d56a9f708a118399b2"
+      },
+      "checks": [
+        {
+          "name": "closure rejects unpaid accepted deliveries",
+          "status": "PASS"
+        },
+        {
+          "name": "closure needs distinct buyer and supplier approvals",
+          "status": "PASS"
+        },
+        {
+          "name": "intervening delivery and payment invalidate closure snapshot",
+          "status": "PASS"
+        },
+        {
+          "name": "real partial-order refund returns exactly 300 aUSD to original buyer",
+          "status": "PASS"
+        },
+        {
+          "name": "closed order blocks deliveries, payments, refund replay and public callback spoofing",
+          "status": "PASS"
+        },
+        {
+          "name": "definite refund failure preserves obligation and freezes the order",
+          "status": "PASS"
+        },
+        {
+          "name": "buyer retries a definitively failed refund once recipient registration is repaired",
+          "status": "PASS"
+        },
+        {
+          "name": "payout recipient recovers a real successful payment with failed callback without sending tokens again",
+          "status": "PASS"
+        },
+        {
+          "name": "real successful refund with starved callback stays reserved until buyer acknowledgment",
+          "status": "PASS"
+        },
+        {
+          "name": "upgrade from initial deployed schema preserves funded orders and attempts and enables refunds",
+          "status": "PASS"
+        },
+        {
+          "name": "refund and recovery accounting remains isolated across orders and vaults",
+          "status": "PASS"
+        }
+      ],
+      "receipts": [
+        {
+          "method": "request_payment",
+          "transactionHash": "H5ZF6BaaSM1SidGnAjCmgZLk7ZpN47gbmrQwXjyUqGvj",
+          "outcomes": [
+            {
+              "receiptId": "DicipWFiwy8ZYpgBcT7pA8qprZaV8uSqPJL2dAbRAdaG",
+              "executor": "dev-35388-12192.test.near",
+              "status": {
+                "SuccessReceiptId": "DzKptR6BGDYgGUwJY62GybDDTzze91TWFXLRZAqnPpMr"
+              },
+              "gasBurnt": "4322291451456",
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_reserved\",\"data\":[{\"request_id\":\"paid-40\",\"order_id\":\"partial\",\"quantity\":\"40\",\"amount\":\"400000000\",\"recipient\":\"supplier.test.near\",\"audit_hash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"status\":\"Reserved\"}]}",
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_invoice_bound\",\"data\":[{\"request_id\":\"paid-40\",\"commitment\":\"264906b68ae6acc87ae6a81b303bf828ef1535acea9e290c7dacd8f31d1bba27\"}]}"
+              ]
+            },
+            {
+              "receiptId": "E4sMMFHo6onMd8j3QQvB3XDjwXqiaizkPpK8EbvREr2U",
+              "executor": "dev-33560-89152.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "gasBurnt": "1728080496816",
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"nep141\",\"version\":\"1.0.0\",\"event\":\"ft_transfer\",\"data\":[{\"old_owner_id\":\"dev-35388-12192.test.near\",\"new_owner_id\":\"supplier.test.near\",\"amount\":\"400000000\",\"memo\":\"paid-40\"}]}"
+              ]
+            },
+            {
+              "receiptId": "AFa2EWxNVv5NbZjYMMxJDRMGD1GpLxcn7aNGYb1t6fjz",
+              "executor": "operator.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "gasBurnt": "223182562500",
+              "logs": []
+            },
+            {
+              "receiptId": "DzKptR6BGDYgGUwJY62GybDDTzze91TWFXLRZAqnPpMr",
+              "executor": "dev-35388-12192.test.near",
+              "status": {
+                "SuccessValue": "IlNldHRsZWQi"
+              },
+              "gasBurnt": "2453572975108",
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_result\",\"data\":[{\"request_id\":\"paid-40\",\"order_id\":\"partial\",\"quantity\":\"40\",\"amount\":\"400000000\",\"recipient\":\"supplier.test.near\",\"audit_hash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"status\":\"Settled\"}]}"
+              ]
+            },
+            {
+              "receiptId": "8K69qfKFowooC1bMXW6zPim9PZox5xM44CzXidxxzP31",
+              "executor": "operator.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "gasBurnt": "223182562500",
+              "logs": []
+            }
+          ]
+        },
+        {
+          "method": "request_payment",
+          "transactionHash": "HNjRnCDgZCh9npuoJpngfMCX3ZhTcnn1Ss1L7WqGJFCH",
+          "outcomes": [
+            {
+              "receiptId": "DtaLbEJGFxtT2Tnx88rEdJR6YnY8aahKK7tPhR95S2P8",
+              "executor": "dev-35388-12192.test.near",
+              "status": {
+                "SuccessReceiptId": "HkSCQUuR2og4S9FzDgLVTAG4HqKifpQTvYJuqmeU1ftC"
+              },
+              "gasBurnt": "4372307877853",
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_reserved\",\"data\":[{\"request_id\":\"paid-30\",\"order_id\":\"partial\",\"quantity\":\"30\",\"amount\":\"300000000\",\"recipient\":\"supplier.test.near\",\"audit_hash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"status\":\"Reserved\"}]}",
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_invoice_bound\",\"data\":[{\"request_id\":\"paid-30\",\"commitment\":\"264906b68ae6acc87ae6a81b303bf828ef1535acea9e290c7dacd8f31d1bba27\"}]}"
+              ]
+            },
+            {
+              "receiptId": "9zorTSCLtFE49BBiGMhB4axPQUVUVTSamrXdJfVjeqmy",
+              "executor": "dev-33560-89152.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "gasBurnt": "1728080496816",
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"nep141\",\"version\":\"1.0.0\",\"event\":\"ft_transfer\",\"data\":[{\"old_owner_id\":\"dev-35388-12192.test.near\",\"new_owner_id\":\"supplier.test.near\",\"amount\":\"300000000\",\"memo\":\"paid-30\"}]}"
+              ]
+            },
+            {
+              "receiptId": "3PXHWCio3ng2EEWyWr4SCMmJrocF3t4FB6WEirHvrEfL",
+              "executor": "operator.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "gasBurnt": "223182562500",
+              "logs": []
+            },
+            {
+              "receiptId": "HkSCQUuR2og4S9FzDgLVTAG4HqKifpQTvYJuqmeU1ftC",
+              "executor": "dev-35388-12192.test.near",
+              "status": {
+                "SuccessValue": "IlNldHRsZWQi"
+              },
+              "gasBurnt": "2458132975108",
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_result\",\"data\":[{\"request_id\":\"paid-30\",\"order_id\":\"partial\",\"quantity\":\"30\",\"amount\":\"300000000\",\"recipient\":\"supplier.test.near\",\"audit_hash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"status\":\"Settled\"}]}"
+              ]
+            },
+            {
+              "receiptId": "NWsmBRtf8SoznR6Jzagqmo8jrV3LiHhqtz8U5r7AFwW",
+              "executor": "operator.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "gasBurnt": "223182562500",
+              "logs": []
+            }
+          ]
+        },
+        {
+          "method": "accept_close",
+          "transactionHash": "5QB8J9PQG6yk8n9JsSUzfsphP7zSy6ruBmqnJg8HNfVu",
+          "outcomes": [
+            {
+              "receiptId": "ASSrvP5N3emkUmRfyoSFxuk8UopZ36eNZUhBFJaAsw5X",
+              "executor": "dev-35388-12192.test.near",
+              "status": {
+                "SuccessReceiptId": "J2ruYKx9h9FsMfUVSe6oQCNc1yFrKb9kM1xZ5gMVTnXJ"
+              },
+              "gasBurnt": "3975775216390",
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"refund_reserved\",\"data\":[{\"order_id\":\"partial\",\"refund\":{\"id\":1,\"amount\":\"300000000\",\"recipient\":\"buyer.test.near\",\"status\":\"Reserved\"}}]}"
+              ]
+            },
+            {
+              "receiptId": "AqhuqNHvRgdULcJu9N5ESHZb99JC7PtFAXL2cXx2PVyY",
+              "executor": "dev-33560-89152.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "gasBurnt": "1730796340525",
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"nep141\",\"version\":\"1.0.0\",\"event\":\"ft_transfer\",\"data\":[{\"old_owner_id\":\"dev-35388-12192.test.near\",\"new_owner_id\":\"buyer.test.near\",\"amount\":\"300000000\",\"memo\":\"Accord refund partial:1\"}]}"
+              ]
+            },
+            {
+              "receiptId": "GAre7qMLc7gwiAJsdzxWaxKe5LStZyUiyPXAVp51Uyrb",
+              "executor": "supplier.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "gasBurnt": "223182562500",
+              "logs": []
+            },
+            {
+              "receiptId": "J2ruYKx9h9FsMfUVSe6oQCNc1yFrKb9kM1xZ5gMVTnXJ",
+              "executor": "dev-35388-12192.test.near",
+              "status": {
+                "SuccessValue": "IkNsb3NlZCI="
+              },
+              "gasBurnt": "1942823132437",
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"refund_result\",\"data\":[{\"order_id\":\"partial\",\"state\":{\"phase\":\"Closed\",\"proposal\":null,\"refund_pending\":\"0\",\"refunded\":\"300000000\",\"refunds\":[{\"id\":1,\"amount\":\"300000000\",\"recipient\":\"buyer.test.near\",\"status\":\"Settled\"}]},\"recipient_acknowledged\":false}]}"
+              ]
+            },
+            {
+              "receiptId": "AbzgqyKCbjWA9yWEKQymSfQJNwnknQKYoZ6L9HYXBFyA",
+              "executor": "supplier.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "gasBurnt": "223182562500",
+              "logs": []
+            }
+          ]
+        },
+        {
+          "method": "accept_close",
+          "transactionHash": "5H9qmgEU8NF5Cp2dhhLJDKt8bMcdpJuhrixenAtTGESr",
+          "outcomes": [
+            {
+              "receiptId": "DPsPRaLBefhJWZVYvwUjR3j12xqDsAyUhQFjosCD8Zpg",
+              "executor": "dev-35388-12192.test.near",
+              "status": {
+                "SuccessReceiptId": "3NDSsodwMFC1bMtf29wqYpztYjLbVGc9iMrV6o7dRvvC"
+              },
+              "gasBurnt": "3974984522790",
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"refund_reserved\",\"data\":[{\"order_id\":\"failure\",\"refund\":{\"id\":1,\"amount\":\"1000000000\",\"recipient\":\"refundbuyer.test.near\",\"status\":\"Reserved\"}}]}"
+              ]
+            },
+            {
+              "receiptId": "Dg8MEbL44JNm31faLS3LzihpVTEnYDrFFLjvUSU33CzG",
+              "executor": "dev-33560-89152.test.near",
+              "status": {
+                "Failure": {
+                  "ActionError": {
+                    "index": 0,
+                    "kind": {
+                      "FunctionCallError": {
+                        "ExecutionError": "Smart contract panicked: The account refundbuyer.test.near is not registered"
+                      }
+                    }
+                  }
+                }
+              },
+              "gasBurnt": "1434934241355",
+              "logs": []
+            },
+            {
+              "receiptId": "CiGwY4zVQoVvgSLnt1Ax3uJU28GTGSBWi8pekNgDm1VL",
+              "executor": "dev-35388-12192.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "gasBurnt": "223182562500",
+              "logs": []
+            },
+            {
+              "receiptId": "39bRY6p8eGq6KfjV8iPTGyfqqdaM8Mhu66HwfrMUPo33",
+              "executor": "supplier.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "gasBurnt": "223182562500",
+              "logs": []
+            },
+            {
+              "receiptId": "3NDSsodwMFC1bMtf29wqYpztYjLbVGc9iMrV6o7dRvvC",
+              "executor": "dev-35388-12192.test.near",
+              "status": {
+                "SuccessValue": "IlRyYW5zZmVyRmFpbGVkIg=="
+              },
+              "gasBurnt": "1944882477052",
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"refund_result\",\"data\":[{\"order_id\":\"failure\",\"state\":{\"phase\":\"RefundFailed\",\"proposal\":null,\"refund_pending\":\"0\",\"refunded\":\"0\",\"refunds\":[{\"id\":1,\"amount\":\"1000000000\",\"recipient\":\"refundbuyer.test.near\",\"status\":\"TransferFailed\"}]},\"recipient_acknowledged\":false}]}"
+              ]
+            },
+            {
+              "receiptId": "3MnhrFmwTGXwtq9huitv1EvBvjrnRVKBo42khL4ebxjr",
+              "executor": "supplier.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "gasBurnt": "223182562500",
+              "logs": []
+            }
+          ]
+        },
+        {
+          "method": "retry_refund",
+          "transactionHash": "DBQqwsyuGCoNNbAuPCCaU5VEoTwwo34Y2JcmyTLs57E7",
+          "outcomes": [
+            {
+              "receiptId": "5DXhwCxRsqtwzzUk1ovA4UBg8j8bHt13UJfAXqCpVRGT",
+              "executor": "dev-35388-12192.test.near",
+              "status": {
+                "SuccessReceiptId": "FoLx7BfMuzbCvNWRNRkUjkihspcNYXjYkDo499VWfoDD"
+              },
+              "gasBurnt": "3807980724459",
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"refund_reserved\",\"data\":[{\"order_id\":\"failure\",\"refund\":{\"id\":2,\"amount\":\"1000000000\",\"recipient\":\"refundbuyer.test.near\",\"status\":\"Reserved\"}}]}"
+              ]
+            },
+            {
+              "receiptId": "B3xKdfUBRwb694jRKSv9QEPwYNudztgCD8F5GNaDqrWH",
+              "executor": "dev-33560-89152.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "gasBurnt": "1737594590186",
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"nep141\",\"version\":\"1.0.0\",\"event\":\"ft_transfer\",\"data\":[{\"old_owner_id\":\"dev-35388-12192.test.near\",\"new_owner_id\":\"refundbuyer.test.near\",\"amount\":\"1000000000\",\"memo\":\"Accord refund failure:2\"}]}"
+              ]
+            },
+            {
+              "receiptId": "6aCcHntVmAmfuuBfLnjSKGYaXm7ck6pg31sq84RdJx9q",
+              "executor": "refundbuyer.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "gasBurnt": "223182562500",
+              "logs": []
+            },
+            {
+              "receiptId": "FoLx7BfMuzbCvNWRNRkUjkihspcNYXjYkDo499VWfoDD",
+              "executor": "dev-35388-12192.test.near",
+              "status": {
+                "SuccessValue": "IkNsb3NlZCI="
+              },
+              "gasBurnt": "2049851861688",
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"refund_result\",\"data\":[{\"order_id\":\"failure\",\"state\":{\"phase\":\"Closed\",\"proposal\":null,\"refund_pending\":\"0\",\"refunded\":\"1000000000\",\"refunds\":[{\"id\":1,\"amount\":\"1000000000\",\"recipient\":\"refundbuyer.test.near\",\"status\":\"TransferFailed\"},{\"id\":2,\"amount\":\"1000000000\",\"recipient\":\"refundbuyer.test.near\",\"status\":\"Settled\"}]},\"recipient_acknowledged\":false}]}"
+              ]
+            },
+            {
+              "receiptId": "3t6dz6J5SR8s4pcEAZLJj74H8EDBdVcMxFLCedYHGr48",
+              "executor": "refundbuyer.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "gasBurnt": "223182562500",
+              "logs": []
+            }
+          ]
+        },
+        {
+          "method": "request_payment",
+          "transactionHash": "DZE9ZGVQ3pcHJMLMyrGE7F7wgprHgcMEetfQ8iaWVvuq",
+          "outcomes": [
+            {
+              "receiptId": "3YjRJ95SgYc8HvKQFd9FUFeFG5jP646hAPLBvJoKiBzF",
+              "executor": "dev-37234-57024.test.near",
+              "status": {
+                "SuccessReceiptId": "GdEw7inPeLeGhBPjVZbCrk7XQcu4WYHzTfgkrguPaJTA"
+              },
+              "gasBurnt": "4338436754944",
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_reserved\",\"data\":[{\"request_id\":\"uncertain-payment\",\"order_id\":\"uncertain\",\"quantity\":\"40\",\"amount\":\"400000000\",\"recipient\":\"supplier.test.near\",\"audit_hash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"status\":\"Reserved\"}]}",
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_invoice_bound\",\"data\":[{\"request_id\":\"uncertain-payment\",\"commitment\":\"a7aa7b333625141e10f2253de8457b9707fc5d1fdc5638a905ffa728c49326c7\"}]}"
+              ]
+            },
+            {
+              "receiptId": "9rHrxW2kaGyCMeuZXqZnEtLMUkNSGmuoK8WQaoC4aNUg",
+              "executor": "dev-33560-89152.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "gasBurnt": "1732543990954",
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"nep141\",\"version\":\"1.0.0\",\"event\":\"ft_transfer\",\"data\":[{\"old_owner_id\":\"dev-37234-57024.test.near\",\"new_owner_id\":\"supplier.test.near\",\"amount\":\"400000000\",\"memo\":\"uncertain-payment\"}]}"
+              ]
+            },
+            {
+              "receiptId": "E5H7wD2c8TSuh74XafbFCmWwyCrxZQ9y24FPKNXRjsT3",
+              "executor": "operator.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "gasBurnt": "223182562500",
+              "logs": []
+            },
+            {
+              "receiptId": "GdEw7inPeLeGhBPjVZbCrk7XQcu4WYHzTfgkrguPaJTA",
+              "executor": "dev-37234-57024.test.near",
+              "status": {
+                "Failure": {
+                  "ActionError": {
+                    "index": 0,
+                    "kind": {
+                      "FunctionCallError": {
+                        "ExecutionError": "Exceeded the prepaid gas."
+                      }
+                    }
+                  }
+                }
+              },
+              "gasBurnt": "888173532635",
+              "logs": []
+            },
+            {
+              "receiptId": "ANexANtdudE9JtvDma4WrtLkn2dgs6pHwTBHUPnc5XuA",
+              "executor": "operator.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "gasBurnt": "223182562500",
+              "logs": []
+            }
+          ]
+        },
+        {
+          "method": "acknowledge_payment",
+          "transactionHash": "43sj2PqvaQrMxc4ayyFxsns8yQ3aMyf5z7HDLutqbuwX",
+          "outcomes": [
+            {
+              "receiptId": "3CvPq6vacXRA7c1vsubqHS7VTE5YJ2SS6Ko7HkMyNEyU",
+              "executor": "dev-37234-57024.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "gasBurnt": "2509537272373",
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_receipt_acknowledged\",\"data\":[{\"request_id\":\"uncertain-payment\",\"order_id\":\"uncertain\",\"quantity\":\"40\",\"amount\":\"400000000\",\"recipient\":\"supplier.test.near\",\"audit_hash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"status\":\"ReceiptAcknowledged\"}]}"
+              ]
+            }
+          ]
+        },
+        {
+          "method": "accept_close",
+          "transactionHash": "BhKnUNFPsLEQb7LUpSfn7iEaHgQfdTEUSM2Yh4vYVnFo",
+          "outcomes": [
+            {
+              "receiptId": "2PQhXzVCBZ6QybnYsoMZgeejTPcgsasUnPXNF9E2noPD",
+              "executor": "dev-37234-57024.test.near",
+              "status": {
+                "SuccessReceiptId": "3UzWA97Tbzzvm5HuhyNcQ5KSCco58pgwykzZZrENXcSd"
+              },
+              "gasBurnt": "3978380973796",
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"refund_reserved\",\"data\":[{\"order_id\":\"uncertain\",\"refund\":{\"id\":1,\"amount\":\"600000000\",\"recipient\":\"buyer.test.near\",\"status\":\"Reserved\"}}]}"
+              ]
+            },
+            {
+              "receiptId": "E9KZQXx4qaFZudpHE2XA5hANGuSxSQwUKdzn3eR9NEwo",
+              "executor": "dev-33560-89152.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "gasBurnt": "1731694304991",
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"nep141\",\"version\":\"1.0.0\",\"event\":\"ft_transfer\",\"data\":[{\"old_owner_id\":\"dev-37234-57024.test.near\",\"new_owner_id\":\"buyer.test.near\",\"amount\":\"600000000\",\"memo\":\"Accord refund uncertain:1\"}]}"
+              ]
+            },
+            {
+              "receiptId": "CCceDpwG5sKfap11LqvqLYXFo56ZiSimuJgzCi6LCXqB",
+              "executor": "supplier.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "gasBurnt": "223182562500",
+              "logs": []
+            },
+            {
+              "receiptId": "3UzWA97Tbzzvm5HuhyNcQ5KSCco58pgwykzZZrENXcSd",
+              "executor": "dev-37234-57024.test.near",
+              "status": {
+                "Failure": {
+                  "ActionError": {
+                    "index": 0,
+                    "kind": {
+                      "FunctionCallError": {
+                        "ExecutionError": "Exceeded the prepaid gas."
+                      }
+                    }
+                  }
+                }
+              },
+              "gasBurnt": "888180240437",
+              "logs": []
+            },
+            {
+              "receiptId": "5VUFuw4RCiueCRQ4Qzr4M5X5RRxCmjR82WiQAtVb1rxj",
+              "executor": "supplier.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "gasBurnt": "223182562500",
+              "logs": []
+            }
+          ]
+        },
+        {
+          "method": "acknowledge_refund",
+          "transactionHash": "HX68Cp7hURSvbHz31ZNWRaKvpjmRbsZrCJwNrgFu28W8",
+          "outcomes": [
+            {
+              "receiptId": "4AyTKDjSzspJuQvHxX39LNyXh268n9GDDSe2tUwPJtPF",
+              "executor": "dev-37234-57024.test.near",
+              "status": {
+                "SuccessValue": "IkNsb3NlZCI="
+              },
+              "gasBurnt": "2265190553186",
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"refund_result\",\"data\":[{\"order_id\":\"uncertain\",\"state\":{\"phase\":\"Closed\",\"proposal\":null,\"refund_pending\":\"0\",\"refunded\":\"600000000\",\"refunds\":[{\"id\":1,\"amount\":\"600000000\",\"recipient\":\"buyer.test.near\",\"status\":\"ReceiptAcknowledged\"}]},\"recipient_acknowledged\":true}]}"
+              ]
+            }
+          ]
+        },
+        {
+          "method": "request_payment",
+          "transactionHash": "9ocF1Fy2k8VoAvPEeNNvRADvazAMHUyJ2ukEFrWQYWTY",
+          "outcomes": [
+            {
+              "receiptId": "56h4qhrw5iF5AoevUyzyY3s4SE5d3psTuWS49z5waczV",
+              "executor": "dev-39050-82368.test.near",
+              "status": {
+                "SuccessReceiptId": "88YHNfbDLRY6qeheHZGuX3Gcs9PZxNbNsukU3iXiPUYa"
+              },
+              "gasBurnt": "3231932280065",
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_reserved\",\"data\":[{\"request_id\":\"legacy-payment\",\"order_id\":\"upgrade\",\"quantity\":\"40\",\"amount\":\"400000000\",\"recipient\":\"supplier.test.near\",\"audit_hash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"status\":\"Reserved\"}]}"
+              ]
+            },
+            {
+              "receiptId": "349LHESpJz86SrLdteyuE9euBoC6xtHSM6yD8mLUmBQN",
+              "executor": "dev-33560-89152.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "gasBurnt": "1731320046277",
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"nep141\",\"version\":\"1.0.0\",\"event\":\"ft_transfer\",\"data\":[{\"old_owner_id\":\"dev-39050-82368.test.near\",\"new_owner_id\":\"supplier.test.near\",\"amount\":\"400000000\",\"memo\":\"legacy-payment\"}]}"
+              ]
+            },
+            {
+              "receiptId": "AYqokgH5DVJnXDbWeqmgNLv4Yi5QAUuf7ESTUV2aduYx",
+              "executor": "operator.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "gasBurnt": "223182562500",
+              "logs": []
+            },
+            {
+              "receiptId": "88YHNfbDLRY6qeheHZGuX3Gcs9PZxNbNsukU3iXiPUYa",
+              "executor": "dev-39050-82368.test.near",
+              "status": {
+                "SuccessValue": "IlNldHRsZWQi"
+              },
+              "gasBurnt": "2392982477996",
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_result\",\"data\":[{\"request_id\":\"legacy-payment\",\"order_id\":\"upgrade\",\"quantity\":\"40\",\"amount\":\"400000000\",\"recipient\":\"supplier.test.near\",\"audit_hash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"status\":\"Settled\"}]}"
+              ]
+            },
+            {
+              "receiptId": "CXs96FaLH5UF9f6XzDmtXnjr88UXVMNizunKMfnR2nPs",
+              "executor": "operator.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "gasBurnt": "223182562500",
+              "logs": []
+            }
+          ]
+        },
+        {
+          "method": "accept_close",
+          "transactionHash": "FA6nhXw3mfLiB32kARRtHiqSw4YmXY8Hyw3JBejYeLbk",
+          "outcomes": [
+            {
+              "receiptId": "DhHxUAcxBAkx2qtkasqQSAvHXd7Fz7zsho5ZVxVzRWv6",
+              "executor": "dev-39050-82368.test.near",
+              "status": {
+                "SuccessReceiptId": "AJwHdAP2VwVwpXHeGZCeZ2k4n4RXcQvmrxLtpaG65PW8"
+              },
+              "gasBurnt": "3291373687361",
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"refund_reserved\",\"data\":[{\"order_id\":\"upgrade\",\"refund\":{\"id\":1,\"amount\":\"600000000\",\"recipient\":\"buyer.test.near\",\"status\":\"Reserved\"}}]}"
+              ]
+            },
+            {
+              "receiptId": "Ud7zQuDKmKRMvGv1Hr8iYXRjASA4P1LwdNKSiV545v8",
+              "executor": "dev-33560-89152.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "gasBurnt": "1730796340525",
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"nep141\",\"version\":\"1.0.0\",\"event\":\"ft_transfer\",\"data\":[{\"old_owner_id\":\"dev-39050-82368.test.near\",\"new_owner_id\":\"buyer.test.near\",\"amount\":\"600000000\",\"memo\":\"Accord refund upgrade:1\"}]}"
+              ]
+            },
+            {
+              "receiptId": "5kcaAS4jSmq2JCqpomVFjtcgRRGZqx9M4FjxpEDFreWL",
+              "executor": "supplier.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "gasBurnt": "223182562500",
+              "logs": []
+            },
+            {
+              "receiptId": "AJwHdAP2VwVwpXHeGZCeZ2k4n4RXcQvmrxLtpaG65PW8",
+              "executor": "dev-39050-82368.test.near",
+              "status": {
+                "SuccessValue": "IkNsb3NlZCI="
+              },
+              "gasBurnt": "1938263132437",
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"refund_result\",\"data\":[{\"order_id\":\"upgrade\",\"state\":{\"phase\":\"Closed\",\"proposal\":null,\"refund_pending\":\"0\",\"refunded\":\"600000000\",\"refunds\":[{\"id\":1,\"amount\":\"600000000\",\"recipient\":\"buyer.test.near\",\"status\":\"Settled\"}]},\"recipient_acknowledged\":false}]}"
+              ]
+            },
+            {
+              "receiptId": "GSHmKaYmoH6pkKnyV5By517dmoG1BBeaVenMxoUPaX7z",
+              "executor": "supplier.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "gasBurnt": "223182562500",
+              "logs": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "suite": "invoice-sandbox-evidence",
+      "at": "2026-11-10T22:40:07.795Z",
+      "environment": "local-near-sandbox",
+      "runtime": "nearcore 2.14.0",
+      "wasmSha256": {
+        "vault": "4dec1dc5acb8b3c2c75df77de705fb4ff8d6a27146c366b19d04e4b2c03dec94"
+      },
+      "checks": [
+        {
+          "name": "payment without supplier confirmation is rejected",
+          "status": "PASS"
+        },
+        {
+          "name": "operator cannot confirm supplier invoices",
+          "status": "PASS"
+        },
+        {
+          "name": "real contract commitment matches canonical TypeScript encoding",
+          "status": "PASS"
+        },
+        {
+          "name": "repeat supplier confirmation is idempotent",
+          "status": "PASS"
+        },
+        {
+          "name": "reference, document and order tampering cannot reuse a confirmation",
+          "status": "PASS"
+        },
+        {
+          "name": "payment quantity cannot exceed confirmed invoice quantity",
+          "status": "PASS"
+        },
+        {
+          "name": "supplier-confirmed invoice settles a real 400 aUSD partial payment",
+          "status": "PASS"
+        },
+        {
+          "name": "confirmed invoice retains order-level incremental delivery limits",
+          "status": "PASS"
+        },
+        {
+          "name": "new confirmation invalidates stale closure; closed remainder disables confirmations and payments",
+          "status": "PASS"
+        }
+      ],
+      "receipts": [
+        {
+          "method": "request_payment",
+          "transactionHash": "3BhMebpGZMXpBtgeXagCcMsREBbh55jS8WJfcnKeQJP2",
+          "outcomes": [
+            {
+              "receiptId": "D2RcT1ofeh2cudBm49zA9cQZn9vM86xDHVRBCaeZrXVH",
+              "executor": "dev-16699-74304.test.near",
+              "status": {
+                "Failure": {
+                  "ActionError": {
+                    "index": 0,
+                    "kind": {
+                      "FunctionCallError": {
+                        "ExecutionError": "Smart contract panicked: Supplier-confirmed invoice required"
+                      }
+                    }
+                  }
+                }
+              },
+              "logs": [],
+              "gasBurnt": "1574451512446"
+            }
+          ]
+        },
+        {
+          "method": "confirm_invoice",
+          "transactionHash": "5MiZHtVPChWB2H8xg3LPXNugu9taGD4WXDivFuZJvfiq",
+          "outcomes": [
+            {
+              "receiptId": "5xGjCyZSZaXNvR91dQwfDtkHCGbjP4J9SfbCPcmzAybw",
+              "executor": "dev-16699-74304.test.near",
+              "status": {
+                "Failure": {
+                  "ActionError": {
+                    "index": 0,
+                    "kind": {
+                      "FunctionCallError": {
+                        "ExecutionError": "Smart contract panicked: Supplier only"
+                      }
+                    }
+                  }
+                }
+              },
+              "logs": [],
+              "gasBurnt": "1649154475708"
+            }
+          ]
+        },
+        {
+          "method": "confirm_invoice",
+          "transactionHash": "ApZBcGWUNTgMtJrGDJCuGB4gznsUbYC1g83aymHsYUzJ",
+          "outcomes": [
+            {
+              "receiptId": "2e74wjj6eiGbywcu52eFn1FyVDqed5ah1qaxU5Rf83gA",
+              "executor": "dev-16699-74304.test.near",
+              "status": {
+                "SuccessValue": "eyJjb21taXRtZW50IjoiMmU1OGQ5ODlhYTRiZDU4YTZiMmZhNzUwMjQxMWNkMzY3ZTU2OWZiMzM1MmY2YzU2MzUzNjU0YmJmNGIzOWEwOCIsInN1cHBsaWVyIjoic3VwcGxpZXIudGVzdC5uZWFyIiwiaW52b2ljZSI6eyJvcmRlcl9pZCI6Imludm9pY2Utb3JkZXIiLCJ0ZXJtc192ZXJzaW9uIjoxLCJ0ZXJtc19oYXNoIjoiM2U2N2JlMzk5YTQ5YTc5ZDNjZTY3NGUxODZkNTc4MDE2ZjcxOWZhMzI1NjYzOGU2MWE2MjRhOTBhZjRmMWIyNiIsImRvY3VtZW50X2hhc2giOiJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiIiwicmVmZXJlbmNlIjoiSU5WLVNCWC0wMDEiLCJsaW5lX2lkIjoiY2FydG9ucyIsInF1YW50aXR5IjoiMTAwIiwidG9rZW4iOiJkZXYtMTQ4NTctODU1MzYudGVzdC5uZWFyIiwiYW1vdW50IjoiMTAwMDAwMDAwMCJ9fQ=="
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"invoice_confirmed\",\"data\":[{\"commitment\":\"2e58d989aa4bd58a6b2fa7502411cd367e569fb3352f6c56353654bbf4b39a08\",\"supplier\":\"supplier.test.near\",\"invoice\":{\"order_id\":\"invoice-order\",\"terms_version\":1,\"terms_hash\":\"3e67be399a49a79d3ce674e186d578016f719fa3256638e61a624a90af4f1b26\",\"document_hash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"reference\":\"INV-SBX-001\",\"line_id\":\"cartons\",\"quantity\":\"100\",\"token\":\"dev-14857-85536.test.near\",\"amount\":\"1000000000\"}}]}"
+              ],
+              "gasBurnt": "3156945473890"
+            }
+          ]
+        },
+        {
+          "method": "confirm_invoice",
+          "transactionHash": "BgXGs5iv5AfBC8LktHmsqVGg5ksgNMrVKc9b3C7EKYR1",
+          "outcomes": [
+            {
+              "receiptId": "9MFqztWwwFDGDfzNpE22VR6PnsBZDCbCx9dcuc7CFWLM",
+              "executor": "dev-16699-74304.test.near",
+              "status": {
+                "SuccessValue": "eyJjb21taXRtZW50IjoiMmU1OGQ5ODlhYTRiZDU4YTZiMmZhNzUwMjQxMWNkMzY3ZTU2OWZiMzM1MmY2YzU2MzUzNjU0YmJmNGIzOWEwOCIsInN1cHBsaWVyIjoic3VwcGxpZXIudGVzdC5uZWFyIiwiaW52b2ljZSI6eyJvcmRlcl9pZCI6Imludm9pY2Utb3JkZXIiLCJ0ZXJtc192ZXJzaW9uIjoxLCJ0ZXJtc19oYXNoIjoiM2U2N2JlMzk5YTQ5YTc5ZDNjZTY3NGUxODZkNTc4MDE2ZjcxOWZhMzI1NjYzOGU2MWE2MjRhOTBhZjRmMWIyNiIsImRvY3VtZW50X2hhc2giOiJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiIiwicmVmZXJlbmNlIjoiSU5WLVNCWC0wMDEiLCJsaW5lX2lkIjoiY2FydG9ucyIsInF1YW50aXR5IjoiMTAwIiwidG9rZW4iOiJkZXYtMTQ4NTctODU1MzYudGVzdC5uZWFyIiwiYW1vdW50IjoiMTAwMDAwMDAwMCJ9fQ=="
+              },
+              "logs": [],
+              "gasBurnt": "2046855370435"
+            }
+          ]
+        },
+        {
+          "method": "request_payment",
+          "transactionHash": "DzSctd2eeyCfVNZsd1BzuqBc83HCift7Fw7yARc9TKy6",
+          "outcomes": [
+            {
+              "receiptId": "8oKk7V9LaiGnG7qsmAH9746NaXKT2fgmLSuBqEv6cocL",
+              "executor": "dev-16699-74304.test.near",
+              "status": {
+                "Failure": {
+                  "ActionError": {
+                    "index": 0,
+                    "kind": {
+                      "FunctionCallError": {
+                        "ExecutionError": "Smart contract panicked: Supplier-confirmed invoice required"
+                      }
+                    }
+                  }
+                }
+              },
+              "logs": [],
+              "gasBurnt": "1802815367340"
+            }
+          ]
+        },
+        {
+          "method": "request_payment",
+          "transactionHash": "FJCZmEHxju9WCxbNmm4VzeN5somFLGoZmmx1BxBQj3Hw",
+          "outcomes": [
+            {
+              "receiptId": "4oK8yL6Wn53ZvYP7jyCMM4wW1MRz8KYH1eWAZRteW5RZ",
+              "executor": "dev-16699-74304.test.near",
+              "status": {
+                "Failure": {
+                  "ActionError": {
+                    "index": 0,
+                    "kind": {
+                      "FunctionCallError": {
+                        "ExecutionError": "Smart contract panicked: Supplier-confirmed invoice required"
+                      }
+                    }
+                  }
+                }
+              },
+              "logs": [],
+              "gasBurnt": "1803586434828"
+            }
+          ]
+        },
+        {
+          "method": "request_payment",
+          "transactionHash": "9KYJ4YDxQwg1tJ9Zg7F6LigvCHh57ybdRRMy2ShZf9kK",
+          "outcomes": [
+            {
+              "receiptId": "55ouB6kTGjf3BicfsdK8QB9yxKEN6dL2dLw9nEPmuoSK",
+              "executor": "dev-16699-74304.test.near",
+              "status": {
+                "Failure": {
+                  "ActionError": {
+                    "index": 0,
+                    "kind": {
+                      "FunctionCallError": {
+                        "ExecutionError": "Smart contract panicked: Invoice does not match accepted terms"
+                      }
+                    }
+                  }
+                }
+              },
+              "logs": [],
+              "gasBurnt": "1605501596558"
+            }
+          ]
+        },
+        {
+          "method": "confirm_invoice",
+          "transactionHash": "1276MkQ7c5mr94JhV3vQkHRhg84hXnCQPNULN69oRzyo",
+          "outcomes": [
+            {
+              "receiptId": "HsrV8Cr8zrBevaGteB3mPdMyrzHhXr88ALJ8BNL4XHZ1",
+              "executor": "dev-16699-74304.test.near",
+              "status": {
+                "SuccessValue": "eyJjb21taXRtZW50IjoiYThiYjgwNjg4YzQ1ZDBlNGQzMTM4Y2M2NzQ0ODZjNDdmZWMzNzcwMGY3MDdlOTkxOGI5YzMwYWU4Yjg1NTg1OCIsInN1cHBsaWVyIjoic3VwcGxpZXIudGVzdC5uZWFyIiwiaW52b2ljZSI6eyJvcmRlcl9pZCI6Imludm9pY2Utb3JkZXIiLCJ0ZXJtc192ZXJzaW9uIjoxLCJ0ZXJtc19oYXNoIjoiM2U2N2JlMzk5YTQ5YTc5ZDNjZTY3NGUxODZkNTc4MDE2ZjcxOWZhMzI1NjYzOGU2MWE2MjRhOTBhZjRmMWIyNiIsImRvY3VtZW50X2hhc2giOiJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiIiwicmVmZXJlbmNlIjoiSU5WLVNCWC1TTUFMTCIsImxpbmVfaWQiOiJjYXJ0b25zIiwicXVhbnRpdHkiOiIyMCIsInRva2VuIjoiZGV2LTE0ODU3LTg1NTM2LnRlc3QubmVhciIsImFtb3VudCI6IjIwMDAwMDAwMCJ9fQ=="
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"invoice_confirmed\",\"data\":[{\"commitment\":\"a8bb80688c45d0e4d3138cc674486c47fec37700f707e9918b9c30ae8b855858\",\"supplier\":\"supplier.test.near\",\"invoice\":{\"order_id\":\"invoice-order\",\"terms_version\":1,\"terms_hash\":\"3e67be399a49a79d3ce674e186d578016f719fa3256638e61a624a90af4f1b26\",\"document_hash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"reference\":\"INV-SBX-SMALL\",\"line_id\":\"cartons\",\"quantity\":\"20\",\"token\":\"dev-14857-85536.test.near\",\"amount\":\"200000000\"}}]}"
+              ],
+              "gasBurnt": "3227062437160"
+            }
+          ]
+        },
+        {
+          "method": "request_payment",
+          "transactionHash": "AQkNQ4M6uFD48j5etZMSDXE2bVeKyqLeVXAXMLTRjr3v",
+          "outcomes": [
+            {
+              "receiptId": "BWFdTZgA9SDF6argYeX3vLe75dEHrtRGiCorMtHPfG9D",
+              "executor": "dev-16699-74304.test.near",
+              "status": {
+                "Failure": {
+                  "ActionError": {
+                    "index": 0,
+                    "kind": {
+                      "FunctionCallError": {
+                        "ExecutionError": "Smart contract panicked: Payment differs from confirmed invoice"
+                      }
+                    }
+                  }
+                }
+              },
+              "logs": [],
+              "gasBurnt": "1610465661110"
+            }
+          ]
+        },
+        {
+          "method": "request_payment",
+          "transactionHash": "HtqknMyb9j1C5acvAYtTLyGALU3R8jQ1t7gyeKtDuzdc",
+          "outcomes": [
+            {
+              "receiptId": "91fwCjyjqtik9RuV4awcsUH4QxhsfG6zvQDrodKu6NUc",
+              "executor": "dev-16699-74304.test.near",
+              "status": {
+                "SuccessReceiptId": "82A92ykYrAczhxbw9kyjH5MTBJxRyBjJmHWiVMwTaS1R"
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_reserved\",\"data\":[{\"request_id\":\"confirmed-partial\",\"order_id\":\"invoice-order\",\"quantity\":\"40\",\"amount\":\"400000000\",\"recipient\":\"supplier.test.near\",\"audit_hash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"status\":\"Reserved\"}]}",
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_invoice_bound\",\"data\":[{\"request_id\":\"confirmed-partial\",\"commitment\":\"2e58d989aa4bd58a6b2fa7502411cd367e569fb3352f6c56353654bbf4b39a08\"}]}"
+              ],
+              "gasBurnt": "4342561757243"
+            },
+            {
+              "receiptId": "uESNxHp3WMuyeuvnkZYgGL7rzqHE7fPrfy83DLv1qBP",
+              "executor": "dev-14857-85536.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"nep141\",\"version\":\"1.0.0\",\"event\":\"ft_transfer\",\"data\":[{\"old_owner_id\":\"dev-16699-74304.test.near\",\"new_owner_id\":\"supplier.test.near\",\"amount\":\"400000000\",\"memo\":\"confirmed-partial\"}]}"
+              ],
+              "gasBurnt": "1727983990954"
+            },
+            {
+              "receiptId": "GCEzUJJvFn5giRyJdg7mRUuACqAYmaQKkLQ9kM7N24r4",
+              "executor": "operator.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": [],
+              "gasBurnt": "223182562500"
+            },
+            {
+              "receiptId": "82A92ykYrAczhxbw9kyjH5MTBJxRyBjJmHWiVMwTaS1R",
+              "executor": "dev-16699-74304.test.near",
+              "status": {
+                "SuccessValue": "IlNldHRsZWQi"
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_result\",\"data\":[{\"request_id\":\"confirmed-partial\",\"order_id\":\"invoice-order\",\"quantity\":\"40\",\"amount\":\"400000000\",\"recipient\":\"supplier.test.near\",\"audit_hash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"status\":\"Settled\"}]}"
+              ],
+              "gasBurnt": "2465719284911"
+            },
+            {
+              "receiptId": "9u76fHtkpmpzsxfFQ5q2Pz1ACvE7YTGPuNGcWFcuyNpQ",
+              "executor": "operator.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": [],
+              "gasBurnt": "223182562500"
+            }
+          ]
+        },
+        {
+          "method": "request_payment",
+          "transactionHash": "9mcSN4mxUbeFnugApuDgBF6cJiaSpCbkd9B8HSG38nmq",
+          "outcomes": [
+            {
+              "receiptId": "BUzHQkShvhGGbWdAaznD768PwJJhnNddWsm9h6cyHz45",
+              "executor": "dev-16699-74304.test.near",
+              "status": {
+                "SuccessReceiptId": "3C4g4g2RCbbeFdEfgnRFT4tZ2VHEDaLJcAe2Tq92Nh6z"
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_reserved\",\"data\":[{\"request_id\":\"confirmed-second\",\"order_id\":\"invoice-order\",\"quantity\":\"30\",\"amount\":\"300000000\",\"recipient\":\"supplier.test.near\",\"audit_hash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"status\":\"Reserved\"}]}",
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_invoice_bound\",\"data\":[{\"request_id\":\"confirmed-second\",\"commitment\":\"2e58d989aa4bd58a6b2fa7502411cd367e569fb3352f6c56353654bbf4b39a08\"}]}"
+              ],
+              "gasBurnt": "4361638982770"
+            },
+            {
+              "receiptId": "83Rv8EYTAUbcEdr3taEA2V6MyRXL3NowJ6gdWrPYbbDm",
+              "executor": "dev-14857-85536.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"nep141\",\"version\":\"1.0.0\",\"event\":\"ft_transfer\",\"data\":[{\"old_owner_id\":\"dev-16699-74304.test.near\",\"new_owner_id\":\"supplier.test.near\",\"amount\":\"300000000\",\"memo\":\"confirmed-second\"}]}"
+              ],
+              "gasBurnt": "1727520610491"
+            },
+            {
+              "receiptId": "4mF6eSFrBX8YEuXmbQQy5ASR9eGEJvkZg4RJbp4kZ5tc",
+              "executor": "operator.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": [],
+              "gasBurnt": "223182562500"
+            },
+            {
+              "receiptId": "3C4g4g2RCbbeFdEfgnRFT4tZ2VHEDaLJcAe2Tq92Nh6z",
+              "executor": "dev-16699-74304.test.near",
+              "status": {
+                "SuccessValue": "IlNldHRsZWQi"
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_result\",\"data\":[{\"request_id\":\"confirmed-second\",\"order_id\":\"invoice-order\",\"quantity\":\"30\",\"amount\":\"300000000\",\"recipient\":\"supplier.test.near\",\"audit_hash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"status\":\"Settled\"}]}"
+              ],
+              "gasBurnt": "2469607121597"
+            },
+            {
+              "receiptId": "DvXRJs1zfQqghRpQZxdFe2Qiz2BBMPputchpiaWY8BSD",
+              "executor": "operator.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": [],
+              "gasBurnt": "223182562500"
+            }
+          ]
+        },
+        {
+          "method": "confirm_invoice",
+          "transactionHash": "5YYXgGUpeHMsMp3XcXUHX3fMJsJwpLM971uRx1Fie8Py",
+          "outcomes": [
+            {
+              "receiptId": "6ZVyiPC92tni7eWT5atvBKnhpBfzPxRX7tcoKRX15ZSq",
+              "executor": "dev-16699-74304.test.near",
+              "status": {
+                "SuccessValue": "eyJjb21taXRtZW50IjoiYzdiOGJlODM1MjA2YzJmNmFjZmRlMzQ1ZTNkYzBkMGI4NDg2YTFiODI5Njg2MzMwOTA0NTkzMmI3MzdhMTEyOSIsInN1cHBsaWVyIjoic3VwcGxpZXIudGVzdC5uZWFyIiwiaW52b2ljZSI6eyJvcmRlcl9pZCI6Imludm9pY2Utb3JkZXIiLCJ0ZXJtc192ZXJzaW9uIjoxLCJ0ZXJtc19oYXNoIjoiM2U2N2JlMzk5YTQ5YTc5ZDNjZTY3NGUxODZkNTc4MDE2ZjcxOWZhMzI1NjYzOGU2MWE2MjRhOTBhZjRmMWIyNiIsImRvY3VtZW50X2hhc2giOiJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiIiwicmVmZXJlbmNlIjoiSU5WLUFEREVELUFGVEVSLUNMT1NFLVBST1BPU0FMIiwibGluZV9pZCI6ImNhcnRvbnMiLCJxdWFudGl0eSI6IjEwMCIsInRva2VuIjoiZGV2LTE0ODU3LTg1NTM2LnRlc3QubmVhciIsImFtb3VudCI6IjEwMDAwMDAwMDAifX0="
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"invoice_confirmed\",\"data\":[{\"commitment\":\"c7b8be835206c2f6acfde345e3dc0d0b8486a1b8296863309045932b737a1129\",\"supplier\":\"supplier.test.near\",\"invoice\":{\"order_id\":\"invoice-order\",\"terms_version\":1,\"terms_hash\":\"3e67be399a49a79d3ce674e186d578016f719fa3256638e61a624a90af4f1b26\",\"document_hash\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"reference\":\"INV-ADDED-AFTER-CLOSE-PROPOSAL\",\"line_id\":\"cartons\",\"quantity\":\"100\",\"token\":\"dev-14857-85536.test.near\",\"amount\":\"1000000000\"}}]}"
+              ],
+              "gasBurnt": "3312214944961"
+            }
+          ]
+        },
+        {
+          "method": "accept_close",
+          "transactionHash": "732yxEys84vgx4Sp3Vw4Q1kSuNzuDdRb3MdwE8jQj6Qm",
+          "outcomes": [
+            {
+              "receiptId": "4AzpFNSAgMfHQbcB3sNMYBYpt5KBakbnDRx2Z5bBo1X6",
+              "executor": "dev-16699-74304.test.near",
+              "status": {
+                "Failure": {
+                  "ActionError": {
+                    "index": 0,
+                    "kind": {
+                      "FunctionCallError": {
+                        "ExecutionError": "Smart contract panicked: Stale close proposal"
+                      }
+                    }
+                  }
+                }
+              },
+              "logs": [],
+              "gasBurnt": "1917693702546"
+            }
+          ]
+        },
+        {
+          "method": "accept_close",
+          "transactionHash": "7yAhgfeWBeYBaKXRYu8wpiQoBSwXik8qb5KW45gHuiKR",
+          "outcomes": [
+            {
+              "receiptId": "FNFEoR5KaJ4np9NzS4d9NGDUY95ZGTZFwBBAuuEAdXHK",
+              "executor": "dev-16699-74304.test.near",
+              "status": {
+                "SuccessReceiptId": "B4iP2r9xNLREPabSYsZVMCthyZBBBT5GimDSEzfFdNrj"
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"refund_reserved\",\"data\":[{\"order_id\":\"invoice-order\",\"refund\":{\"id\":1,\"amount\":\"300000000\",\"recipient\":\"buyer.test.near\",\"status\":\"Reserved\"}}]}"
+              ],
+              "gasBurnt": "3997815472660"
+            },
+            {
+              "receiptId": "73Jfxnx6DpNucFsztmYKeHn53r8ViYfhdcoBQHxsj3vT",
+              "executor": "dev-14857-85536.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"nep141\",\"version\":\"1.0.0\",\"event\":\"ft_transfer\",\"data\":[{\"old_owner_id\":\"dev-16699-74304.test.near\",\"new_owner_id\":\"buyer.test.near\",\"amount\":\"300000000\",\"memo\":\"Accord refund invoice-order:1\"}]}"
+              ],
+              "gasBurnt": "1728947511799"
+            },
+            {
+              "receiptId": "Do1oZbffuJLwLkLA18ivtXbFaeMm4iC8bvohrX3owekK",
+              "executor": "supplier.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": [],
+              "gasBurnt": "223182562500"
+            },
+            {
+              "receiptId": "B4iP2r9xNLREPabSYsZVMCthyZBBBT5GimDSEzfFdNrj",
+              "executor": "dev-16699-74304.test.near",
+              "status": {
+                "SuccessValue": "IkNsb3NlZCI="
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"refund_result\",\"data\":[{\"order_id\":\"invoice-order\",\"state\":{\"phase\":\"Closed\",\"proposal\":null,\"refund_pending\":\"0\",\"refunded\":\"300000000\",\"refunds\":[{\"id\":1,\"amount\":\"300000000\",\"recipient\":\"buyer.test.near\",\"status\":\"Settled\"}]},\"recipient_acknowledged\":false}]}"
+              ],
+              "gasBurnt": "1946403271423"
+            },
+            {
+              "receiptId": "4FKLUqVN5Xd83EMjpEqMs6Q6vsDV3tABHtYoPR6Anab7",
+              "executor": "supplier.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": [],
+              "gasBurnt": "223182562500"
+            }
+          ]
+        },
+        {
+          "method": "confirm_invoice",
+          "transactionHash": "7Rmu7va4gi9d3SUbjVPtqq8fKXUxmgGgYEBC9yPiu7ha",
+          "outcomes": [
+            {
+              "receiptId": "3Ju69TdGtyN4NF6CrAdAJ2rGsLXQL6ZZT5TPfias7di3",
+              "executor": "dev-16699-74304.test.near",
+              "status": {
+                "Failure": {
+                  "ActionError": {
+                    "index": 0,
+                    "kind": {
+                      "FunctionCallError": {
+                        "ExecutionError": "Smart contract panicked: Order is closing or closed"
+                      }
+                    }
+                  }
+                }
+              },
+              "logs": [],
+              "gasBurnt": "1663827821689"
+            }
+          ]
+        },
+        {
+          "method": "request_payment",
+          "transactionHash": "FZqKTqgGxYuXgJXdfBnBeUjMZq1TBQGKP1DdtY31vvMH",
+          "outcomes": [
+            {
+              "receiptId": "GTjw7nGXf58NRuUFbtHzfyxrJc27kmaXj2QKYPiFMUPp",
+              "executor": "dev-16699-74304.test.near",
+              "status": {
+                "Failure": {
+                  "ActionError": {
+                    "index": 0,
+                    "kind": {
+                      "FunctionCallError": {
+                        "ExecutionError": "Smart contract panicked: Order is closing or closed"
+                      }
+                    }
+                  }
+                }
+              },
+              "logs": [],
+              "gasBurnt": "1611134902843"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "suite": "automatic-sandbox-evidence",
+      "at": "2026-11-10T22:41:34.020Z",
+      "environment": "local-near-sandbox",
+      "runtime": "nearcore 2.14.0",
+      "wasmSha256": {
+        "vault": "4dec1dc5acb8b3c2c75df77de705fb4ff8d6a27146c366b19d04e4b2c03dec94",
+        "previous": "0264bf45465b17859ca565d8a6bdc0a82a06b46761c5b6c903c73a34a7a34101",
+        "starved": "75a562e09f7c99cb54b1a02748d50f1d10ea57acfafa751a375e64188ce852c8"
+      },
+      "checks": [
+        {
+          "name": "upgrade preserves funded 2.2.0 order, token balance and manual execution policy",
+          "status": "PASS"
+        },
+        {
+          "name": "buyer creates, funds and confirms delivery using the same account",
+          "status": "PASS"
+        },
+        {
+          "name": "restricted payment responsibility stays separate while the fixed supplier receives 40 aUSD",
+          "status": "PASS"
+        },
+        {
+          "name": "a paid invoice cannot pay a later delivery; a fresh confirmed invoice pays only the new quantity",
+          "status": "PASS"
+        },
+        {
+          "name": "optional delegated receiving authorizes only the appointed warehouse account",
+          "status": "PASS"
+        },
+        {
+          "name": "definitive token failure releases invoice capacity; repaired transfer settles once",
+          "status": "PASS"
+        },
+        {
+          "name": "successful transfer with a failed callback retains both order and invoice reservations",
+          "status": "PASS"
+        },
+        {
+          "name": "recipient acknowledgment finalizes payment without making the invoice spendable again",
+          "status": "PASS"
+        }
+      ],
+      "receipts": [
+        {
+          "method": "request_payment",
+          "requestId": "buyer-cannot-dispatch",
+          "transactionHash": "FKVMtEcLviXx5M4eK7ima58pU5GnkuoWnVWAqQDgNbQN",
+          "outcomes": [
+            {
+              "receiptId": "J8gMRPs7fFec5LHhNckSNUbiPUcWHMn3mLNWQ6kw9sVq",
+              "executor": "dev-4568-42656.test.near",
+              "status": {
+                "Failure": {
+                  "ActionError": {
+                    "index": 0,
+                    "kind": {
+                      "FunctionCallError": {
+                        "ExecutionError": "Smart contract panicked: Operator only"
+                      }
+                    }
+                  }
+                }
+              },
+              "logs": []
+            }
+          ]
+        },
+        {
+          "method": "request_payment",
+          "requestId": "service-dispatch",
+          "transactionHash": "3owCsyPeojG6b2dr1z4v7zFPnR8GHGSVdTEQfQHFePhy",
+          "outcomes": [
+            {
+              "receiptId": "BF7mVdYq1SbSJfEDicxeP8nVRoW4ANh3gx9di45TUFU4",
+              "executor": "dev-4568-42656.test.near",
+              "status": {
+                "SuccessReceiptId": "8Cgz1XLLuEczdvpkzFJ8pPe3qMMec3UgwXLqTU5JcXht"
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_reserved\",\"data\":[{\"request_id\":\"service-dispatch\",\"order_id\":\"automatic\",\"quantity\":\"4\",\"amount\":\"40000000\",\"recipient\":\"supplier.test.near\",\"audit_hash\":\"41241f314959de893e65fab50f7162a3b135454df88e35de41ca26ca4e2e4c09\",\"status\":\"Reserved\"}]}",
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_invoice_bound\",\"data\":[{\"request_id\":\"service-dispatch\",\"commitment\":\"84612232e5b655bce1210b0a601ad89ad18e613a993ff69c819a7968793a1e1f\"}]}"
+              ]
+            },
+            {
+              "receiptId": "HACWc2yW2GfE77GvM5rm4yvrFzvW8zSCWtUM5PKYxyrm",
+              "executor": "dev-2746-66656.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"nep141\",\"version\":\"1.0.0\",\"event\":\"ft_transfer\",\"data\":[{\"old_owner_id\":\"dev-4568-42656.test.near\",\"new_owner_id\":\"supplier.test.near\",\"amount\":\"40000000\",\"memo\":\"service-dispatch\"}]}"
+              ]
+            },
+            {
+              "receiptId": "EHm9WaiqWPqhtjihnzCVPTFgNch5iUxApfoK6nuKBJwW",
+              "executor": "operator.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": []
+            },
+            {
+              "receiptId": "8Cgz1XLLuEczdvpkzFJ8pPe3qMMec3UgwXLqTU5JcXht",
+              "executor": "dev-4568-42656.test.near",
+              "status": {
+                "SuccessValue": "IlNldHRsZWQi"
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_result\",\"data\":[{\"request_id\":\"service-dispatch\",\"order_id\":\"automatic\",\"quantity\":\"4\",\"amount\":\"40000000\",\"recipient\":\"supplier.test.near\",\"audit_hash\":\"41241f314959de893e65fab50f7162a3b135454df88e35de41ca26ca4e2e4c09\",\"status\":\"Settled\"}]}"
+              ]
+            },
+            {
+              "receiptId": "5YcBTX1yFLucNkoBBL6DU4MGFdSbAjUNtD8GsvKVXvvY",
+              "executor": "operator.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": []
+            }
+          ]
+        },
+        {
+          "method": "request_payment",
+          "requestId": "cannot-reuse-invoice",
+          "transactionHash": "9w34vduQj4fxZpDj8EXYFTrKQmtF1WSUaVyghY8A8WAw",
+          "outcomes": [
+            {
+              "receiptId": "2qzhbB287vhiNMCFHMmbhJvRVTscrmQUeWwNXeXwV7Vx",
+              "executor": "dev-4568-42656.test.near",
+              "status": {
+                "Failure": {
+                  "ActionError": {
+                    "index": 0,
+                    "kind": {
+                      "FunctionCallError": {
+                        "ExecutionError": "Smart contract panicked: Confirmed invoice quantity already paid or reserved"
+                      }
+                    }
+                  }
+                }
+              },
+              "logs": []
+            }
+          ]
+        },
+        {
+          "method": "request_payment",
+          "requestId": "second-invoice",
+          "transactionHash": "erZF3uBmQYcFJYW9cw21oJUKNK9b1rPhCftud7hRry1",
+          "outcomes": [
+            {
+              "receiptId": "9juxPLE1yxcCScn2AR9RsWUBc3E7CzX4Pkx14w88py2i",
+              "executor": "dev-4568-42656.test.near",
+              "status": {
+                "SuccessReceiptId": "Gj4t4pjPrrRBC4G8hBgRBuG5FikyNEsnB7ynHzGkuJLE"
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_reserved\",\"data\":[{\"request_id\":\"second-invoice\",\"order_id\":\"automatic\",\"quantity\":\"2\",\"amount\":\"20000000\",\"recipient\":\"supplier.test.near\",\"audit_hash\":\"147d473753ecca9537f96d90155726639418fcce9637dde392c469751edd321d\",\"status\":\"Reserved\"}]}",
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_invoice_bound\",\"data\":[{\"request_id\":\"second-invoice\",\"commitment\":\"344f5930e680c288188eb2cda4893312d82d9e0bd501572418f711f65aac99d0\"}]}"
+              ]
+            },
+            {
+              "receiptId": "CyUouZT9mbZd8e8o4T9oFUsu3V635aF2MF95277WvSiC",
+              "executor": "dev-2746-66656.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"nep141\",\"version\":\"1.0.0\",\"event\":\"ft_transfer\",\"data\":[{\"old_owner_id\":\"dev-4568-42656.test.near\",\"new_owner_id\":\"supplier.test.near\",\"amount\":\"20000000\",\"memo\":\"second-invoice\"}]}"
+              ]
+            },
+            {
+              "receiptId": "ABTpkTUrY2srKqNKTYe1GVvaqWKKH2ztNhN9Dp2zxMUT",
+              "executor": "operator.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": []
+            },
+            {
+              "receiptId": "Gj4t4pjPrrRBC4G8hBgRBuG5FikyNEsnB7ynHzGkuJLE",
+              "executor": "dev-4568-42656.test.near",
+              "status": {
+                "SuccessValue": "IlNldHRsZWQi"
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_result\",\"data\":[{\"request_id\":\"second-invoice\",\"order_id\":\"automatic\",\"quantity\":\"2\",\"amount\":\"20000000\",\"recipient\":\"supplier.test.near\",\"audit_hash\":\"147d473753ecca9537f96d90155726639418fcce9637dde392c469751edd321d\",\"status\":\"Settled\"}]}"
+              ]
+            },
+            {
+              "receiptId": "43QwvsY6iZRhTQbQkgUfTv7kYYmoqvj3Fy3m5t91fY7G",
+              "executor": "operator.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": []
+            }
+          ]
+        },
+        {
+          "method": "request_payment",
+          "requestId": "unregistered-recipient",
+          "transactionHash": "F1uos2qDHjwNg5yPYPU8xJHN5MicpQUXoSHLpFHmDA6C",
+          "outcomes": [
+            {
+              "receiptId": "BQRGrnE1S7VV2eDpZsnoYLKakfdC8YU2dc5YfSBpuyAr",
+              "executor": "dev-4568-42656.test.near",
+              "status": {
+                "SuccessReceiptId": "41fCfcz33GCRSUunH8XHiXrmSfW5VfFjD4kK5x5xb4a7"
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_reserved\",\"data\":[{\"request_id\":\"unregistered-recipient\",\"order_id\":\"failed\",\"quantity\":\"4\",\"amount\":\"40000000\",\"recipient\":\"unregistered.test.near\",\"audit_hash\":\"6251e52556f882ea7a7ab3ccdd0d05e8fb641873bd59aef56578840206c9b7d1\",\"status\":\"Reserved\"}]}",
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_invoice_bound\",\"data\":[{\"request_id\":\"unregistered-recipient\",\"commitment\":\"315c5a19e5ce8f2876b87e220b309107dec82e603302d1ee5bd3649067a2a41c\"}]}"
+              ]
+            },
+            {
+              "receiptId": "4wamZYYdwCgz618JT7PohihFh576HGokRucsvDRJDNLa",
+              "executor": "dev-2746-66656.test.near",
+              "status": {
+                "Failure": {
+                  "ActionError": {
+                    "index": 0,
+                    "kind": {
+                      "FunctionCallError": {
+                        "ExecutionError": "Smart contract panicked: The account unregistered.test.near is not registered"
+                      }
+                    }
+                  }
+                }
+              },
+              "logs": []
+            },
+            {
+              "receiptId": "HHFx9Ut2GXQzPzA3R37k2Wh7LShrG9P2saVzsjnrTg43",
+              "executor": "dev-4568-42656.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": []
+            },
+            {
+              "receiptId": "Bdy9iAr6GVKF1nEoQSZeNV3tx8vcJAZjQQX1hoeaP6FL",
+              "executor": "operator.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": []
+            },
+            {
+              "receiptId": "41fCfcz33GCRSUunH8XHiXrmSfW5VfFjD4kK5x5xb4a7",
+              "executor": "dev-4568-42656.test.near",
+              "status": {
+                "SuccessValue": "IlRyYW5zZmVyRmFpbGVkIg=="
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_result\",\"data\":[{\"request_id\":\"unregistered-recipient\",\"order_id\":\"failed\",\"quantity\":\"4\",\"amount\":\"40000000\",\"recipient\":\"unregistered.test.near\",\"audit_hash\":\"6251e52556f882ea7a7ab3ccdd0d05e8fb641873bd59aef56578840206c9b7d1\",\"status\":\"TransferFailed\"}]}"
+              ]
+            },
+            {
+              "receiptId": "EC9wCS1FrmKFMrt2HMATB6j1t44K9MnWNxYnY6tVnJmQ",
+              "executor": "operator.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": []
+            }
+          ]
+        },
+        {
+          "method": "request_payment",
+          "requestId": "repaired-recipient",
+          "transactionHash": "4P6fsRMhAPC3Z6oiqKY4mUKXqYjgwfhv9WrmGg4NWqiF",
+          "outcomes": [
+            {
+              "receiptId": "fLDTaVRkF9vtvQauP6ymTrWQcBf5g2kRcqkA1gS2MJW",
+              "executor": "dev-4568-42656.test.near",
+              "status": {
+                "SuccessReceiptId": "7gDGyh9R7bZ8mc2cWZADSeRuQtjHSUvrs9HxGAb81Zee"
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_reserved\",\"data\":[{\"request_id\":\"repaired-recipient\",\"order_id\":\"failed\",\"quantity\":\"4\",\"amount\":\"40000000\",\"recipient\":\"unregistered.test.near\",\"audit_hash\":\"6251e52556f882ea7a7ab3ccdd0d05e8fb641873bd59aef56578840206c9b7d1\",\"status\":\"Reserved\"}]}",
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_invoice_bound\",\"data\":[{\"request_id\":\"repaired-recipient\",\"commitment\":\"315c5a19e5ce8f2876b87e220b309107dec82e603302d1ee5bd3649067a2a41c\"}]}"
+              ]
+            },
+            {
+              "receiptId": "J3bdPVQcxXRULcNVrn81YXpjE3Kz26bWKi3RKp9skTsi",
+              "executor": "dev-2746-66656.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"nep141\",\"version\":\"1.0.0\",\"event\":\"ft_transfer\",\"data\":[{\"old_owner_id\":\"dev-4568-42656.test.near\",\"new_owner_id\":\"unregistered.test.near\",\"amount\":\"40000000\",\"memo\":\"repaired-recipient\"}]}"
+              ]
+            },
+            {
+              "receiptId": "vMweLgQdkkGRK9WjEkHBU5SqFwndvynVuvR1qTT5u6K",
+              "executor": "operator.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": []
+            },
+            {
+              "receiptId": "7gDGyh9R7bZ8mc2cWZADSeRuQtjHSUvrs9HxGAb81Zee",
+              "executor": "dev-4568-42656.test.near",
+              "status": {
+                "SuccessValue": "IlNldHRsZWQi"
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_result\",\"data\":[{\"request_id\":\"repaired-recipient\",\"order_id\":\"failed\",\"quantity\":\"4\",\"amount\":\"40000000\",\"recipient\":\"unregistered.test.near\",\"audit_hash\":\"6251e52556f882ea7a7ab3ccdd0d05e8fb641873bd59aef56578840206c9b7d1\",\"status\":\"Settled\"}]}"
+              ]
+            },
+            {
+              "receiptId": "BYVZzb2LR4DXQ9Nf6T4e5S6BpAhgctJpSsQhsxWFE8Zj",
+              "executor": "operator.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": []
+            }
+          ]
+        },
+        {
+          "method": "request_payment",
+          "requestId": "starved-result",
+          "transactionHash": "26jVcdhz1Sv9dFhv6w7ubf2x71i9rXcSgyZcxuqdZiz7",
+          "outcomes": [
+            {
+              "receiptId": "9MC7tGQeBNeuM3uLjSctkrFE4Udg8dQeBNM2c9n2N4AP",
+              "executor": "dev-6393-67840.test.near",
+              "status": {
+                "SuccessReceiptId": "8Ecn5UJgNrVFNbiXYWJeGuXFGivH7KqzPXHR4MH9kLkc"
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_reserved\",\"data\":[{\"request_id\":\"starved-result\",\"order_id\":\"uncertain\",\"quantity\":\"4\",\"amount\":\"40000000\",\"recipient\":\"supplier.test.near\",\"audit_hash\":\"f2be28f7bb66a1a3dd25954528d1f74bb697ba6c158334b9cdcd04d2ec77202e\",\"status\":\"Reserved\"}]}",
+                "EVENT_JSON:{\"standard\":\"accord\",\"version\":\"1.0.0\",\"event\":\"payment_invoice_bound\",\"data\":[{\"request_id\":\"starved-result\",\"commitment\":\"52af4f948982444d6a63c92a6e1068638514d61d4c4d5bc6844cfd3d50234777\"}]}"
+              ]
+            },
+            {
+              "receiptId": "7YyBnJWuaVgSrHy3BPB8dLf5XyEas2yqTd5W6sLkwFgd",
+              "executor": "dev-2746-66656.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": [
+                "EVENT_JSON:{\"standard\":\"nep141\",\"version\":\"1.0.0\",\"event\":\"ft_transfer\",\"data\":[{\"old_owner_id\":\"dev-6393-67840.test.near\",\"new_owner_id\":\"supplier.test.near\",\"amount\":\"40000000\",\"memo\":\"starved-result\"}]}"
+              ]
+            },
+            {
+              "receiptId": "25t16eJuLaUffpFwHHWn895M3ptYHoNUh6eZ6nGXY94A",
+              "executor": "operator.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": []
+            },
+            {
+              "receiptId": "8Ecn5UJgNrVFNbiXYWJeGuXFGivH7KqzPXHR4MH9kLkc",
+              "executor": "dev-6393-67840.test.near",
+              "status": {
+                "Failure": {
+                  "ActionError": {
+                    "index": 0,
+                    "kind": {
+                      "FunctionCallError": {
+                        "ExecutionError": "Exceeded the prepaid gas."
+                      }
+                    }
+                  }
+                }
+              },
+              "logs": []
+            },
+            {
+              "receiptId": "FdZCRqpLGte6XQzHueB4Q3k1yjG7fu5x8KDC79VhaXAZ",
+              "executor": "operator.test.near",
+              "status": {
+                "SuccessValue": ""
+              },
+              "logs": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "suite": "security-sandbox-evidence",
+      "at": "2026-11-10T22:43:51.400Z",
+      "environment": "local-near-sandbox",
+      "wasmSha256": {
+        "vault": "4dec1dc5acb8b3c2c75df77de705fb4ff8d6a27146c366b19d04e4b2c03dec94",
+        "previous": "f77df177a4f98defe366bc1924063773f3f1eff39a51794d4467a696a49493b5"
+      },
+      "checks": [
+        {
+          "name": "upgrade preserves automatic order, settled attempt, invoice capacity, recovery and token balance",
+          "status": "PASS"
+        },
+        {
+          "name": "all nine automatic customer approval methods reject zero deposit without mutating balances",
+          "status": "PASS"
+        },
+        {
+          "name": "real function-call key cannot approve delivery; full wallet with exactly one yocto succeeds",
+          "status": "PASS"
+        },
+        {
+          "name": "guarded recipient acknowledgments finalize uncertain payment and refund without reusing funds",
+          "status": "PASS"
+        },
+        {
+          "name": "restricted service recovers saved signed bytes after restart and settles exactly once",
+          "status": "PASS"
+        }
+      ]
+    }
+  ]
+}

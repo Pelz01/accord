@@ -4,6 +4,90 @@ import type { ChainOrder, ChainState, ChainJob, ChainAttempt } from '../../share
 import { invoiceCommitment, type InvoicePayload } from '../../shared/invoices';
 
 const buyer = 'buyer.testnet';
+test('pending native refunds cannot be claimed again and historical deposits never invent credit', async ({
+  page,
+}) => {
+  const fixture = fixtures();
+  fixture.state.deployment!.features!.push('native-deposits-v1');
+  fixture.state.nativeDeposits = {
+    'PO-CLOSED': {
+      tracked: true,
+      deposit: {
+        owner: buyer,
+        deposited: '1250000000000000000000000',
+        call_deposits_spent: '0',
+        refunded: '0',
+        pending: '250000000000000000000000',
+        storage_bytes: '3000',
+        claim_sequence: '1',
+        claim_status: 'Pending',
+      },
+      storage_backing: '30000000000000000000000',
+      retained_required: '37500000000000000000000',
+      claimable: '0',
+      margin_percent: 25,
+      invoice_limit: 32,
+      payment_attempt_limit: 64,
+    },
+  };
+  const errors = await setup(page, fixture);
+  await page.goto('/workspace?view=orders&order=PO-CLOSED');
+  const panel = page.getByRole('region', { name: 'Order storage deposit' });
+  await expect(panel.getByRole('button', { name: 'Claim available NEAR' })).toBeDisabled();
+  await expect(panel).toContainText('cannot be claimed again');
+  await panel.getByRole('button', { name: 'Confirm refund received' }).click();
+  await expect(page.getByRole('dialog')).toContainText(
+    'independently verified receipt of 0.25 NEAR',
+  );
+  await expect(
+    page.getByRole('dialog').getByRole('button', { name: 'Continue in wallet' }),
+  ).toBeDisabled();
+  await page.getByRole('button', { name: 'Close dialog', exact: true }).click();
+  fixture.state.nativeDeposits['PO-CLOSED'] = {
+    ...fixture.state.nativeDeposits['PO-CLOSED'],
+    tracked: false,
+    deposit: null,
+    claimable: '0',
+  };
+  await page.reload();
+  await expect(panel).toContainText('No refundable NEAR amount is recorded');
+  await expect(panel.getByRole('button')).toHaveCount(0);
+  expect(errors).toEqual([]);
+});
+
+test('suppliers can read the buyer deposit but cannot initiate its native refunds', async ({
+  page,
+}) => {
+  const fixture = fixtures();
+  fixture.state.deployment!.features!.push('native-deposits-v1');
+  fixture.state.nativeDeposits = {
+    'PO-CLOSED': {
+      tracked: true,
+      deposit: {
+        owner: buyer,
+        deposited: '1250000000000000000000000',
+        call_deposits_spent: '0',
+        refunded: '0',
+        pending: '0',
+        storage_bytes: '3000',
+        claim_sequence: '0',
+        claim_status: 'Idle',
+      },
+      storage_backing: '30000000000000000000000',
+      retained_required: '37500000000000000000000',
+      claimable: '250000000000000000000000',
+      margin_percent: 25,
+      invoice_limit: 32,
+      payment_attempt_limit: 64,
+    },
+  };
+  await setup(page, fixture, 'supplier.testnet');
+  await page.goto('/workspace?view=orders&order=PO-CLOSED');
+  const panel = page.getByRole('region', { name: 'Order storage deposit' });
+  await expect(panel).toContainText('Available to buyer');
+  await expect(panel.getByRole('button')).toHaveCount(0);
+});
+
 const base: ChainOrder = {
   id: 'PO-COFFEE',
   buyer,
@@ -559,5 +643,74 @@ test('buyer confirms delivery with the same wallet and confirmed invoices need n
   await expect(page.getByRole('dialog')).toContainText('Accord pays automatically');
   await expect(page.getByLabel('Quantity to pay')).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Authorize payment' })).toHaveCount(0);
+  expect(errors).toEqual([]);
+});
+
+test('native deposit claims show retained backing, require review and attach wallet approval', async ({
+  page,
+}) => {
+  const fixture = fixtures();
+  fixture.state.deployment!.features!.push('native-deposits-v1');
+  fixture.state.nativeDeposits = {
+    'PO-CLOSED': {
+      tracked: true,
+      deposit: {
+        owner: buyer,
+        deposited: '1000000000000000000000000',
+        call_deposits_spent: '2',
+        refunded: '0',
+        pending: '0',
+        storage_bytes: '3000',
+        claim_sequence: '0',
+        claim_status: 'Idle',
+      },
+      storage_backing: '30000000000000000000000',
+      retained_required: '37500000000000000000000',
+      claimable: '962499999999999999999998',
+      margin_percent: 25,
+      invoice_limit: 32,
+      payment_attempt_limit: 64,
+    },
+  };
+  const errors = await setup(page, fixture);
+  const calls: unknown[][] = [];
+  await page.exposeFunction('recordNativeClaim', (args: unknown[]) => calls.push(args));
+  await page.route('**/src/testnet/Wallet.ts*', (route) =>
+    route.fulfill({
+      contentType: 'application/javascript',
+      body: `export const accountId=async()=>"buyer.testnet";export const walletConnector=()=>({on:()=>{},off:()=>{}});export const sendCall=async(...args)=>{await window.recordNativeClaim(args);return 'recorded-native-claim';};`,
+    }),
+  );
+  await page.goto('/workspace?view=orders&order=PO-CLOSED');
+  const panel = page.getByRole('region', { name: 'Order storage deposit' });
+  await expect(panel).toContainText('0.962499…');
+  await expect(panel).toContainText('0.0375');
+  await expect(panel).toContainText('records remain stored');
+  await panel.getByRole('button', { name: 'Claim available NEAR' }).click();
+  const dialog = page.getByRole('dialog');
+  await expect(dialog).toContainText('0.962499999999999999999998 NEAR');
+  await expect(dialog.getByRole('button', { name: 'Continue in wallet' })).toBeDisabled();
+  await dialog.getByRole('checkbox').check();
+  await dialog.getByRole('button', { name: 'Continue in wallet' }).click();
+  await expect.poll(() => calls.length).toBe(1);
+  expect(calls[0]).toMatchObject([
+    'vault.testnet',
+    'claim_native_excess',
+    { order_id: 'PO-CLOSED' },
+    '1',
+  ]);
+  for (const width of [390, 320]) {
+    await page.setViewportSize({ width, height: 844 });
+    await expect(panel).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+      true,
+    );
+  }
+  await page.screenshot({ path: 'test-results/native-deposit-mobile.png', fullPage: true });
+  await page.goto('/workspace?view=orders');
+  await page.getByRole('button', { name: 'New purchase order', exact: true }).click();
+  await expect(page.getByRole('dialog')).toContainText('32 invoices and 64 payment attempts');
+  await expect(page.getByRole('dialog')).toContainText('claim the unused allowance');
+  await expect(page.getByRole('dialog')).toContainText('25% storage buffer');
   expect(errors).toEqual([]);
 });

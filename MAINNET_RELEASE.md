@@ -66,6 +66,8 @@ The retained order deposit covers future persistent invoice, payment and recover
 
 ## Funds-availability limits
 
+The current [2.4.0 native-deposit release](NATIVE_DEPOSITS.md) refunds eligible new-order allowance while retaining record backing and a 25% buffer. Historical deposits remain untracked. Its final 254,662-byte code requires 2.54662 NEAR of code backing; with the unchanged 1 NEAR upfront order allowance, the lower bound is 3.54662 NEAR before other setup. The earlier size table describes the previous artifact. The authorized ceiling remains 2 NEAR, so mainnet is still not deployed.
+
 The [measured storage and recovery audit](STORAGE_AND_RECOVERY.md) records actual before/after bytes, ordinary transaction charges, full-capacity storage, retained excess deposits, disposable native-balance recovery and public mainnet account checks. It confirms that native customer deposit refunds and order cleanup are missing; successful disposable teardown does not implement production shutdown. The current deposit and budget gates remain unchanged.
 
 The existing [internal security review](SECURITY_REVIEW.md) remains applicable. Unused token withdrawal requires mutual closure after accepted goods are paid and pending transfers are zero. Either party can block closure. Unknown transfers retain their reservations; a timeout does not authorize replacement spending. The native order deposit is not part of the token refund. Use controlled amounts that may remain locked. Independent review and production operations remain outstanding before meaningful customer value.

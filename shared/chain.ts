@@ -50,6 +50,25 @@ export type ChainRecovery = {
     status: ChainAttempt['status'];
   }[];
 };
+export type ChainNativeDeposit = {
+  tracked: boolean;
+  deposit: null | {
+    owner: string;
+    deposited: string;
+    call_deposits_spent: string;
+    refunded: string;
+    pending: string;
+    storage_bytes: string;
+    claim_sequence: string;
+    claim_status: 'Idle' | 'Pending' | 'Settled' | 'Failed' | 'ReceiptAcknowledged';
+  };
+  storage_backing: string;
+  retained_required: string;
+  claimable: string;
+  margin_percent: number;
+  invoice_limit: number;
+  payment_attempt_limit: number;
+};
 export type Deployment = {
   network: 'testnet' | 'mainnet';
   rpcUrl: string;
@@ -65,6 +84,7 @@ export type Deployment = {
     | 'documents-v1'
     | 'automatic-v1'
     | 'customer-approval-v1'
+    | 'native-deposits-v1'
   )[];
 };
 export type ChainPaymentPolicy = {
@@ -81,6 +101,7 @@ export type ChainState = {
   recoveries?: Record<string, ChainRecovery>;
   confirmations?: Record<string, import('./invoices').InvoiceConfirmation[]>;
   paymentPolicies?: Record<string, ChainPaymentPolicy>;
+  nativeDeposits?: Record<string, ChainNativeDeposit>;
   operatorReady: boolean;
   liveAiAvailable: boolean;
 };

@@ -1,5 +1,7 @@
 # Storage, deposits and recovery: measured audit
 
+**Historical baseline: version 2.3.1-security, before customer deposit accounting.** The [2.4.0 native-deposit release](NATIVE_DEPOSITS.md) implements new-order credits and allowance refunds. Its artifact size and storage overhead differ. The missing-refund findings below describe the measured older implementation; the evidence is preserved unchanged.
+
 This audit measures the existing tested artifact on a disposable NEAR node. It does not change order deposits, deploy mainnet, implement production shutdown or establish the full cost of operating a business. The spending ceiling remains 2 NEAR.
 
 ## Measured results

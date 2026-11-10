@@ -35,6 +35,7 @@ import { PaymentHistory } from './PaymentHistory';
 import { PayablesOverview } from './PayablesOverview';
 import { RemittanceAdvice } from './RemittanceAdvice';
 import { RecoveryPanel } from './RecoveryPanel';
+import { NativeDepositPanel } from './NativeDepositPanel';
 import { InvoiceReview } from './InvoiceReview';
 import type { InvoicePayload } from '../../shared/invoices';
 import { orderPositions, positionTotals } from '../../shared/payables';
@@ -738,6 +739,25 @@ export function TestnetWorkspace() {
                         </div>
                       ))}
                   </section>
+                  {state.nativeDeposits?.[order.id] && (
+                    <NativeDepositPanel
+                      key={`native:${order.id}:${account}`}
+                      order={order}
+                      value={state.nativeDeposits[order.id]}
+                      recovery={recovery}
+                      account={account}
+                      busy={busy}
+                      onCall={async (method, args, deposit) => {
+                        setBusy(true);
+                        try {
+                          await call(method, args, deposit);
+                          await refresh();
+                        } finally {
+                          setBusy(false);
+                        }
+                      }}
+                    />
+                  )}
                   {recovery && (
                     <RecoveryPanel
                       key={`${order.id}:${account}`}
@@ -1036,6 +1056,7 @@ export function TestnetWorkspace() {
               operatorAccount={d?.operator}
               recoveryEnabled={d?.features?.includes('recovery-v1')}
               automaticPayments={d?.features?.includes('automatic-v1')}
+              nativeDeposits={d?.features?.includes('native-deposits-v1')}
               onCreate={(input) => run(() => create(input as CreateOrder))}
             />
           ) : order && modal === 'accept' ? (

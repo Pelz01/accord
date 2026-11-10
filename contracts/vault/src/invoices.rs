@@ -143,9 +143,11 @@ impl Vault {
             supplier: order.terms.supplier,
             invoice,
         };
+        let storage_before = env::storage_usage();
         Self::invoice_map().insert(&commitment, &record);
         ids.push(commitment);
         Self::invoice_index().insert(&order_id, &ids);
+        self.meter_native_storage(&order_id, storage_before, 0);
         event("invoice_confirmed", json!(&record));
         record
     }

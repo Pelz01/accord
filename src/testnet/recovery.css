@@ -2,6 +2,17 @@
   padding: 26px;
   border-top: 1px solid var(--line, #f4f1ed);
 }
+.native-deposit p,
+.native-deposit strong,
+.native-deposit .recovery-review-copy {
+  overflow-wrap: anywhere;
+}
+.native-deposit .refund-overview > div {
+  min-width: 0;
+}
+.native-deposit .refund-overview strong {
+  font-size: 23px;
+}
 .recovery-section > p,
 .recovery-review-copy {
   font-size: 13px;

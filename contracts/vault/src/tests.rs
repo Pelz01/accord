@@ -2,6 +2,214 @@ use super::*;
 use near_sdk::{test_utils::VMContextBuilder, testing_env, PromiseResult, RuntimeFeesConfig};
 use std::collections::HashMap;
 
+fn native_fixture(deposit: u128) -> Vault {
+    let mut ctx = context("buyer.testnet");
+    ctx.attached_deposit(NearToken::from_yoctonear(deposit));
+    testing_env!(ctx.build());
+    let mut v = Vault::new(account("token.testnet"), "sandbox".into());
+    v.create_automatic_order(
+        "NATIVE".into(),
+        Terms {
+            supplier: account("supplier.testnet"),
+            receiver: account("buyer.testnet"),
+            operator: account("operator.testnet"),
+            payout: account("supplier.testnet"),
+            line_id: "cartons".into(),
+            description: "Coffee".into(),
+            unit: "carton".into(),
+            ordered: U64(10),
+            unit_price: U128(1_000_000),
+            expires_at: U64(10_000),
+        },
+    );
+    v
+}
+fn native_callback(v: &mut Vault, sequence: u64, result: PromiseResult) -> CallbackDisposition {
+    testing_env!(
+        context("vault.testnet").build(),
+        near_sdk::test_vm_config(),
+        RuntimeFeesConfig::test(),
+        HashMap::default(),
+        vec![result]
+    );
+    v.on_native_refund_result("NATIVE".into(), U64(sequence))
+}
+
+#[test]
+fn native_excess_is_reserved_before_transfer_and_success_cannot_replay() {
+    let mut v = native_fixture(1_250_000_000_000_000_000_000_000);
+    assert_eq!(
+        v.get_native_deposit("NATIVE".into()).claimable.0,
+        250_000_000_000_000_000_000_000
+    );
+    testing_env!(approval_context("buyer.testnet").build());
+    v.claim_native_excess("NATIVE".into()).detach();
+    let view = v.get_native_deposit("NATIVE".into());
+    assert_eq!(view.claimable.0, 0);
+    assert_eq!(
+        view.deposit.unwrap().pending.0,
+        250_000_000_000_000_000_000_000
+    );
+    assert_eq!(
+        native_callback(&mut v, 1, PromiseResult::Successful(vec![])),
+        CallbackDisposition::Settled
+    );
+    assert_eq!(
+        native_callback(&mut v, 1, PromiseResult::Failed),
+        CallbackDisposition::AlreadyFinalized
+    );
+    let d = v.get_native_deposit("NATIVE".into()).deposit.unwrap();
+    assert_eq!(d.pending.0, 0);
+    assert_eq!(d.refunded.0, 250_000_000_000_000_000_000_000);
+}
+
+#[test]
+fn native_failure_restores_only_its_credit_and_old_callbacks_cannot_settle_new_claims() {
+    let mut v = native_fixture(1_250_000_000_000_000_000_000_000);
+    testing_env!(approval_context("buyer.testnet").build());
+    v.claim_native_excess("NATIVE".into()).detach();
+    assert_eq!(
+        native_callback(&mut v, 1, PromiseResult::Failed),
+        CallbackDisposition::TransferFailed
+    );
+    assert_eq!(
+        v.get_native_deposit("NATIVE".into()).claimable.0,
+        250_000_000_000_000_000_000_000
+    );
+    testing_env!(approval_context("buyer.testnet").build());
+    v.claim_native_excess("NATIVE".into()).detach();
+    assert_eq!(
+        native_callback(&mut v, 1, PromiseResult::Successful(vec![])),
+        CallbackDisposition::AlreadyFinalized
+    );
+    assert_eq!(
+        v.get_native_deposit("NATIVE".into())
+            .deposit
+            .unwrap()
+            .claim_sequence
+            .0,
+        2
+    );
+    assert_eq!(
+        native_callback(&mut v, 2, PromiseResult::Successful(vec![])),
+        CallbackDisposition::Settled
+    );
+}
+
+#[test]
+fn uncertain_native_refund_stays_reserved_and_recipient_ack_cannot_release_credit() {
+    let mut v = native_fixture(1_250_000_000_000_000_000_000_000);
+    testing_env!(approval_context("buyer.testnet").build());
+    v.claim_native_excess("NATIVE".into()).detach();
+    testing_env!(context("vault.testnet").build());
+    assert_eq!(
+        v.on_native_refund_result("NATIVE".into(), U64(1)),
+        CallbackDisposition::NeedsReconciliation
+    );
+    assert_eq!(v.get_native_deposit("NATIVE".into()).claimable.0, 0);
+    testing_env!(approval_context("buyer.testnet").build());
+    assert_eq!(
+        v.acknowledge_native_refund("NATIVE".into(), U64(1)),
+        CallbackDisposition::Settled
+    );
+    assert_eq!(v.get_native_deposit("NATIVE".into()).claimable.0, 0);
+    assert_eq!(
+        native_callback(&mut v, 1, PromiseResult::Failed),
+        CallbackDisposition::AlreadyFinalized
+    );
+}
+
+#[test]
+fn unfunded_cancellation_releases_future_capacity_but_keeps_record_backing() {
+    let mut v = native_fixture(1_000_000_000_000_000_000_000_000);
+    testing_env!(approval_context("buyer.testnet").build());
+    v.cancel_unfunded_order("NATIVE".into());
+    let view = v.get_native_deposit("NATIVE".into());
+    assert!(view.claimable.0 > 900_000_000_000_000_000_000_000);
+    assert!(view.retained_required.0 >= view.storage_backing.0);
+    assert_eq!(
+        view.claimable.0 + view.retained_required.0,
+        1_000_000_000_000_000_000_000_000
+    );
+    assert!(v.get_order("NATIVE".into()).is_some());
+}
+
+#[test]
+#[should_panic(expected = "Native deposit owner only")]
+fn supplier_cannot_claim_buyers_native_credit() {
+    let mut v = native_fixture(1_250_000_000_000_000_000_000_000);
+    testing_env!(approval_context("supplier.testnet").build());
+    v.claim_native_excess("NATIVE".into());
+}
+
+#[test]
+#[should_panic(expected = "exactly 1 yoctoNEAR")]
+fn restricted_zero_deposit_keys_cannot_claim_native_money() {
+    let mut v = native_fixture(1_250_000_000_000_000_000_000_000);
+    testing_env!(context("buyer.testnet").build());
+    v.claim_native_excess("NATIVE".into());
+}
+
+#[test]
+fn explicit_topup_increases_only_the_original_owners_credit() {
+    let mut v = native_fixture(1_000_000_000_000_000_000_000_000);
+    let before = v
+        .get_native_deposit("NATIVE".into())
+        .deposit
+        .unwrap()
+        .storage_bytes;
+    let mut ctx = context("buyer.testnet");
+    ctx.attached_deposit(NearToken::from_millinear(100));
+    testing_env!(ctx.build());
+    v.top_up_order_storage("NATIVE".into());
+    let view = v.get_native_deposit("NATIVE".into());
+    assert_eq!(view.claimable.0, 100_000_000_000_000_000_000_000);
+    assert_eq!(view.deposit.unwrap().storage_bytes, before);
+}
+
+#[test]
+#[should_panic(expected = "Native credits or platform storage need funding")]
+fn native_claim_cannot_use_another_customers_protected_balance() {
+    let mut v = native_fixture(1_250_000_000_000_000_000_000_000);
+    let mut ctx = approval_context("buyer.testnet");
+    // The protocol could execute a 0.25 transfer from this balance, but doing so
+    // would violate the application's tracked-credit and platform-storage backing.
+    ctx.account_balance(NearToken::from_millinear(3100));
+    testing_env!(ctx.build());
+    v.claim_native_excess("NATIVE".into());
+}
+
+#[test]
+#[should_panic(expected = "Order is closed")]
+fn cancellation_prevents_a_supplier_from_accepting_the_order_later() {
+    let mut v = native_fixture(1_000_000_000_000_000_000_000_000);
+    testing_env!(approval_context("buyer.testnet").build());
+    v.cancel_unfunded_order("NATIVE".into());
+    let terms_hash = v.get_order("NATIVE".into()).unwrap().terms_hash;
+    testing_env!(approval_context("supplier.testnet").build());
+    v.accept_order("NATIVE".into(), terms_hash);
+}
+
+#[test]
+fn token_refund_callback_can_finalize_without_borrowing_or_requiring_fresh_native_funding() {
+    let mut v = ready_to_close();
+    close(&mut v);
+    let mut ctx = context("vault.testnet");
+    ctx.account_balance(NearToken::from_millinear(3100));
+    testing_env!(
+        ctx.build(),
+        near_sdk::test_vm_config(),
+        RuntimeFeesConfig::test(),
+        HashMap::default(),
+        vec![PromiseResult::Successful(vec![])]
+    );
+    assert_eq!(
+        v.on_refund_result("PO-001".into(), 1),
+        RefundDisposition::Closed
+    );
+    assert_eq!(v.get_recovery("PO-001".into()).refund_pending.0, 0);
+}
+
 fn account(s: &str) -> AccountId {
     s.parse().unwrap()
 }

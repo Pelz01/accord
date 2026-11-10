@@ -23,6 +23,11 @@ const provider = new FinalizedRpcProvider({ url: d.rpcUrl });
 const bytes = await readFile('.data/wasm/vault.wasm');
 const sha = (data: Uint8Array | string) => createHash('sha256').update(data).digest('hex');
 const expected = sha(bytes);
+assert.equal(
+  expected,
+  '2eb011ff5989660c2ce6939ad8bd616e77ca9d7df3fd10d87e0aa9980ac74f04',
+  'This historical security-release script must not deploy a different release. Use the native-deposit release workflow for newer artifacts.',
+);
 for (const [name, count] of [
   ['sandbox-evidence', 9],
   ['recovery-sandbox-evidence', 11],

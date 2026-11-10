@@ -73,8 +73,10 @@ impl Vault {
         Self::recovery_map().get(order_id).unwrap_or_default()
     }
 
-    fn save_recovery(&mut self, order_id: &String, state: &RecoveryState) {
+    pub(crate) fn save_recovery(&mut self, order_id: &String, state: &RecoveryState) {
+        let storage_before = env::storage_usage();
         Self::recovery_map().insert(order_id, state);
+        self.meter_native_storage(order_id, storage_before, 0);
     }
 
     fn close_ready(&self, order: &Order, state: &RecoveryState) {
@@ -154,6 +156,7 @@ impl Vault {
         }
         state.refunds.push(refund.clone());
         self.save_recovery(&order.id, &state);
+        self.meter_native_storage(&order.id, env::storage_usage(), 1);
         event(
             "refund_reserved",
             json!({"order_id":order.id,"refund":refund}),
@@ -219,7 +222,7 @@ impl Vault {
 #[near]
 impl Vault {
     pub fn get_version(&self) -> String {
-        "2.3.1-security".into()
+        "2.4.0-native-deposits".into()
     }
 
     pub fn get_recovery(&self, order_id: String) -> RecoveryState {

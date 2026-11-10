@@ -18,6 +18,11 @@ export function customerApprovalDeposit(
   policy?: ChainPaymentPolicy,
 ): '0' | '1' {
   if (
+    deployment.features?.includes('native-deposits-v1') &&
+    ['claim_native_excess', 'acknowledge_native_refund', 'cancel_unfunded_order'].includes(method)
+  )
+    return '1';
+  if (
     !deployment.features?.includes('customer-approval-v1') ||
     !customerApprovalMethods.has(method)
   )

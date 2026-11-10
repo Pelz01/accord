@@ -17,6 +17,7 @@ export function CreateForm({
   operatorAccount,
   recoveryEnabled = false,
   automaticPayments = false,
+  nativeDeposits = false,
 }: {
   onCreate: (input: unknown) => void;
   busy: boolean;
@@ -26,6 +27,7 @@ export function CreateForm({
   operatorAccount?: string;
   recoveryEnabled?: boolean;
   automaticPayments?: boolean;
+  nativeDeposits?: boolean;
 }) {
   const [unitPrice, setUnitPrice] = useState('10');
   const [qty, setQty] = useState(100);
@@ -231,14 +233,18 @@ export function CreateForm({
         )}
         {testnet && (
           <p>
-            <strong>1 testnet NEAR storage deposit.</strong> Retained by the order contract; not
-            refundable.
+            <strong>1 testnet NEAR storage deposit.</strong>{' '}
+            {nativeDeposits
+              ? 'Reserves room for up to 32 invoices and 64 payment attempts. After closure, you can claim the unused allowance. Backing for retained records and a 25% storage buffer stays held.'
+              : 'Retained by the order contract; not refundable.'}
           </p>
         )}
         <p className={recoveryEnabled ? '' : 'refund-unavailable'}>
           <LockKeyhole size={14} />
           {recoveryEnabled
-            ? 'Unused funds can be returned with your supplier’s approval after delivered goods are paid.'
+            ? nativeDeposits
+              ? 'Unused supplier-payment tokens can be returned with your supplier’s approval after delivered goods are paid.'
+              : 'Unused funds can be returned with your supplier’s approval after delivered goods are paid.'
             : 'Unspent funds cannot currently be refunded.'}
         </p>
       </div>

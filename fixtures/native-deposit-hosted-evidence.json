@@ -1,0 +1,59 @@
+{
+  "checkedAt": "2026-11-10T22:52:25.874Z",
+  "network": "testnet",
+  "vault": "vault.accord-v2-8e0a631d.testnet",
+  "wasmSha256": "4dec1dc5acb8b3c2c75df77de705fb4ff8d6a27146c366b19d04e4b2c03dec94",
+  "checks": [
+    {
+      "name": "accordHealth",
+      "url": "https://accord-payments.vercel.app/api/health",
+      "status": 200
+    },
+    {
+      "name": "otherService",
+      "url": "https://api.boomsterai.xyz/health",
+      "status": 200
+    },
+    {
+      "name": "state",
+      "url": "https://accord-payments.vercel.app/api/chain/state?account=accord-deposit-82245087.testnet",
+      "status": 200
+    },
+    {
+      "name": "legacy",
+      "url": "https://accord-payments.vercel.app/api/chain/state?account=testing33.testnet",
+      "status": 200
+    },
+    {
+      "name": "landing",
+      "url": "https://accord-payments.vercel.app/",
+      "status": 200
+    }
+  ],
+  "orderId": "PO-NATIVE-8887B8CB",
+  "nativeCredit": {
+    "tracked": true,
+    "deposit": {
+      "owner": "accord-deposit-82245087.testnet",
+      "deposited": "1250000000000000000000000",
+      "call_deposits_spent": "0",
+      "refunded": "1236800000000000000000000",
+      "pending": "0",
+      "storage_bytes": "1056",
+      "claim_sequence": "2",
+      "claim_status": "Settled"
+    },
+    "storage_backing": "10560000000000000000000",
+    "retained_required": "13200000000000000000000",
+    "claimable": "0",
+    "margin_percent": 25,
+    "invoice_limit": 32,
+    "payment_attempt_limit": 64
+  },
+  "legacyOrdersUntracked": 3,
+  "workspaceAsset": "TestnetWorkspace-DzQa6Aa3.js",
+  "workspaceSha256": "79530f1c27049589158d20e140d4caf2d16f5ae3a9f0552b5a72fe7271ca64a2",
+  "operatorReady": true,
+  "productionApp": "https://accord-payments.vercel.app",
+  "apiBundleSha256": "2fc36c3bc5eba39ed1e66f38a720ddcb504ca2a25426d019a8cc6dc42f0baade"
+}

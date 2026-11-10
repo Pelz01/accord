@@ -1,0 +1,89 @@
+{
+  "checkedAt": "2026-11-10T22:59:12.363Z",
+  "account": "mainnett12.near",
+  "network": "mainnet",
+  "snapshots": [
+    {
+      "endpoint": "https://rpc.fastnear.com",
+      "blockHeight": 223981908,
+      "blockHash": "7C5diGucJcoeCw3F6rXoo1CRkoxZUGHXtw9jwoJKipay",
+      "amountYocto": "3000000000000000000000000",
+      "amountNear": "3",
+      "stakingLockedYocto": "0",
+      "storageBytes": 182,
+      "codeHash": "11111111111111111111111111111111"
+    },
+    {
+      "endpoint": "https://rpc.mainnet.near.org",
+      "blockHeight": 223981915,
+      "blockHash": "Hwfo23jNuYA6YPeAa5Y4FJauPBTp86p9EXxo9pm1a8PX",
+      "amountYocto": "3000000000000000000000000",
+      "amountNear": "3",
+      "stakingLockedYocto": "0",
+      "storageBytes": 182,
+      "codeHash": "11111111111111111111111111111111"
+    }
+  ],
+  "indexer": {
+    "historyUrl": "https://api.nearblocks.io/v1/account/mainnett12.near/txns?per_page=25&order=desc",
+    "countUrl": "https://api.nearblocks.io/v1/account/mainnett12.near/txns/count",
+    "indexedReceiptCount": 2,
+    "allIndexedRowsRead": true
+  },
+  "transactions": [
+    {
+      "hash": "GLHyCAgUZkqHyHe5iXp11G6uECis6DdCkTGtdnN8HfsH",
+      "signer": "pelz0.near",
+      "receiver": "mainnett12.near",
+      "actions": [
+        {
+          "Transfer": {
+            "deposit": "3000000000000000000000000"
+          }
+        }
+      ],
+      "status": {
+        "SuccessValue": ""
+      },
+      "relevantReceipts": [
+        {
+          "predecessor": "pelz0.near",
+          "receiver": "mainnett12.near"
+        }
+      ],
+      "outcomeTokensBurntYocto": "44636512500000000000",
+      "explorer": "https://nearblocks.io/txns/GLHyCAgUZkqHyHe5iXp11G6uECis6DdCkTGtdnN8HfsH"
+    },
+    {
+      "hash": "APvhcdN7fDPnQV2zFncPkHuF8q2XemLK2u3Xpywx3xyo",
+      "signer": "wallet-relay.intear.near",
+      "receiver": "near",
+      "actions": [
+        {
+          "FunctionCall": {
+            "args": "eyJuZXdfYWNjb3VudF9pZCI6Im1haW5uZXR0MTIubmVhciIsIm5ld19wdWJsaWNfa2V5IjoiZWQyNTUxOTo2UTNGVk54U21wRGRhWE1OTVprR2dCcFJ1RGFmZGJVc3kyalJRckxrWHdSNiJ9",
+            "deposit": "0",
+            "gas": 30000000000000,
+            "method_name": "create_account"
+          }
+        }
+      ],
+      "status": {
+        "SuccessValue": "dHJ1ZQ=="
+      },
+      "relevantReceipts": [
+        {
+          "predecessor": "near",
+          "receiver": "mainnett12.near"
+        }
+      ],
+      "outcomeTokensBurntYocto": "7443174192868400000000",
+      "explorer": "https://nearblocks.io/txns/APvhcdN7fDPnQV2zFncPkHuF8q2XemLK2u3Xpywx3xyo"
+    }
+  ],
+  "outgoingSignedTransactionCount": 0,
+  "outgoingActionReceiptCount": 0,
+  "observedNoOutgoingActivity": true,
+  "scope": "Public account evidence at these blocks. Indexer completeness is not a cryptographic proof of all historical activity or of which human/agent controlled an account. Fees paid by other senders are separate.",
+  "transactionsSentByThisScript": 0
+}

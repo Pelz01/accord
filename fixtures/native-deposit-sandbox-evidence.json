@@ -1,0 +1,1113 @@
+{
+  "at": "2026-11-10T22:34:30.396Z",
+  "environment": "disposable-near-sandbox",
+  "wasmSha256": {
+    "vault": "4dec1dc5acb8b3c2c75df77de705fb4ff8d6a27146c366b19d04e4b2c03dec94",
+    "vault-starved": "75a562e09f7c99cb54b1a02748d50f1d10ea57acfafa751a375e64188ce852c8",
+    "vault-native-failed": "68a41e909dff3fa5ad91de4e2ff492603c82f1fb1edbd31f1401d140f7fff5ca",
+    "vault-before-native-deposits": "2eb011ff5989660c2ce6939ad8bd616e77ca9d7df3fd10d87e0aa9980ac74f04"
+  },
+  "checks": [
+    {
+      "name": "Upgrade preserves an old order and does not invent native credit for its unrecorded deposit.",
+      "status": "PASS"
+    },
+    {
+      "name": "Only the buyer can return excess above open-order capacity; the transfer arrives once and the second customer is unchanged.",
+      "status": "PASS"
+    },
+    {
+      "name": "An unfunded order can close without buying tokens; retained records keep their backing and explicit top-ups stay owned by that buyer.",
+      "status": "PASS"
+    },
+    {
+      "name": "Settlement-token refunds and native-credit claims remain separate; closure returns unused allowance while retaining invoice and payment replay records.",
+      "status": "PASS"
+    },
+    {
+      "name": "Real failed native transfers restore only that order credit; retries use new sequences and leave the other buyer unchanged.",
+      "status": "PASS"
+    },
+    {
+      "name": "A real successful transfer with a starved callback stays reserved; only its recipient can acknowledge it and acknowledgment never enables duplicate spending.",
+      "status": "PASS"
+    },
+    {
+      "name": "Even a protocol-spendable balance cannot pay a claim when doing so would leave other tracked credits or platform storage underfunded.",
+      "status": "PASS"
+    },
+    {
+      "name": "Enforced 32-invoice/64-payment caps and eight retained refunds fit the metered one-NEAR allowance with its 25% margin; only actual remaining excess is returned.",
+      "status": "PASS"
+    }
+  ],
+  "transactions": [
+    {
+      "method": "new",
+      "hash": "7W7Um2TJTNhJcdTCnQbmUsCDaAKDzCoGx7Mcqr3PEr2o",
+      "succeeded": true,
+      "tokensBurntYocto": "191806004420400000000"
+    },
+    {
+      "method": "new",
+      "hash": "7vdtkYdQq5JpNjUH6goFqLA1CBizoQCcjiMB362XDaSY",
+      "succeeded": true,
+      "tokensBurntYocto": "161895172469700000000"
+    },
+    {
+      "method": "create_automatic_order",
+      "hash": "55qUTi2ydU8gCKA2RA7FY4Z8o864Pir5tv9jEBKQcR6b",
+      "succeeded": true,
+      "tokensBurntYocto": "254610908743800000000"
+    },
+    {
+      "method": "claim_native_excess",
+      "hash": "AcocziXvNAKs7PMy3ZH9UeWeL76V4ko7tDHYrBaV453z",
+      "succeeded": false,
+      "tokensBurntYocto": "166454325002400000000"
+    },
+    {
+      "method": "create_automatic_order",
+      "hash": "6nGZv1Nbj86GbBMdukyeQcLx6nnRbneLULC1QFsCTBmX",
+      "succeeded": true,
+      "tokensBurntYocto": "351922446020800000000"
+    },
+    {
+      "method": "create_automatic_order",
+      "hash": "C8HAMtZiJ3hhFeeo3MR9dPeLPtiHJkbv7tidxFKYUVep",
+      "succeeded": true,
+      "tokensBurntYocto": "348742120441500000000"
+    },
+    {
+      "method": "claim_native_excess",
+      "hash": "3AnaiEymgyRyY857ngqn7haCPKkc9e7FPmScy9eK2TWa",
+      "succeeded": false,
+      "tokensBurntYocto": "169282020697700000000"
+    },
+    {
+      "method": "claim_native_excess",
+      "hash": "CjKX46oxuvPma2HmvcoVjgyKCxByU9kahjcupLGQrCUj",
+      "succeeded": false,
+      "tokensBurntYocto": "160511218809400000000"
+    },
+    {
+      "method": "claim_native_excess",
+      "hash": "GTzBQba79vaeFUg1NSjA9JHzdWbi7ivwi7YwFZyNTwGQ",
+      "succeeded": true,
+      "tokensBurntYocto": "580212041368100000000"
+    },
+    {
+      "method": "claim_native_excess",
+      "hash": "53XG5Aa2aHbApS1xYpPXMB1eL2RkRyiiYVrCB65a7LnD",
+      "succeeded": false,
+      "tokensBurntYocto": "228819725530300000000"
+    },
+    {
+      "method": "cancel_unfunded_order",
+      "hash": "JBEyFRdUcoipkDheSftih3XbhdjnfTUwiumPDBL8eJKU",
+      "succeeded": true,
+      "tokensBurntYocto": "272690157641700000000"
+    },
+    {
+      "method": "claim_native_excess",
+      "hash": "9JgSy3pNmNsYVpoWvaqLDRTfVJo7a5Pm3vmjE9BpNnRV",
+      "succeeded": true,
+      "tokensBurntYocto": "584415593860600000000"
+    },
+    {
+      "method": "accept_order",
+      "hash": "472jzTzy7VrEz28fauQRicUWiMfyvpygpNpLb1pdfLhD",
+      "succeeded": false,
+      "tokensBurntYocto": "195305674178600000000"
+    },
+    {
+      "method": "top_up_order_storage",
+      "hash": "A16idvU4WWjUKwM7hx6ncshyadLgTTSTYfMHChdgRJtE",
+      "succeeded": true,
+      "tokensBurntYocto": "232234595428800000000"
+    },
+    {
+      "method": "claim_native_excess",
+      "hash": "EcrGsrDmjbBg6LFAMQK6ubDSWrfLxjhnTXp6RQ9p9Yzk",
+      "succeeded": true,
+      "tokensBurntYocto": "584415593860600000000"
+    },
+    {
+      "method": "storage_deposit",
+      "hash": "BKeNykePHd49Jo7Pz1LgDuqEVMEJ458EFEd2PQd2jyMA",
+      "succeeded": true,
+      "tokensBurntYocto": "177783363765600000000"
+    },
+    {
+      "method": "storage_deposit",
+      "hash": "BMt2Vfro7xyQuGqZyGsrmEtVfL4avBcgsuc4ciK62R6U",
+      "succeeded": true,
+      "tokensBurntYocto": "177991931635500000000"
+    },
+    {
+      "method": "create_automatic_order",
+      "hash": "GB7tiQLDXKHSYriVUAe69G6AP3LBsFJ5jc6NXr56R5Jc",
+      "succeeded": true,
+      "tokensBurntYocto": "349847750517100000000"
+    },
+    {
+      "method": "accept_order",
+      "hash": "6cpf9zk5JCoVHx3KfG557thJtVdxkVgvCDgQqrcw7uHX",
+      "succeeded": true,
+      "tokensBurntYocto": "243038960597700000000"
+    },
+    {
+      "method": "ft_transfer_call",
+      "hash": "3YiEBTt6vyn66uzmPCfUCkEuPNxPSqGmvKYGmvh3nkWL",
+      "succeeded": true,
+      "tokensBurntYocto": "612078625895100000000"
+    },
+    {
+      "method": "confirm_delivery",
+      "hash": "6n7SrBaR6Cz5TEcT8urmmwdNn6W1ymdChsvWYa7ugs1Z",
+      "succeeded": true,
+      "tokensBurntYocto": "248321950945800000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "5heTj1XVece7mwTpYng2b7HVBbtSsghUvHHYg2Z8eFeo",
+      "succeeded": true,
+      "tokensBurntYocto": "350779521095400000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "58Gb4DUJVW5HCbfeUGVXcfGJeBDEBvRNMz9xE3xonCzj",
+      "succeeded": true,
+      "tokensBurntYocto": "909962591709300000000"
+    },
+    {
+      "method": "propose_close",
+      "hash": "2UpmwaNcEWzcXTox1MfmT7PyVz7t1pQ9GWUZPpqRJKgv",
+      "succeeded": true,
+      "tokensBurntYocto": "313338785650800000000"
+    },
+    {
+      "method": "accept_close",
+      "hash": "s2iZMDFDk3sjDFfx1gquYc7QRHNp47Vf1jvuB4ahEEA",
+      "succeeded": true,
+      "tokensBurntYocto": "797437774341600000000"
+    },
+    {
+      "method": "claim_native_excess",
+      "hash": "F2KsVbmntRKqkxabLauWkZTG1wRT2yawYnK5CUC2HF5i",
+      "succeeded": true,
+      "tokensBurntYocto": "586825232232800000000"
+    },
+    {
+      "method": "new",
+      "hash": "J7NWynGXurDtsGygKBEZtC7U2wmWrmhSpEeMUMKVBGto",
+      "succeeded": true,
+      "tokensBurntYocto": "164673103135200000000"
+    },
+    {
+      "method": "create_automatic_order",
+      "hash": "4vLhmgP2V9sMdKW9Fi3QnFWhKDoGHjvZiCsV74izSSSP",
+      "succeeded": true,
+      "tokensBurntYocto": "346403483423000000000"
+    },
+    {
+      "method": "create_automatic_order",
+      "hash": "FJdgsL9Rry4c1NgPTx3DpbuS8giGWMNyRRBgDrceNshr",
+      "succeeded": true,
+      "tokensBurntYocto": "348946242752200000000"
+    },
+    {
+      "method": "claim_native_excess",
+      "hash": "C3XEVfBiKiy7JJH9XcS8mLQNqbxEz6gfCe92aHP9JeSx",
+      "succeeded": true,
+      "tokensBurntYocto": "598438783800000000000"
+    },
+    {
+      "method": "claim_native_excess",
+      "hash": "7YS5bzpq449axVVKWsuTvM6iR2bXcjR9uiDuC73qf1Lm",
+      "succeeded": true,
+      "tokensBurntYocto": "598438783800000000000"
+    },
+    {
+      "method": "new",
+      "hash": "5Lyzc1qVttQPKwNH8ioUtqyPPBUwemwrUS5GekX7JisB",
+      "succeeded": true,
+      "tokensBurntYocto": "164485744395200000000"
+    },
+    {
+      "method": "create_automatic_order",
+      "hash": "69FULk5AgbSE5H62ZUEo1kJHyCxQDCwB2fkA5JGTsjSX",
+      "succeeded": true,
+      "tokensBurntYocto": "347553405966400000000"
+    },
+    {
+      "method": "claim_native_excess",
+      "hash": "4MEwe89zT3fa5L9AVG6wiCDqVBtqQ358a7tSA7B9FTtN",
+      "succeeded": false,
+      "tokensBurntYocto": "474486123609800000000"
+    },
+    {
+      "method": "claim_native_excess",
+      "hash": "Dx7YQdiBmJfGBHvLdFYMsznHzyckSttjwe34Wvw8JyrZ",
+      "succeeded": false,
+      "tokensBurntYocto": "229345307770700000000"
+    },
+    {
+      "method": "acknowledge_native_refund",
+      "hash": "FnTg5QZ9UohWWP9C4VgXwFoz9qZ4uBiz3D286egs3fRr",
+      "succeeded": false,
+      "tokensBurntYocto": "169724928340400000000"
+    },
+    {
+      "method": "acknowledge_native_refund",
+      "hash": "9ghSfc1iNFJwpLvrnV7uiGHRqd3wkqm2aFMfkKGi4zMk",
+      "succeeded": true,
+      "tokensBurntYocto": "233326759917900000000"
+    },
+    {
+      "method": "acknowledge_native_refund",
+      "hash": "2AnNBw9MhNVizSrN4iSzAFnaxnvDfG88xfrG3YMvgRnR",
+      "succeeded": true,
+      "tokensBurntYocto": "188054150660100000000"
+    },
+    {
+      "method": "create_automatic_order",
+      "hash": "7SXxvAKWhPLumuu8b3LUM9RUyUXD2rKWdtbWRJyVNssr",
+      "succeeded": true,
+      "tokensBurntYocto": "351945723001300000000"
+    },
+    {
+      "method": "claim_native_excess",
+      "hash": "ETw8uKob8xv9qrigK5BJ5xoXRm6nEzwsMk8ygJsdYKwQ",
+      "succeeded": false,
+      "tokensBurntYocto": "271146163135700000000"
+    },
+    {
+      "method": "new",
+      "hash": "5NZpAfXFoLLg6Xm8XULdABmHZ8z582G11PvfsUz4wGe6",
+      "succeeded": true,
+      "tokensBurntYocto": "194151094590800000000"
+    },
+    {
+      "method": "new",
+      "hash": "CfUF5s98MYMASY3BWzqYpVuCzoXiQdSup2yoVFy5XJZw",
+      "succeeded": true,
+      "tokensBurntYocto": "165164212212800000000"
+    },
+    {
+      "method": "storage_deposit",
+      "hash": "5UhidHHrZcUxKcETNXnGBfrwbAFsmk5LGVCb4LVum4v",
+      "succeeded": true,
+      "tokensBurntYocto": "180044330249700000000"
+    },
+    {
+      "method": "storage_deposit",
+      "hash": "8cTymtRd9DsSFK383ZFagLWwzF6Vh3bmhfuvP35Qf9JR",
+      "succeeded": true,
+      "tokensBurntYocto": "180500330249700000000"
+    },
+    {
+      "method": "create_automatic_order",
+      "hash": "44CLqFUizuybdzBQvUetD6tJTxUgC6EU9ScTFt63c8F8",
+      "succeeded": true,
+      "tokensBurntYocto": "374862080383200000000"
+    },
+    {
+      "method": "accept_order",
+      "hash": "4soEoKFGYuMUypLESZFivki3jDukomy2myMeCxq5rSGm",
+      "succeeded": true,
+      "tokensBurntYocto": "259637096763300000000"
+    },
+    {
+      "method": "ft_transfer_call",
+      "hash": "5wwPnf2vmmNS7gD9RnzQD1ynL3VA7SjQb2QFCdnpd44F",
+      "succeeded": true,
+      "tokensBurntYocto": "642152024423600000000"
+    },
+    {
+      "method": "confirm_delivery",
+      "hash": "8LyXwB9JcmvTkKNn6Sgt6bQbWEfsZ81v7ohHFoEUssTu",
+      "succeeded": true,
+      "tokensBurntYocto": "264859228992600000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "AbA3NavVJdpzrTgyhQaBuM5UvbQM2DPWANoFsTb2F4VZ",
+      "succeeded": true,
+      "tokensBurntYocto": "381345129844700000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "EzBwYxaPGGjRrp7zuvRYxWGYyQbuJoM9ux67dMNbwdyG",
+      "succeeded": true,
+      "tokensBurntYocto": "386302841670500000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "CMr8jJnZmZMxXotas1etehSmPrf7v9EyDKHtCs7DE8ju",
+      "succeeded": true,
+      "tokensBurntYocto": "387625747420500000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "4cz3M1QCSFQPWYRbhESbjJzNRrjgiMtThwUENRrtMMTV",
+      "succeeded": true,
+      "tokensBurntYocto": "389112739341700000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "DBNDs6F9i75R1EZx964QgLRAkVKtC1uv4CAaRT1wd3mF",
+      "succeeded": true,
+      "tokensBurntYocto": "390417462184100000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "B3AKr9N8hXZ8M3ByBRkbKAphRK7R5BCC2bN7dW5AVk42",
+      "succeeded": true,
+      "tokensBurntYocto": "391709925962100000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "G4XvNqbfantrs3G4Zr4fHozfitFxXkKo57vF5BHaarAE",
+      "succeeded": true,
+      "tokensBurntYocto": "393683810571700000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "BerVYkeBXShB3j9n88ga6cVQ1zUPh8TW5z6976Ko3Z1h",
+      "succeeded": true,
+      "tokensBurntYocto": "395097959962100000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "FEsBj2bHBpvfUZKdfMusiahzphJePML4PmujwFH7yZ6m",
+      "succeeded": true,
+      "tokensBurntYocto": "396794396936100000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "CQnD3bXpsk2hu2nNgGG6kbJ6qjLXyxsfPdtkfhvLLn3o",
+      "succeeded": true,
+      "tokensBurntYocto": "397040958974500000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "ApUoCHs1MJ2rnrT7PvZEdSLDCMNetArT9DTRv1x4fSAL",
+      "succeeded": true,
+      "tokensBurntYocto": "398396445862100000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "9hyTjyfNZBJ5Jd89P8F9D383bL5bNXeoEjh9B1VgeaH6",
+      "succeeded": true,
+      "tokensBurntYocto": "400080130118100000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "38u6MSc2YkCrmddUd2S7MCWbJ8JZBDYxsUg27sgr2Hdf",
+      "succeeded": true,
+      "tokensBurntYocto": "401496336398500000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "38NHrocBaz1S8Nsb9UPUXYJc21SXfEbTD9wtkfZ3F62t",
+      "succeeded": true,
+      "tokensBurntYocto": "403211314007300000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "32wELJenSJzDcD9r4wbQK2SGYWCxdD9VKbznSUytqfZB",
+      "succeeded": true,
+      "tokensBurntYocto": "404856149867700000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "4fiKe8C9gRNayhCHoYW1T7BwsZG3hnPpLeKJTiTbTXNZ",
+      "succeeded": true,
+      "tokensBurntYocto": "405934106844100000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "5Rfkg4bFUk193VMBti32ydQfWXbhTysn8E4DVP46tUH7",
+      "succeeded": true,
+      "tokensBurntYocto": "407528700937700000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "DdLFSva6ZWWn1zg8uWQyEpwF6dQjpRTKsZeQNpZvYV9r",
+      "succeeded": true,
+      "tokensBurntYocto": "408855309089700000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "GDyRKvv1KrGX6feDespppqEGgBWs9hpfep1msfuLRrgM",
+      "succeeded": true,
+      "tokensBurntYocto": "410025031984900000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "8nxA2hrFakfuBDowUz1jUyrPPpM2DaFuxyNK2rGPuyGU",
+      "succeeded": true,
+      "tokensBurntYocto": "411178929340100000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "BaVXgAadAZa9AK5FpqoSXiA47EnsL7ZHDwitn5zQ9P8Y",
+      "succeeded": true,
+      "tokensBurntYocto": "411732722781300000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "AmZ3PCBXaHnN8zd6uZXFrbAh4R2DYeYnBMsWdhLQkdhX",
+      "succeeded": true,
+      "tokensBurntYocto": "413381289668500000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "2B27FW6soxuRNHKBs8vwAwA6tEAp8kcNtLt6ayU74Gvs",
+      "succeeded": true,
+      "tokensBurntYocto": "415780113439700000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "Cs7i6zNekaojQFTiFxdFTjJf59tUkeB7tvoKVALDkDPu",
+      "succeeded": true,
+      "tokensBurntYocto": "417004041642900000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "6F8YEbrBU5bh6KZbY6gkqm9BWVkHAEGLKnF8rVS8iiwX",
+      "succeeded": true,
+      "tokensBurntYocto": "418105364889700000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "6LzvpRwEfNQf2iF4XebNY6QCy9oStiGVYzyhRSmSWYtU",
+      "succeeded": true,
+      "tokensBurntYocto": "421212760440500000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "4HFpvx6VKdYe8yitBVFY7pc19FDhfeNrU4LAwaiaJN7q",
+      "succeeded": true,
+      "tokensBurntYocto": "422239609956900000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "ABrv5ztGrjc8Tqm1sQMEA8SLFyYRsVDg9EcFYaofUeHM",
+      "succeeded": true,
+      "tokensBurntYocto": "423563667565300000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "AMHQDrwSqzCFcQSUkpbarcJ9hirgNM8Pdvf85rvjz47W",
+      "succeeded": true,
+      "tokensBurntYocto": "425343396071300000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "Bh3phJPhd14q9UMkfiVZWfg1uGLwRwrGiZPgrHzcusMS",
+      "succeeded": true,
+      "tokensBurntYocto": "426036288927300000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "47YewYvJJdip2gxmBxqQvXabNCRRh615yLQyH1ZftZwW",
+      "succeeded": true,
+      "tokensBurntYocto": "427401731162500000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "ALP2uKEBDvWyoXrC8GX6imp43psiUhVYrBR53GUvrqNi",
+      "succeeded": true,
+      "tokensBurntYocto": "429211475950100000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "2GraLuzFouN9FQxjWoeGzRx6a8gzPbjqPb74joNiCyaF",
+      "succeeded": true,
+      "tokensBurntYocto": "983649792358600000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "62F9Jjicpy76Wg7egzjAP3qJWopRiDBucvJMN8fUnKTE",
+      "succeeded": true,
+      "tokensBurntYocto": "1009271943363900000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "4yeLyYZDXRjesjVGgojjhfzKsnhPF4MGXEc1firisCkW",
+      "succeeded": true,
+      "tokensBurntYocto": "987753792358600000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "6QS28ejwV9mVkdavchuGUBADageqwnbsCvTxWhwk4YZz",
+      "succeeded": true,
+      "tokensBurntYocto": "1010411943363900000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "CgEehbw4xUkDUV4b6EZ1vxxZUFAXn415LcJZyafnXYSQ",
+      "succeeded": true,
+      "tokensBurntYocto": "987749020373800000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "Exou7w3sZgUB3K7ooDF8V4gTG6rc7HMRr4SayEUgfURr",
+      "succeeded": true,
+      "tokensBurntYocto": "1010407171379100000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "6pitY3d2XUms8HQAgnvjJD9B3AbMPMbrL1nDuXhyJ6pv",
+      "succeeded": true,
+      "tokensBurntYocto": "988214564343400000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "8uguQnMHU4J8skPbvy6PP6zKA84EgFtu2NgTTxAZV51m",
+      "succeeded": true,
+      "tokensBurntYocto": "1010644715348700000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "GsDdZH6RLzm4bzcY3wmuySxkaWR7ZUS2v8HscHbjNL3J",
+      "succeeded": true,
+      "tokensBurntYocto": "988205020373800000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "8Td7pNmxMfcNTxShSLR4Fmxw6cTr2wNh3mRso9h4pT8Q",
+      "succeeded": true,
+      "tokensBurntYocto": "1010635171379100000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "9PbrwPEeJyBYjzp2aJLjrfQ8jfZV18uQvkFqGoMKSnMj",
+      "succeeded": true,
+      "tokensBurntYocto": "988442564343400000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "8moZDYTnm8A7UBMMKEDGsrfnMvuW2nA2kTLNWtS1SufQ",
+      "succeeded": true,
+      "tokensBurntYocto": "1011100715348700000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "2jh9MPpRRfs4e9RqM5d2V2vhd9opPhaFfv3pTH9RzxzN",
+      "succeeded": true,
+      "tokensBurntYocto": "988879476404200000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "HGGs1vipJ9iVScbkki515XJUz8FkJWQ2EhX2zkWLwqx2",
+      "succeeded": true,
+      "tokensBurntYocto": "1011309627409500000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "67aUzYcFr4tcCaD8pzHH93fEsyGXUhfccoM6MDx6xmyK",
+      "succeeded": true,
+      "tokensBurntYocto": "988889020373800000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "8RscRagKrUqTXG3aK4qqmK9Deza8W9BPFoeErXs8eyXU",
+      "succeeded": true,
+      "tokensBurntYocto": "1011547171379100000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "75Xjgv2VaCt6eC1hQYpWxFzPod6X2tRrAGM5KdCHZmSe",
+      "succeeded": true,
+      "tokensBurntYocto": "988437792358600000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "FchEpW2voXc2x6KwbJzj5ijGYvXZBKXtTVz4d8GTGEQP",
+      "succeeded": true,
+      "tokensBurntYocto": "1012007943363900000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "2exntdCmfFH5xPETh8wjTapc2B74hMAPuQHETgw8emJh",
+      "succeeded": true,
+      "tokensBurntYocto": "989117020373800000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "ARLF95Gqu7kvxTsAYg3EaaAftAC196WJ9gPsktz6epgp",
+      "succeeded": true,
+      "tokensBurntYocto": "1011547171379100000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "6L6MRtj5vKk4kS3yuygaDxs3JbMA129xH4KwkDpzuGS7",
+      "succeeded": true,
+      "tokensBurntYocto": "988889020373800000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "8JXsQvBvePnSAcZhxT3qGCuyBQs4eWyrLPy1PoYH29XB",
+      "succeeded": true,
+      "tokensBurntYocto": "1011547171379100000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "BjrG5Ny3sQhy4sBkr5x1NmKxRFW4nbPh4D8o22JBAg2P",
+      "succeeded": true,
+      "tokensBurntYocto": "989112248389000000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "3q8DezdsWqdjuNz9X2X8q5Hvk9m2z7N1Xmgxyo2T5kDW",
+      "succeeded": true,
+      "tokensBurntYocto": "1011542399394300000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "5YEYMsN7Hym7esJA3FmLBEy5kvPYktcj3TXVbBazSysD",
+      "succeeded": true,
+      "tokensBurntYocto": "989117020373800000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "9prapeKwNBkWzQQAhDu6ffyVYik71hpnqYFYxGUjn7QV",
+      "succeeded": true,
+      "tokensBurntYocto": "1011547171379100000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "DExQ41fM2Qv49DJpevX6ja85ULbSSmPtCr86eWHpNqyS",
+      "succeeded": true,
+      "tokensBurntYocto": "989573020373800000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "BFgxdpSRxjTAYzDhfT4JdHGD5HMvSbE4pLjSomN3gp2e",
+      "succeeded": true,
+      "tokensBurntYocto": "1012003171379100000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "Djk4HFBDzxoodk7ztq1GSeKoxqN8pF9ZBFBZPavetJjC",
+      "succeeded": true,
+      "tokensBurntYocto": "989345020373800000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "WyFdsYr5CBqzkfjfDkJFvg7i1kLe75UNqN4mrEH9CXV",
+      "succeeded": true,
+      "tokensBurntYocto": "1011775171379100000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "FkLJTUV5KQrDqzt1UBUQPyjEFCHwyU8N6hoWBBNHjAXW",
+      "succeeded": true,
+      "tokensBurntYocto": "988884248389000000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "5sV69KYip7VATdNeFpKeWunzDnBL9aLW4QsFHcen7WPn",
+      "succeeded": true,
+      "tokensBurntYocto": "1011542399394300000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "CMaY9SYD37S4t9hcQ8p35FWRkca97WDNtZb7DwrZXGJM",
+      "succeeded": true,
+      "tokensBurntYocto": "988665792358600000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "BVR5UQvB5hfwuhE7wvR6GqEMo4X7aYGiuCLt2zbHEjid",
+      "succeeded": true,
+      "tokensBurntYocto": "1011779943363900000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "BAVBMhpLTRWzCRYMBpDTgLJJvgw5BD2ZtcqVkbnQ6Aw5",
+      "succeeded": true,
+      "tokensBurntYocto": "989340248389000000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "A45eRZE8kFEzvZ4ptVZg82UQXJKUKKFTCPAWTAQ2sGZP",
+      "succeeded": true,
+      "tokensBurntYocto": "1011770399394300000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "Bz9uZQfJciFEDr8kGtTCr8XdMSYde9Rug9vMMwanSajC",
+      "succeeded": true,
+      "tokensBurntYocto": "989582564343400000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "2xEjEBUMBmgrycB8dGcEL4jb6nFcnED1vfFjMSu7jTXy",
+      "succeeded": true,
+      "tokensBurntYocto": "1012012715348700000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "6iCNMBEGgE2t9AWEBUnQpdd77wyGS7P42HDc6LoMF8z5",
+      "succeeded": true,
+      "tokensBurntYocto": "989340248389000000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "829FthUimYghyHuve35ZYzxotZkrC7zswqbGzKz1tkdm",
+      "succeeded": true,
+      "tokensBurntYocto": "1011998399394300000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "3hxX8NYiJbkkyBrPJgwGH4GkPdGi6KdCBqmtHN7hHXTN",
+      "succeeded": true,
+      "tokensBurntYocto": "989121792358600000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "4zHicdzkm1w7dmz7ZWenyCYXWJnHGk3C7qEY4Dx4wjJy",
+      "succeeded": true,
+      "tokensBurntYocto": "1011779943363900000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "xijgCzvVwb6eVxmHLaUZaEkjuDHhkgQYePuU3HKS4Qr",
+      "succeeded": true,
+      "tokensBurntYocto": "989582564343400000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "CAGdMdy7fwTVRPQjEjPcaj3CrKesv8CoHXR38J3Niai8",
+      "succeeded": true,
+      "tokensBurntYocto": "1012012715348700000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "A57VNzKX1GqciphM46EyPiuMv2Dr2HE3TgcvA1fPJtM",
+      "succeeded": true,
+      "tokensBurntYocto": "989573020373800000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "2mQB2s98yGGoBj3Rr2MyfnssziCxJgxJh1gGS37Lf3pg",
+      "succeeded": true,
+      "tokensBurntYocto": "1012003171379100000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "FLicRfk7FAEX7YT8g8cmrfQXftKzjnki4nyfazL6e3TF",
+      "succeeded": true,
+      "tokensBurntYocto": "989568248389000000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "CRQwG7BsRyCuJj2hGNYh92H5sNxH6HWcyJskXMqkNXap",
+      "succeeded": true,
+      "tokensBurntYocto": "1011998399394300000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "79JQEFwXEQRTQiPakpXamw2XwZRaxHh3CqgsAhQkCaua",
+      "succeeded": true,
+      "tokensBurntYocto": "988656248389000000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "CiYZ2c3fkVkZ3rFD62mXEisDse1pBwGXDXvuubSUgziP",
+      "succeeded": true,
+      "tokensBurntYocto": "1011770399394300000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "ByxASpHxdnnee53kwUrzSvBn4pN8VqeoKxrEw2GNanLP",
+      "succeeded": true,
+      "tokensBurntYocto": "989345020373800000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "CfkKo55znubKi197S6hd1Ryb9aYH2B4nk1FuXzAmZvwk",
+      "succeeded": true,
+      "tokensBurntYocto": "1012003171379100000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "5RdtE9VtPvGgZn1DJDSq7HsFPeWpzzMo2rRpZqkEfs3D",
+      "succeeded": true,
+      "tokensBurntYocto": "989117020373800000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "BqWi6m3uX1EFFrzEC8pbJasJBzTNKtza6BsReGfLfvWW",
+      "succeeded": true,
+      "tokensBurntYocto": "1011547171379100000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "DuNmg8Xfms2pYYarsHSgxu7i1H2rvUWHCgapJZD8dUJf",
+      "succeeded": true,
+      "tokensBurntYocto": "989121792358600000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "8tH92g3vxsyECZ2q6bHC3h4o3p1t2R4ijYuWTTGDp6qo",
+      "succeeded": true,
+      "tokensBurntYocto": "1011551943363900000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "J5gtKGSFdsuWfqBzLtfu88uXscJnV3EE3L58XNAzVAX5",
+      "succeeded": true,
+      "tokensBurntYocto": "989568248389000000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "3kDoJ9DXtmY6AKTNvGQWq84oLZaVxafU2RdAGXaz5GPz",
+      "succeeded": true,
+      "tokensBurntYocto": "1011998399394300000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "5Xvf6RNJWPKehegKYdQya5fuPMN24LcBpmRc5zqw3Hc5",
+      "succeeded": true,
+      "tokensBurntYocto": "989112248389000000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "9DcRYYcpDhYkAaiEsNQrjAj6kxXRt4Hrm7f7nzWQ7HXm",
+      "succeeded": true,
+      "tokensBurntYocto": "1011542399394300000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "7XwnEch4tHTYtHPrJ9ggojvXrj3cnfoV27LgNsMhf5WE",
+      "succeeded": true,
+      "tokensBurntYocto": "988884248389000000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "9Lt28LUwbjCiUfefWEctUabqSenwYoGyRhRgYExXXBZp",
+      "succeeded": true,
+      "tokensBurntYocto": "1011542399394300000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "5Rq3jhvwvxhxnZZhDpSnJr4BY7QGPA5UJwTdJeW4CPYM",
+      "succeeded": true,
+      "tokensBurntYocto": "989349792358600000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "6ZCHkbELQPY2xFpZN2xjBoJRurPRMH9FwdpJVB6gyftJ",
+      "succeeded": true,
+      "tokensBurntYocto": "1012007943363900000000"
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "5MERmmRZh7e7WYP4f4bJgQgXjRt15vPJE7oh97rDDszj",
+      "succeeded": false,
+      "tokensBurntYocto": "247352432849000000000"
+    },
+    {
+      "method": "request_payment",
+      "hash": "7MJxhfTwin4YudkjKJiCcNohAijByQizfCFVTk8ak8Lp",
+      "succeeded": false,
+      "tokensBurntYocto": "236527025710200000000"
+    },
+    {
+      "method": "ft_transfer",
+      "hash": "3oM6rcbVtTH6wgcmXbqmEqbZQAmnc25LMWCbjFiFRoKn",
+      "succeeded": true,
+      "tokensBurntYocto": "209479512124400000000"
+    },
+    {
+      "method": "storage_unregister",
+      "hash": "5bjDeKRYy9YMYpCyq2eZNAovouH4w4nuxoHC4u1EuH63",
+      "succeeded": true,
+      "tokensBurntYocto": "222185162998300000000"
+    },
+    {
+      "method": "propose_close",
+      "hash": "9W87SZSyzQ5uvc1HWy5zEvDbGZmte85VNyJca4R3esYc",
+      "succeeded": true,
+      "tokensBurntYocto": "357603067943400000000"
+    },
+    {
+      "method": "accept_close",
+      "hash": "9FmRMKeofCPyjL68Uke4NxYkij2gD4ywcUtMVUu6RkVn",
+      "succeeded": true,
+      "tokensBurntYocto": "830954038375800000000"
+    },
+    {
+      "method": "retry_refund",
+      "hash": "hzDTr4y55aZ7LYcRc93JJB6MNtTR9rwmgGfG9gDPe8m",
+      "succeeded": true,
+      "tokensBurntYocto": "793949538837300000000"
+    },
+    {
+      "method": "retry_refund",
+      "hash": "2of52U5379EMbRtMQQ93fpgXNaHSuhwMoVbgupSZrccp",
+      "succeeded": true,
+      "tokensBurntYocto": "808501725764600000000"
+    },
+    {
+      "method": "retry_refund",
+      "hash": "AznKjqAKWhF5DvaJSbdzDkAnGEAQccF7EWZeWeqmZdU",
+      "succeeded": true,
+      "tokensBurntYocto": "823213198253500000000"
+    },
+    {
+      "method": "retry_refund",
+      "hash": "7JZ8XbVPPfygzcPPPYHHkd5Exg2eabqESHAzddNFRDv4",
+      "succeeded": true,
+      "tokensBurntYocto": "838060014104400000000"
+    },
+    {
+      "method": "retry_refund",
+      "hash": "GTv3YVLwgXU8bcPvHbKtGbb6kisMwPSmvrxTuJcZZyg2",
+      "succeeded": true,
+      "tokensBurntYocto": "852757088363300000000"
+    },
+    {
+      "method": "retry_refund",
+      "hash": "9uWW5umzDyCYYiUMWD3nnKA2wXLFYhbJ9xBEs8v7QbWk",
+      "succeeded": true,
+      "tokensBurntYocto": "867543596199400000000"
+    },
+    {
+      "method": "retry_refund",
+      "hash": "4mVjgAjKgWBWyNh2WBa17qQ1u2ySX2vaHuutwoJyjUdi",
+      "succeeded": true,
+      "tokensBurntYocto": "882313566639900000000"
+    },
+    {
+      "method": "storage_deposit",
+      "hash": "BpS9XMwURjPVm52kUhqiT7kTjiyxUBSWqVMPsvV14AwS",
+      "succeeded": true,
+      "tokensBurntYocto": "180044330249700000000"
+    },
+    {
+      "method": "retry_refund",
+      "hash": "3YZF3eHwJqo5XHhWmbpimsUVpXMJ6NMm6ku4SYnQ9D6g",
+      "succeeded": true,
+      "tokensBurntYocto": "875658135444200000000"
+    },
+    {
+      "method": "claim_native_excess",
+      "hash": "6JZMM6JcUcpBpwJdin9AunFsDT1NpMjWKH1tje5VSi19",
+      "succeeded": true,
+      "tokensBurntYocto": "627168209462600000000"
+    }
+  ],
+  "snapshots": {
+    "buyerNativeTransfer": {
+      "before": "97499066501101423600000000",
+      "after": "97748486289060055499999999",
+      "difference": "249419787958631899999999"
+    },
+    "openAfterExcessClaim": {
+      "tracked": true,
+      "deposit": {
+        "owner": "buyer.test.near",
+        "deposited": "1250000000000000000000000",
+        "call_deposits_spent": "0",
+        "refunded": "250000000000000000000000",
+        "pending": "0",
+        "storage_bytes": "751",
+        "claim_sequence": "1",
+        "claim_status": "Settled"
+      },
+      "storage_backing": "7510000000000000000000",
+      "retained_required": "1000000000000000000000000",
+      "claimable": "0",
+      "margin_percent": 25,
+      "invoice_limit": 32,
+      "payment_attempt_limit": 64
+    },
+    "cancelled": {
+      "tracked": true,
+      "deposit": {
+        "owner": "buyer.test.near",
+        "deposited": "1350000000000000000000000",
+        "call_deposits_spent": "0",
+        "refunded": "1339275000000000000000000",
+        "pending": "0",
+        "storage_bytes": "858",
+        "claim_sequence": "3",
+        "claim_status": "Settled"
+      },
+      "storage_backing": "8580000000000000000000",
+      "retained_required": "10725000000000000000000",
+      "claimable": "0",
+      "margin_percent": 25,
+      "invoice_limit": 32,
+      "payment_attempt_limit": 64
+    },
+    "settled": {
+      "tracked": true,
+      "deposit": {
+        "owner": "buyer.test.near",
+        "deposited": "1000000000000000000000000",
+        "call_deposits_spent": "2",
+        "refunded": "975324999999999999999998",
+        "pending": "0",
+        "storage_bytes": "1974",
+        "claim_sequence": "1",
+        "claim_status": "Settled"
+      },
+      "storage_backing": "19740000000000000000000",
+      "retained_required": "24675000000000000000000",
+      "claimable": "0",
+      "margin_percent": 25,
+      "invoice_limit": 32,
+      "payment_attempt_limit": 64
+    },
+    "maximumCapacity": {
+      "actualStorageDeltaBytes": 74150,
+      "platformPoolBytes": 87,
+      "beforeClaim": {
+        "tracked": true,
+        "deposit": {
+          "owner": "budgetbuyerxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.test.near",
+          "deposited": "1000000000000000000000000",
+          "call_deposits_spent": "73",
+          "refunded": "0",
+          "pending": "0",
+          "storage_bytes": "74063",
+          "claim_sequence": "0",
+          "claim_status": "Idle"
+        },
+        "storage_backing": "740630000000000000000000",
+        "retained_required": "925787500000000000000000",
+        "claimable": "74212499999999999999927",
+        "margin_percent": 25,
+        "invoice_limit": 32,
+        "payment_attempt_limit": 64
+      },
+      "afterClaim": {
+        "tracked": true,
+        "deposit": {
+          "owner": "budgetbuyerxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.test.near",
+          "deposited": "1000000000000000000000000",
+          "call_deposits_spent": "73",
+          "refunded": "74212499999999999999927",
+          "pending": "0",
+          "storage_bytes": "74063",
+          "claim_sequence": "1",
+          "claim_status": "Settled"
+        },
+        "storage_backing": "740630000000000000000000",
+        "retained_required": "925787500000000000000000",
+        "claimable": "0",
+        "margin_percent": 25,
+        "invoice_limit": 32,
+        "payment_attempt_limit": 64
+      }
+    }
+  },
+  "completed": true
+}

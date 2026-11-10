@@ -17,3 +17,20 @@ test('wallet calls attach one yocto only for guarded customer actions on automat
     '0',
   );
 });
+
+test('native money approvals always require one yocto, including tracked manual orders', () => {
+  const d = { features: ['native-deposits-v1'] } as Deployment;
+  for (const method of [
+    'claim_native_excess',
+    'acknowledge_native_refund',
+    'cancel_unfunded_order',
+  ]) {
+    assert.equal(customerApprovalDeposit(d, method), '1');
+    assert.equal(customerApprovalDeposit(d, method, { mode: 'manual', invoices: [] }), '1');
+  }
+  assert.equal(customerApprovalDeposit(d, 'top_up_order_storage'), '0');
+  assert.equal(
+    customerApprovalDeposit({ features: [] } as unknown as Deployment, 'claim_native_excess'),
+    '0',
+  );
+});

@@ -28,6 +28,8 @@ The separate [measured storage audit](STORAGE_AND_RECOVERY.md) confirms that the
 
 ## Remaining mainnet gates
 
+The later [2.4.0 native-deposit release](NATIVE_DEPOSITS.md) adds metered owner credits and callback-safe native allowance refunds for newly created orders, with upgrade and failure-path evidence. The retained-deposit findings above remain historical facts for older untracked orders. Customer storage cleanup, service retirement and independent production review remain outstanding.
+
 - Define and independently review unused-fund exit, disputes and receipt-recovery rules; receiver honesty and invoice authenticity are not established by these signatures.
 - Wire mainnet separately. Pin the real token's contract/code, decimals, issuer behavior and account-registration rules; do not deploy the test aUSD token as a customer payment asset.
 - Choose production upgrade governance and protected key custody. Generated testnet full-access keys are development authority; the production service should receive only its limited key.

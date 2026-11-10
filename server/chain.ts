@@ -11,6 +11,7 @@ import type {
   ChainState,
   ChainRecovery,
   ChainPaymentPolicy,
+  ChainNativeDeposit,
 } from '../shared/chain.ts';
 import { ordersForAccount } from '../shared/chain.ts';
 import { accountSchema, type Order } from '../shared/schema.ts';
@@ -195,6 +196,16 @@ export async function registerChain(
             ),
           )
         : undefined;
+      const nativeDeposits = d.features?.includes('native-deposits-v1')
+        ? Object.fromEntries(
+            await Promise.all(
+              orders.map(async (o) => [
+                o.id,
+                await displayView<ChainNativeDeposit>(d, 'get_native_deposit', { order_id: o.id }),
+              ]),
+            ),
+          )
+        : undefined;
       const jobs = (
         ledger.db.prepare('SELECT payload FROM chain_jobs').all() as { payload: string }[]
       ).map((row) => JSON.parse(row.payload) as Job);
@@ -225,6 +236,7 @@ export async function registerChain(
         recoveries,
         confirmations,
         paymentPolicies,
+        nativeDeposits,
         operatorReady,
         liveAiAvailable: !!process.env.NEAR_AI_API_KEY,
         authRequired,

@@ -14,6 +14,8 @@ mod invoices;
 pub use invoices::*;
 mod automatic;
 pub use automatic::*;
+mod deposits;
+pub use deposits::*;
 
 const MAX_ATTEMPTS: u32 = 64;
 // Provisional allocations; sandbox gas measurements remain a release gate.
@@ -211,10 +213,13 @@ impl Vault {
             sequence: U64(0),
             attempts: 0,
         };
+        self.start_native_deposit();
+        let storage_before = env::storage_usage();
         self.orders.insert(&order_id, &order);
         if automatic {
             Self::automatic_orders().insert(&order_id, &true);
         }
+        self.create_native_deposit(&order_id, &order.buyer, storage_before);
         event(
             "order_created",
             json!({"order_id": order_id, "terms_hash": order.terms_hash, "automatic_payment": automatic}),
@@ -239,6 +244,10 @@ impl Vault {
             "Expired proposal"
         );
         require!(terms_hash == order.terms_hash, "Terms mismatch");
+        require!(
+            self.recovery(&order_id).phase == ClosePhase::Open,
+            "Order is closed"
+        );
         order.accepted_terms = true;
         self.orders.insert(&order_id, &order);
         event(
@@ -326,6 +335,7 @@ impl Vault {
             env::prepaid_gas().as_gas() >= Gas::from_tgas(80).as_gas(),
             "Attach at least 80 Tgas"
         );
+        let storage_before = env::storage_usage();
         if self.automatic(&order_id) {
             require!(
                 quantity.0 <= self.invoice_available(&commitment, invoice.quantity.0),
@@ -356,6 +366,7 @@ impl Vault {
         order.attempts += 1;
         self.orders.insert(&order_id, &order);
         self.attempts.insert(&request_id, &attempt);
+        self.meter_native_storage(&order_id, storage_before, 1);
         event("payment_reserved", json!(&attempt));
         event(
             "payment_invoice_bound",

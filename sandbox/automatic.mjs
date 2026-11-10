@@ -100,7 +100,7 @@ try {
   const before = await vault.view('get_order', { order_id: 'legacy' });
   const balance = await token.view('ft_balance_of', { account_id: vault.accountId });
   await vault.deploy(wasm('vault'));
-  assert.equal(await vault.view('get_version', {}), '2.3.1-security');
+  assert.equal(await vault.view('get_version', {}), '2.4.0-native-deposits');
   assert.deepEqual(await vault.view('get_order', { order_id: 'legacy' }), before);
   assert.equal(await token.view('ft_balance_of', { account_id: vault.accountId }), balance);
   assert.equal((await vault.view('get_payment_policy', { order_id: 'legacy' })).mode, 'manual');

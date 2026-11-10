@@ -10,6 +10,8 @@ crate-type = ["cdylib", "rlib"]
 [features]
 # Sandbox-only build artifact; never enable for a deployment.
 fault-injection = []
+# Sandbox-only failed-native-transfer artifact; never enable for deployment.
+native-transfer-failure = []
 
 [dependencies]
 near-sdk = { workspace = true, features = ["legacy"] }
