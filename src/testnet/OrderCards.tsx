@@ -1,3 +1,4 @@
+import { settlementSymbol as currency } from './network';
 import { ArrowUpRight } from 'lucide-react';
 import type { OrderPosition } from '../../shared/payables';
 import { money } from '../../shared/schema';
@@ -46,7 +47,7 @@ export function OrderCards({
               <div>
                 <dt>{closed ? 'Paid' : 'Still committed'}</dt>
                 <dd>
-                  {money(closed ? row.paid : row.committed)} <small>aUSD</small>
+                  {money(closed ? row.paid : row.committed)} <small>{currency}</small>
                 </dd>
               </div>
               <div>
@@ -58,7 +59,7 @@ export function OrderCards({
                       : 'Ready to review'}
                 </dt>
                 <dd>
-                  {money(closed ? row.refunded : row.ready)} <small>aUSD</small>
+                  {money(closed ? row.refunded : row.ready)} <small>{currency}</small>
                 </dd>
               </div>
             </dl>
@@ -67,7 +68,7 @@ export function OrderCards({
                 {row.order.accepted} of {row.order.terms.ordered} {row.order.terms.unit}
                 {row.order.terms.ordered === '1' ? '' : 's'} accepted
               </span>
-              {BigInt(row.processing) > 0n && <span>{money(row.processing)} aUSD in progress</span>}
+              {BigInt(row.processing) > 0n && <span>{money(row.processing)} {currency} in progress</span>}
               {supplier && row.order.terms.supplier !== account && <span>Payout recipient</span>}
             </div>
           </li>

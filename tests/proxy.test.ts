@@ -6,7 +6,11 @@ import proxy from '../api/proxy.ts';
 test('Vercel proxy forwards only allowed API paths and replaces untrusted origin credentials', async () => {
   const oldFetch = globalThis.fetch,
     oldUrl = process.env.ACCORD_API_URL,
-    oldSecret = process.env.ACCORD_PROXY_SECRET;
+    oldSecret = process.env.ACCORD_PROXY_SECRET,
+    oldNetwork = process.env.ACCORD_NETWORK,
+    oldTestnetUrl = process.env.ACCORD_TESTNET_API_URL,
+    oldTestnetSecret = process.env.ACCORD_TESTNET_PROXY_SECRET;
+  process.env.ACCORD_NETWORK = 'testnet';
   process.env.ACCORD_API_URL = 'https://backend.example/accord/';
   process.env.ACCORD_PROXY_SECRET = 'test-proxy-secret';
   const received: { target: string; options?: RequestInit }[] = [];
@@ -19,7 +23,7 @@ test('Vercel proxy forwards only allowed API paths and replaces untrusted origin
   });
   await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
   const address = server.address() as { port: number };
-  const send = (path: string, body?: string) =>
+  const send = (path: string, body?: string, network?: string) =>
     new Promise<{ status: number; body: string }>((resolve, reject) => {
       const req = httpRequest(
         {
@@ -30,6 +34,7 @@ test('Vercel proxy forwards only allowed API paths and replaces untrusted origin
           headers: {
             'x-accord-proxy-secret': 'visitor-supplied-value',
             Cookie: 'private-browser-cookie',
+            ...(network ? { 'x-accord-network': network } : {}),
             ...(body ? { 'Content-Type': 'application/json' } : {}),
           },
         },
@@ -113,6 +118,40 @@ test('Vercel proxy forwards only allowed API paths and replaces untrusted origin
     const unavailable = await send('/api/proxy?__accord_path=health');
     assert.equal(unavailable.status, 502);
     assert.ok(!unavailable.body.includes('<html>'));
+    process.env.ACCORD_NETWORK = 'mainnet';
+    process.env.ACCORD_API_URL = 'https://backend.example/accord-mainnet/';
+    process.env.ACCORD_PROXY_SECRET = 'mainnet-secret';
+    process.env.ACCORD_TESTNET_API_URL = 'https://backend.example/accord/';
+    process.env.ACCORD_TESTNET_PROXY_SECRET = 'testnet-secret';
+    globalThis.fetch = async (target, options) => {
+      received.push({ target: String(target), options });
+      return Response.json({ ok: true });
+    };
+    const count = received.length;
+    assert.equal((await send('/api/proxy?__accord_path=chain/state')).status, 409);
+    assert.equal(
+      (await send('/api/proxy?__accord_path=chain/state', undefined, 'unknown')).status,
+      400,
+    );
+    assert.equal(received.length, count);
+    assert.equal(
+      (await send('/api/proxy?__accord_path=chain/state', undefined, 'mainnet')).status,
+      200,
+    );
+    assert.equal(received.at(-1)!.target, 'https://backend.example/accord-mainnet/api/chain/state');
+    assert.equal(
+      (received.at(-1)!.options!.headers as Record<string, string>)['x-accord-proxy-secret'],
+      'mainnet-secret',
+    );
+    assert.equal(
+      (await send('/api/proxy?__accord_path=chain/state', undefined, 'testnet')).status,
+      200,
+    );
+    assert.equal(received.at(-1)!.target, 'https://backend.example/accord/api/chain/state');
+    assert.equal(
+      (received.at(-1)!.options!.headers as Record<string, string>)['x-accord-proxy-secret'],
+      'testnet-secret',
+    );
   } finally {
     await new Promise<void>((resolve) => server.close(() => resolve()));
     globalThis.fetch = oldFetch;
@@ -120,5 +159,12 @@ test('Vercel proxy forwards only allowed API paths and replaces untrusted origin
     else delete process.env.ACCORD_API_URL;
     if (oldSecret) process.env.ACCORD_PROXY_SECRET = oldSecret;
     else delete process.env.ACCORD_PROXY_SECRET;
+    for (const [name, value] of [
+      ['ACCORD_NETWORK', oldNetwork],
+      ['ACCORD_TESTNET_API_URL', oldTestnetUrl],
+      ['ACCORD_TESTNET_PROXY_SECRET', oldTestnetSecret],
+    ])
+      if (value === undefined) delete process.env[name!];
+      else process.env[name!] = value;
   }
 });

@@ -92,7 +92,7 @@ test('wallet payment history filters records, links receipts, and opens related 
     configured: true,
     deployment: {
       network: 'testnet',
-      rpcUrl: '',
+      rpcUrl: 'https://test.rpc.fastnear.com',
       vault: 'vault.testnet',
       token: 'token.testnet',
       operator: 'operator.testnet',

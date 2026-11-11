@@ -1,0 +1,210 @@
+{
+  "checkedAt": "2026-11-11T18:52:55.623Z",
+  "normalWasmSha256": "beb76c43bd50db4cc763b2595835da7611124fbb60c70c6d0330185eeaa43d83",
+  "rustTests": 62,
+  "applicationTests": 64,
+  "browserTests": 29,
+  "regressionChecks": 42,
+  "nativeDepositChecks": 8,
+  "mainnetDomainChecks": 4,
+  "suites": [
+    {
+      "name": "sandbox-evidence",
+      "checks": [
+        {
+          "name": "excess funding returned through standard resolver",
+          "status": "PASS"
+        },
+        {
+          "name": "real standard-token partial transfer and callback",
+          "status": "PASS",
+          "supplierBalance": "400000000"
+        },
+        {
+          "name": "request replay blocked",
+          "status": "PASS"
+        },
+        {
+          "name": "external callback invocation blocked",
+          "status": "PASS"
+        },
+        {
+          "name": "operator cannot authorize delivery",
+          "status": "PASS"
+        },
+        {
+          "name": "second delivery unlocks only incremental 30 cartons",
+          "status": "PASS"
+        },
+        {
+          "name": "external standard-token panic reaches callback and releases reservation",
+          "status": "PASS"
+        },
+        {
+          "name": "real transfer succeeds, starved callback fails, reservation remains locked",
+          "status": "PASS",
+          "supplierIncrement": "400000000",
+          "paid": "0",
+          "pending": "40"
+        },
+        {
+          "name": "cross-order counters remain isolated",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "name": "recovery-sandbox-evidence",
+      "checks": [
+        {
+          "name": "closure rejects unpaid accepted deliveries",
+          "status": "PASS"
+        },
+        {
+          "name": "closure needs distinct buyer and supplier approvals",
+          "status": "PASS"
+        },
+        {
+          "name": "intervening delivery and payment invalidate closure snapshot",
+          "status": "PASS"
+        },
+        {
+          "name": "real partial-order refund returns exactly 300 aUSD to original buyer",
+          "status": "PASS"
+        },
+        {
+          "name": "closed order blocks deliveries, payments, refund replay and public callback spoofing",
+          "status": "PASS"
+        },
+        {
+          "name": "definite refund failure preserves obligation and freezes the order",
+          "status": "PASS"
+        },
+        {
+          "name": "buyer retries a definitively failed refund once recipient registration is repaired",
+          "status": "PASS"
+        },
+        {
+          "name": "payout recipient recovers a real successful payment with failed callback without sending tokens again",
+          "status": "PASS"
+        },
+        {
+          "name": "real successful refund with starved callback stays reserved until buyer acknowledgment",
+          "status": "PASS"
+        },
+        {
+          "name": "upgrade from initial deployed schema preserves funded orders and attempts and enables refunds",
+          "status": "PASS"
+        },
+        {
+          "name": "refund and recovery accounting remains isolated across orders and vaults",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "name": "invoice-sandbox-evidence",
+      "checks": [
+        {
+          "name": "payment without supplier confirmation is rejected",
+          "status": "PASS"
+        },
+        {
+          "name": "operator cannot confirm supplier invoices",
+          "status": "PASS"
+        },
+        {
+          "name": "real contract commitment matches canonical TypeScript encoding",
+          "status": "PASS"
+        },
+        {
+          "name": "repeat supplier confirmation is idempotent",
+          "status": "PASS"
+        },
+        {
+          "name": "reference, document and order tampering cannot reuse a confirmation",
+          "status": "PASS"
+        },
+        {
+          "name": "payment quantity cannot exceed confirmed invoice quantity",
+          "status": "PASS"
+        },
+        {
+          "name": "supplier-confirmed invoice settles a real 400 aUSD partial payment",
+          "status": "PASS"
+        },
+        {
+          "name": "confirmed invoice retains order-level incremental delivery limits",
+          "status": "PASS"
+        },
+        {
+          "name": "new confirmation invalidates stale closure; closed remainder disables confirmations and payments",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "name": "automatic-sandbox-evidence",
+      "checks": [
+        {
+          "name": "upgrade preserves funded 2.2.0 order, token balance and manual execution policy",
+          "status": "PASS"
+        },
+        {
+          "name": "buyer creates, funds and confirms delivery using the same account",
+          "status": "PASS"
+        },
+        {
+          "name": "restricted payment responsibility stays separate while the fixed supplier receives 40 aUSD",
+          "status": "PASS"
+        },
+        {
+          "name": "a paid invoice cannot pay a later delivery; a fresh confirmed invoice pays only the new quantity",
+          "status": "PASS"
+        },
+        {
+          "name": "optional delegated receiving authorizes only the appointed warehouse account",
+          "status": "PASS"
+        },
+        {
+          "name": "definitive token failure releases invoice capacity; repaired transfer settles once",
+          "status": "PASS"
+        },
+        {
+          "name": "successful transfer with a failed callback retains both order and invoice reservations",
+          "status": "PASS"
+        },
+        {
+          "name": "recipient acknowledgment finalizes payment without making the invoice spendable again",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "name": "security-sandbox-evidence",
+      "checks": [
+        {
+          "name": "upgrade preserves automatic order, settled attempt, invoice capacity, recovery and token balance",
+          "status": "PASS"
+        },
+        {
+          "name": "all nine automatic customer approval methods reject zero deposit without mutating balances",
+          "status": "PASS"
+        },
+        {
+          "name": "real function-call key cannot approve delivery; full wallet with exactly one yocto succeeds",
+          "status": "PASS"
+        },
+        {
+          "name": "guarded recipient acknowledgments finalize uncertain payment and refund without reusing funds",
+          "status": "PASS"
+        },
+        {
+          "name": "restricted service recovers saved signed bytes after restart and settles exactly once",
+          "status": "PASS"
+        }
+      ]
+    }
+  ],
+  "walletGasProfileVerified": true
+}

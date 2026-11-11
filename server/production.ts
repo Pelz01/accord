@@ -2,7 +2,7 @@ import Fastify from 'fastify';
 import { timingSafeEqual } from 'node:crypto';
 import { z } from 'zod';
 import { Ledger, DomainError } from './ledger.ts';
-import { registerChain } from './chain.ts';
+import { registerChain, runtimeNetwork } from './chain.ts';
 import { WalletSessions } from './sessions.ts';
 
 export function productionApp(
@@ -19,7 +19,10 @@ export function productionApp(
     throw new Error('Set an HTTPS frontend origin.');
   if (proxySecret.length < 32) throw new Error('A strong proxy secret is required.');
   const app = Fastify({ logger: false, bodyLimit: 2_900_000 });
-  const sessions = new WalletSessions(ledger.db, origin);
+  const sessions = new WalletSessions(ledger.db, origin, undefined, undefined, {
+    network: runtimeNetwork,
+    vault: process.env.ACCORD_VAULT,
+  });
   let windowStart = Date.now(),
     writes = 0;
   app.addHook('onRequest', async (request, reply) => {
@@ -58,7 +61,7 @@ export function productionApp(
       .code(503)
       .send({ error: 'The action could not be completed. Please try again shortly.' });
   });
-  app.get('/api/health', async () => ({ ok: true, network: 'testnet' }));
+  app.get('/api/health', async () => ({ ok: true, network: runtimeNetwork }));
   sessions.register(app);
   app.register(async (child) =>
     registerChain(child, ledger, {

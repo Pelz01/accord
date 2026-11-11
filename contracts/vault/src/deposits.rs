@@ -45,9 +45,18 @@ pub struct NativeDepositView {
     pub margin_percent: u32,
     pub invoice_limit: u32,
     pub payment_attempt_limit: u32,
+    pub initial_allowance: U128,
+    pub incremental: bool,
 }
 
 impl Vault {
+    pub(crate) fn initial_storage_allowance(&self) -> u128 {
+        if self.network == "mainnet" {
+            CAPACITY_ALLOWANCE / 10
+        } else {
+            CAPACITY_ALLOWANCE
+        }
+    }
     fn native_deposits() -> LookupMap<String, NativeDeposit> {
         LookupMap::new(b"accord:native-deposit:v1:".to_vec())
     }
@@ -77,7 +86,10 @@ impl Vault {
         if self.recovery(id).phase == ClosePhase::Closed {
             retained
         } else {
-            retained.max(CAPACITY_ALLOWANCE.saturating_sub(d.call_deposits_spent.0))
+            retained.max(
+                self.initial_storage_allowance()
+                    .saturating_sub(d.call_deposits_spent.0),
+            )
         }
     }
     fn native_budget(&self, outgoing: u128) {
@@ -228,7 +240,13 @@ impl Vault {
             margin_percent: 25,
             invoice_limit: 32,
             payment_attempt_limit: MAX_ATTEMPTS,
+            initial_allowance: U128(self.initial_storage_allowance()),
+            incremental: self.network == "mainnet",
         }
+    }
+
+    pub fn get_config(&self) -> near_sdk::serde_json::Value {
+        json!({"network":self.network,"token":self.token,"initial_storage_allowance":self.initial_storage_allowance().to_string(),"incremental_storage":self.network == "mainnet"})
     }
 
     #[payable]

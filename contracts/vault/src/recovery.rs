@@ -222,7 +222,7 @@ impl Vault {
 #[near]
 impl Vault {
     pub fn get_version(&self) -> String {
-        "2.4.0-native-deposits".into()
+        "2.5.0-mainnet".into()
     }
 
     pub fn get_recovery(&self, order_id: String) -> RecoveryState {

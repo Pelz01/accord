@@ -1,3 +1,4 @@
+import { settlementSymbol as currency } from './network';
 import { useMemo, useState } from 'react';
 import { ArrowRight, Check, Clock3, FileCheck2, Layers2, Plus, Search, Wallet } from 'lucide-react';
 import type { ChainJob, ChainState } from '../../shared/chain';
@@ -131,6 +132,7 @@ export function PayablesOverview({
       </div>
       <div className="metrics report-metrics">
         <Metric
+                  symbol={currency}
           label={readyLabel}
           amount={totals.ready}
           caption="Accepted, unreserved, invoice confirmed"
@@ -138,18 +140,21 @@ export function PayablesOverview({
           accent
         />
         <Metric
+                  symbol={currency}
           label="Invoice review"
           amount={totals.invoiceReview}
           caption="Accepted goods needing invoice review"
           icon={<Layers2 size={16} />}
         />
         <Metric
+                  symbol={currency}
           label="In progress"
           amount={totals.processing}
           caption="Reserved or awaiting dispatch"
           icon={<Clock3 size={16} />}
         />
         <Metric
+                  symbol={currency}
           label="Still committed"
           amount={totals.committed}
           caption="Funded less paid and refunded"
@@ -160,26 +165,26 @@ export function PayablesOverview({
         <div>
           <span>Awaiting delivery</span>
           <strong>
-            {money(totals.awaitingDelivery)} <small>aUSD</small>
+            {money(totals.awaitingDelivery)} <small>{currency}</small>
           </strong>
         </div>
         <div>
           <span>{supplier ? 'Paid to your orders' : 'Paid to suppliers'}</span>
           <strong>
-            {money(totals.paid)} <small>aUSD</small>
+            {money(totals.paid)} <small>{currency}</small>
           </strong>
         </div>
         <div>
           <span>Returned to buyers</span>
           <strong>
-            {money(totals.refunded)} <small>aUSD</small>
+            {money(totals.refunded)} <small>{currency}</small>
           </strong>
         </div>
         {BigInt(totals.refundHeld) > 0n && (
           <div>
             <span>Held for refund</span>
             <strong>
-              {money(totals.refundHeld)} <small>aUSD</small>
+              {money(totals.refundHeld)} <small>{currency}</small>
             </strong>
           </div>
         )}
@@ -253,17 +258,17 @@ export function PayablesOverview({
                         </small>
                       </td>
                       <td className="report-money">
-                        {money(row.committed)} <small>aUSD</small>
+                        {money(row.committed)} <small>{currency}</small>
                       </td>
                       <td className="report-money">
-                        {money(row.ready)} <small>aUSD</small>
+                        {money(row.ready)} <small>{currency}</small>
                         <small className="block muted">
                           {row.order.accepted} / {row.order.terms.ordered} {row.order.terms.unit}s
                           accepted
                         </small>
                       </td>
                       <td className="report-money">
-                        {money(row.processing)} <small>aUSD</small>
+                        {money(row.processing)} <small>{currency}</small>
                         {BigInt(row.awaitingDispatch) > 0n && (
                           <small className="block muted">
                             Includes {money(row.awaitingDispatch)} awaiting dispatch

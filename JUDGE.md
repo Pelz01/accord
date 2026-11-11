@@ -2,7 +2,7 @@
 
 ## Product
 
-Open [accord-payments.vercel.app](https://accord-payments.vercel.app) for the hosted product. For development, run npm ci and npm run dev and open http://127.0.0.1:5173. The first page is the landing page. Open the workspace to connect a NEAR testnet wallet. Orders and balances remain hidden until connection; unrelated wallets do not inherit the supplied test records.
+Open [accord-payments.vercel.app](https://accord-payments.vercel.app) for the hosted product. The default workspace uses mainnet and native USDC. Use [/workspace?network=testnet](https://accord-payments.vercel.app/workspace?network=testnet) for the separate testnet service and historical fixtures. See [mainnet release status](MAINNET_RELEASE.md) for executed evidence and remaining work. For development, run npm ci and npm run dev and open http://127.0.0.1:5173. The first page is the landing page. Orders and balances remain hidden until wallet connection; unrelated wallets do not inherit supplied records.
 
 The normal flow uses two customer wallets: buyer and supplier. The buyer creates and funds the order, then confirms delivery using the same wallet. An optional warehouse reviewer can be assigned at creation. The supplier accepts terms and confirms invoice fields. Accord’s restricted background worker requests eligible payment; the contract enforces the financial limits. Creation, acceptance, funding, delivery and supplier invoice confirmation remain wallet transactions. Invoice extraction requires the server's NEAR_AI_API_KEY and fails visibly when unavailable. Existing manual-policy orders retain their operator NEP-413 authorization flow. Never share a private key in chat or commit it.
 

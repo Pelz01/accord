@@ -68,6 +68,8 @@ export type ChainNativeDeposit = {
   margin_percent: number;
   invoice_limit: number;
   payment_attempt_limit: number;
+  initial_allowance?: string;
+  incremental?: boolean;
 };
 export type Deployment = {
   network: 'testnet' | 'mainnet';

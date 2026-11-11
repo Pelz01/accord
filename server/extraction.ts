@@ -46,7 +46,7 @@ export async function extract(o: Order, text: string, mode: ExtractionMode): Pro
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
         signal: AbortSignal.timeout(45_000),
-        body: JSON.stringify(invoiceRequest(text, model)),
+        body: JSON.stringify(invoiceRequest(text, model, o.token)),
       });
     } catch {
       throw new DomainError(
@@ -76,6 +76,7 @@ export async function extract(o: Order, text: string, mode: ExtractionMode): Pro
   const invoice = parsed.data;
   if (
     invoice.orderId !== o.id ||
+    invoice.token !== o.token ||
     invoice.quantity > o.ordered ||
     invoice.lineId !== o.lineId ||
     invoice.amountBaseUnits !== value(invoice.quantity, o.unitPrice)

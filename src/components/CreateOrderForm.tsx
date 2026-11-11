@@ -18,6 +18,8 @@ export function CreateForm({
   recoveryEnabled = false,
   automaticPayments = false,
   nativeDeposits = false,
+  network = 'testnet',
+  tokenSymbol = 'aUSD',
 }: {
   onCreate: (input: unknown) => void;
   busy: boolean;
@@ -28,6 +30,8 @@ export function CreateForm({
   recoveryEnabled?: boolean;
   automaticPayments?: boolean;
   nativeDeposits?: boolean;
+  network?: 'testnet' | 'mainnet';
+  tokenSymbol?: string;
 }) {
   const [unitPrice, setUnitPrice] = useState('10');
   const [qty, setQty] = useState(100);
@@ -95,7 +99,7 @@ export function CreateForm({
             />
           </label>
           <label className="field">
-            Unit price (aUSD)
+            Unit price ({tokenSymbol})
             <input
               inputMode="decimal"
               pattern="[0-9]+(\.[0-9]{1,6})?"
@@ -113,7 +117,7 @@ export function CreateForm({
           Supplier account
           <input
             name="supplier"
-            placeholder="supplier.testnet"
+            placeholder={network === 'mainnet' ? 'supplier.near' : 'supplier.testnet'}
             required
             minLength={2}
             maxLength={64}
@@ -138,7 +142,7 @@ export function CreateForm({
             Payment account
             <input
               name="payout"
-              placeholder="payments.testnet"
+              placeholder={network === 'mainnet' ? 'payments.near' : 'payments.testnet'}
               required
               minLength={2}
               maxLength={64}
@@ -174,7 +178,7 @@ export function CreateForm({
             <input
               name="receiver"
               defaultValue={testnet ? '' : 'warehouse.testnet'}
-              placeholder="receiver.testnet"
+              placeholder={network === 'mainnet' ? 'receiver.near' : 'receiver.testnet'}
               required
               minLength={2}
               maxLength={64}
@@ -217,7 +221,7 @@ export function CreateForm({
         <div>
           <span>Order total</span>
           <strong>
-            {total} <small>aUSD</small>
+            {total} <small>{tokenSymbol}</small>
           </strong>
         </div>
         <p>
@@ -233,9 +237,15 @@ export function CreateForm({
         )}
         {testnet && (
           <p>
-            <strong>1 testnet NEAR storage deposit.</strong>{' '}
+            <strong>
+              {network === 'mainnet'
+                ? '0.1 NEAR initial storage deposit.'
+                : '1 testnet NEAR storage deposit.'}
+            </strong>{' '}
             {nativeDeposits
-              ? 'Reserves room for up to 32 invoices and 64 payment attempts. After closure, you can claim the unused allowance. Backing for retained records and a 25% storage buffer stays held.'
+              ? network === 'mainnet'
+                ? 'Larger orders need explicit storage top-ups before more records can be added. Limits remain 32 invoices and 64 payment attempts. After closure, unused allowance can be claimed; retained records and a 25% storage buffer stay backed.'
+                : 'Reserves room for up to 32 invoices and 64 payment attempts. After closure, you can claim the unused allowance. Backing for retained records and a 25% storage buffer stays held.'
               : 'Retained by the order contract; not refundable.'}
           </p>
         )}

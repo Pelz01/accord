@@ -3,10 +3,18 @@ use near_sdk::{test_utils::VMContextBuilder, testing_env, PromiseResult, Runtime
 use std::collections::HashMap;
 
 fn native_fixture(deposit: u128) -> Vault {
+    native_fixture_network(deposit, "sandbox")
+}
+fn native_fixture_network(deposit: u128, network: &str) -> Vault {
     let mut ctx = context("buyer.testnet");
     ctx.attached_deposit(NearToken::from_yoctonear(deposit));
     testing_env!(ctx.build());
-    let mut v = Vault::new(account("token.testnet"), "sandbox".into());
+    let token = if network == "mainnet" {
+        "17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1"
+    } else {
+        "token.testnet"
+    };
+    let mut v = Vault::new(account(token), network.into());
     v.create_automatic_order(
         "NATIVE".into(),
         Terms {
@@ -23,6 +31,54 @@ fn native_fixture(deposit: u128) -> Vault {
         },
     );
     v
+}
+
+#[test]
+fn mainnet_small_storage_budget_is_metered_and_unused_credit_is_refundable() {
+    let mut v = native_fixture_network(100_000_000_000_000_000_000_000, "mainnet");
+    let initial = v.get_native_deposit("NATIVE".into());
+    assert!(initial.incremental);
+    assert_eq!(initial.initial_allowance.0, 100_000_000_000_000_000_000_000);
+    assert_eq!(initial.retained_required.0, initial.initial_allowance.0);
+    assert_eq!(initial.claimable.0, 0);
+    let mut ctx = context("buyer.testnet");
+    ctx.attached_deposit(NearToken::from_millinear(50));
+    testing_env!(ctx.build());
+    v.top_up_order_storage("NATIVE".into());
+    assert_eq!(
+        v.get_native_deposit("NATIVE".into()).claimable.0,
+        50_000_000_000_000_000_000_000
+    );
+    testing_env!(approval_context("buyer.testnet").build());
+    v.cancel_unfunded_order("NATIVE".into());
+    let closed = v.get_native_deposit("NATIVE".into());
+    assert!(closed.claimable.0 > 100_000_000_000_000_000_000_000);
+    assert_eq!(
+        closed.retained_required.0 + closed.claimable.0,
+        150_000_000_000_000_000_000_000
+    );
+}
+
+#[test]
+#[should_panic(expected = "Top up this order's native storage budget")]
+fn mainnet_small_budget_does_not_subsidize_unlimited_record_growth() {
+    let v = native_fixture_network(100_000_000_000_000_000_000_000, "mainnet");
+    let before = env::storage_usage();
+    env::storage_write(b"capacity-probe", &vec![0; 10_000]);
+    v.meter_native_storage(&"NATIVE".into(), before, 0);
+}
+
+#[test]
+#[should_panic(expected = "Mainnet requires native USDC")]
+fn mainnet_rejects_a_same_symbol_unpinned_asset() {
+    testing_env!(context("owner.near").build());
+    Vault::new(account("fake-usdc.near"), "mainnet".into());
+}
+
+#[test]
+#[should_panic(expected = "Attach the initial order storage allowance")]
+fn mainnet_order_cannot_start_below_its_storage_minimum() {
+    native_fixture_network(99_000_000_000_000_000_000_000, "mainnet");
 }
 fn native_callback(v: &mut Vault, sequence: u64, result: PromiseResult) -> CallbackDisposition {
     testing_env!(

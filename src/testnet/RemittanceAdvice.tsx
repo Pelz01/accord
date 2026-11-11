@@ -1,3 +1,4 @@
+import { settlementSymbol as currency } from './network';
 import { useState } from 'react';
 import { ArrowLeft, ArrowUpRight, Download, Printer } from 'lucide-react';
 import type { Deployment } from '../../shared/chain';
@@ -97,7 +98,7 @@ export function RemittanceAdvice({
           <div>
             <span>Amount paid</span>
             <strong>
-              {money(row.amount)} <small>aUSD</small>
+              {money(row.amount)} <small>{currency}</small>
             </strong>
           </div>
           <div className="advice-confirmation">
@@ -151,11 +152,11 @@ export function RemittanceAdvice({
             </div>
             <div>
               <dt>Unit price</dt>
-              <dd>{money(row.order.terms.unit_price)} aUSD</dd>
+              <dd>{money(row.order.terms.unit_price)} {currency}</dd>
             </div>
             <div className="advice-line-total">
               <dt>Paid</dt>
-              <dd>{money(row.amount)} aUSD</dd>
+              <dd>{money(row.amount)} {currency}</dd>
             </div>
           </dl>
         </section>
@@ -178,8 +179,8 @@ export function RemittanceAdvice({
                 {row.quantity} {row.order.terms.unit}
                 {row.quantity === '1' ? '' : 's'}
               </td>
-              <td>{money(row.order.terms.unit_price)} aUSD</td>
-              <td>{money(row.amount)} aUSD</td>
+              <td>{money(row.order.terms.unit_price)} {currency}</td>
+              <td>{money(row.amount)} {currency}</td>
             </tr>
           </tbody>
         </table>
@@ -197,7 +198,7 @@ export function RemittanceAdvice({
             <div>
               <dt>Token</dt>
               <dd>
-                {row.order.token} <span>(aUSD, 6 decimals)</span>
+                {row.order.token} <span>({currency}, 6 decimals)</span>
               </dd>
             </div>
             <div>

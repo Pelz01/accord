@@ -6,7 +6,7 @@ Manage purchase orders, confirm deliveries and pay suppliers in one place.
 
 Accord keeps buying teams and suppliers on the same page, from the first order to the final payment. AI prepares invoice details for review. Suppliers confirm them, buyers confirm delivery, and Accord handles eligible payments within the NEAR contract’s limits. A buyer can optionally appoint someone else to confirm deliveries.
 
-The hosted product is [accord-payments.vercel.app](https://accord-payments.vercel.app). It includes a public landing page and a wallet-gated procurement workspace. **The current chain deployment is NEAR testnet.** Wallet transactions, token transfers, contract callbacks, and the restricted operator have been exercised on testnet. Mainnet follows the remaining validation gates; it has not been deployed.
+The hosted product is [accord-payments.vercel.app](https://accord-payments.vercel.app). It includes a public landing page and a wallet-gated procurement workspace. **The hosted default now uses NEAR mainnet and native USDC**, with a controlled release under the owner's 3 NEAR cap. The deployed code and restricted worker are verified; the first live USDC order journey is being checked. The existing testnet service remains separate at /workspace?network=testnet. See [mainnet release status](MAINNET_RELEASE.md) and [deployment evidence](fixtures/mainnet-deployment-evidence.json).
 
 ## Run
 

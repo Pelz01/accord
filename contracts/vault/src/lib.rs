@@ -121,9 +121,16 @@ impl Vault {
     #[init]
     pub fn new(token: AccountId, network: String) -> Self {
         require!(
-            network == "testnet" || network == "sandbox",
-            "Test environments only"
+            network == "mainnet" || network == "testnet" || network == "sandbox",
+            "Unsupported network"
         );
+        if network == "mainnet" {
+            require!(
+                token.as_str()
+                    == "17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1",
+                "Mainnet requires native USDC"
+            );
+        }
         Self {
             token,
             network,
@@ -150,8 +157,8 @@ impl Vault {
         bounded(&terms.description, 160);
         bounded(&terms.unit, 32);
         require!(
-            env::attached_deposit() >= NearToken::from_near(1),
-            "Attach 1 NEAR for bounded order storage and calls"
+            env::attached_deposit().as_yoctonear() >= self.initial_storage_allowance(),
+            "Attach the initial order storage allowance"
         );
         require!(self.orders.get(&order_id).is_none(), "Order exists");
         let buyer = env::predecessor_account_id();

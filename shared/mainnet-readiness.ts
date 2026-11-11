@@ -16,12 +16,17 @@ export function nativeDisplay(value: bigint): string {
   return (value / YOCTO).toString() + (fraction ? '.' + fraction : '');
 }
 
-export function deploymentBudget(wasmBytes: number, storagePerByte: bigint, cap: bigint) {
+export function deploymentBudget(
+  wasmBytes: number,
+  storagePerByte: bigint,
+  cap: bigint,
+  orderDeposit = YOCTO,
+) {
   if (!Number.isSafeInteger(wasmBytes) || wasmBytes <= 0 || storagePerByte <= 0n || cap < 0n)
     throw new Error('Invalid deployment-budget inputs.');
   const codeStorage = BigInt(wasmBytes) * storagePerByte;
   // Existing contract policy; this deposit stays in the vault rather than becoming a gas fee.
-  const orderDeposit = YOCTO;
+  if (orderDeposit <= 0n) throw new Error('A positive measured order allowance is required.');
   const minimumRequired = codeStorage + orderDeposit;
   return { codeStorage, orderDeposit, minimumRequired, exceedsCap: minimumRequired > cap };
 }

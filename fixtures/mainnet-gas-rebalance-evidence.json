@@ -1,0 +1,12 @@
+{
+  "checkedAt": "2026-11-11T18:59:35.899Z",
+  "network": "mainnet",
+  "hash": "5pf6N3FbH8FYF6SFgiezuqhd47VcdzKqQjLKAAzSxmtw",
+  "from": "10f816f5fbf84d7c6cb0c5bd5e79e02be90260e3d58f85ed8317c215439280bf",
+  "to": "1ce366dc92817f9e8ac25e941c9a552591bb7d4662b8c965fe944f3d46abd151",
+  "amountYocto": "64000000000000000000000",
+  "vaultBackingYocto": "2570480000000000000000000",
+  "vaultBalanceAfterYocto": "2583129127030383800000000",
+  "retainedPlatformMarginYocto": "5000000000000000000000",
+  "reason": "Reallocate unused setup capital to cover Intear prepaid gas reservations; no customer order or settlement-token funds exist."
+}

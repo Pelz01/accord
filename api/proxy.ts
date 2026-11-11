@@ -11,8 +11,17 @@ function fail(response: ServerResponse, status: number, message: string) {
 export default async function proxy(request: Request, response: ServerResponse) {
   if (!['GET', 'POST'].includes(request.method ?? ''))
     return fail(response, 405, 'Method not allowed.');
-  const origin = process.env.ACCORD_API_URL;
-  const secret = process.env.ACCORD_PROXY_SECRET;
+  const defaultNetwork = process.env.ACCORD_NETWORK ?? 'testnet';
+  const requestedNetwork = request.headers['x-accord-network'] ?? defaultNetwork;
+  if (requestedNetwork !== 'testnet' && requestedNetwork !== 'mainnet')
+    return fail(response, 400, 'Unsupported network.');
+  const alternate = requestedNetwork !== defaultNetwork;
+  const origin = alternate ? process.env.ACCORD_TESTNET_API_URL : process.env.ACCORD_API_URL;
+  const secret = alternate
+    ? process.env.ACCORD_TESTNET_PROXY_SECRET
+    : process.env.ACCORD_PROXY_SECRET;
+  if (alternate && requestedNetwork !== 'testnet')
+    return fail(response, 503, 'Mainnet is not available yet.');
   if (!origin || !secret) return fail(response, 503, 'The workspace is temporarily unavailable.');
   let backend: URL;
   try {
@@ -31,6 +40,8 @@ export default async function proxy(request: Request, response: ServerResponse) 
   }
   const url = new URL(request.url ?? '/', 'https://accord.invalid');
   const path = url.searchParams.get('__accord_path') ?? '';
+  if (defaultNetwork === 'mainnet' && !request.headers['x-accord-network'] && path !== 'health')
+    return fail(response, 409, 'Reload Accord to select the transaction network.');
   if (
     !/^(health|chain\/(state|jobs|challenge|submit|session(?:\/challenge)?|orders\/[A-Za-z0-9_-]{1,64}\/(?:extract|invoices|documents(?:\/[a-f0-9-]{36})?)))$/.test(
       path,

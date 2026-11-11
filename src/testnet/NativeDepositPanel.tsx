@@ -84,7 +84,9 @@ export function NativeDepositPanel({
           <p>
             {recovery?.phase === 'Closed'
               ? `The order's records remain stored. The amount held includes a ${value.margin_percent}% storage buffer.`
-              : `The deposit reserves room for up to ${value.invoice_limit} invoices and ${value.payment_attempt_limit} payment attempts.`}
+              : value.incremental
+                ? `Records use this storage balance. Add to the deposit when needed, up to ${value.invoice_limit} invoices and ${value.payment_attempt_limit} payment attempts.`
+                : `The deposit reserves room for up to ${value.invoice_limit} invoices and ${value.payment_attempt_limit} payment attempts.`}
           </p>
           <p>
             Deposited {amount(d.deposited)} NEAR · Returned {amount(d.refunded)} NEAR

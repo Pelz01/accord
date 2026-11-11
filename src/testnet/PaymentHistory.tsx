@@ -1,3 +1,4 @@
+import { settlementSymbol as currency } from './network';
 import { useMemo, useState } from 'react';
 import { ArrowRight, ArrowUpRight, Check, CircleHelp, Clock3, Search, Wallet } from 'lucide-react';
 import { ordersForAccount, type ChainState, type ChainJob } from '../../shared/chain';
@@ -95,6 +96,7 @@ export function PaymentHistory({
       </div>
       <div className="metrics payment-metrics">
         <Metric
+                  symbol={currency}
           label="Paid"
           amount={totals.paid.toString()}
           caption="Confirmed order balances"
@@ -102,12 +104,14 @@ export function PaymentHistory({
           accent
         />
         <Metric
+                  symbol={currency}
           label="In progress"
           amount={totals.processing}
           caption="Reserved or awaiting dispatch"
           icon={<Clock3 size={16} />}
         />
         <Metric
+                  symbol={currency}
           label="Needs review"
           amount={totals.reviewHeld}
           caption="Included in the in-progress amount"
@@ -182,7 +186,7 @@ export function PaymentHistory({
                       </small>
                     </td>
                     <td className="payment-amount">
-                      {money(row.amount)} <small>aUSD</small>
+                      {money(row.amount)} <small>{currency}</small>
                     </td>
                     <td>
                       <Badge

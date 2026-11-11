@@ -8,7 +8,7 @@ const origin = process.env.ACCORD_FRONTEND_ORIGIN,
 if (!origin || !proxySecret)
   throw new Error('Production origin and proxy secret must be configured.');
 const ledger = new Ledger(process.env.ACCORD_DATA_PATH || '/data/accord.sqlite');
-const app = productionApp(ledger, { origin, proxySecret });
+const app = productionApp(ledger, { origin, proxySecret, worker: process.env.ACCORD_WORKER_ENABLED !== 'false' });
 await app.listen({ host: process.env.HOST || '127.0.0.1', port: Number(process.env.PORT || 3001) });
 console.log('Accord API is ready.');
 for (const signal of ['SIGINT', 'SIGTERM'] as const)

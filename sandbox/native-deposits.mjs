@@ -171,7 +171,7 @@ try {
   await create(b, vault, 'HISTORICAL', terms, (NEAR * 5n) / 4n);
   const historic = await vault.view('get_order', { order_id: 'HISTORICAL' });
   await vault.deploy(wasm('vault'));
-  assert.equal(await vault.view('get_version', {}), '2.4.0-native-deposits');
+  assert.equal(await vault.view('get_version', {}), '2.5.0-mainnet');
   assert.deepEqual(await vault.view('get_order', { order_id: 'HISTORICAL' }), historic);
   assert.equal((await credit(vault, 'HISTORICAL')).tracked, false);
   await call(b, vault, 'claim_native_excess', { order_id: 'HISTORICAL' }, approval, true);

@@ -1,0 +1,98 @@
+name: accord-mainnet
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.api
+    image: accord-mainnet-api:2.5.0
+    container_name: accord-mainnet-api
+    restart: unless-stopped
+    init: true
+    env_file: ../../secrets/api.env
+    environment:
+      HOST: 0.0.0.0
+      PORT: '3001'
+      ACCORD_DATA_PATH: /data/accord.sqlite
+      ACCORD_DEPLOYMENT_PATH: /config/deployment.json
+      ACCORD_OPERATOR_KEY_PATH: /run/secrets/operator-key.json
+      ACCORD_DOCUMENT_URL: http://documents:3002
+    networks:
+      - default
+      - documents
+    depends_on:
+      documents:
+        condition: service_healthy
+    ports:
+      - '127.0.0.1:8795:3001'
+    volumes:
+      - ../../data:/data
+      - ../../backups:/backups
+      - ../../config/deployment.json:/config/deployment.json:ro
+      - ../../secrets/operator-key.json:/run/secrets/operator-key.json:ro
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 128
+    mem_limit: 512m
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '3'
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://127.0.0.1:3001/api/health',{headers:{'x-accord-proxy-secret':process.env.ACCORD_PROXY_SECRET}}).then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    stop_grace_period: 60s
+  documents:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.documents
+    image: accord-documents:latest
+    container_name: accord-mainnet-documents
+    restart: unless-stopped
+    init: true
+    networks:
+      - documents
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 64
+    mem_limit: 512m
+    cpus: 1.0
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: '2'
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://127.0.0.1:3002/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+networks:
+  documents:
+    internal: true

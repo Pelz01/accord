@@ -1,0 +1,29 @@
+{
+  "checkedAt": "2026-11-11T07:16:04.685Z",
+  "network": "mainnet",
+  "vault": "10f816f5fbf84d7c6cb0c5bd5e79e02be90260e3d58f85ed8317c215439280bf",
+  "token": "17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1",
+  "operator": "eb9d09dab80a829383c6402fc3a6ef90f6035256b0845f130127b254e4cd250c",
+  "wasmSha256": "beb76c43bd50db4cc763b2595835da7611124fbb60c70c6d0330185eeaa43d83",
+  "config": {
+    "network": "mainnet",
+    "token": "17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1",
+    "initial_storage_allowance": "100000000000000000000000",
+    "incremental_storage": true
+  },
+  "codeHash": "DqUgbgpBzAVYXZJdudzFeLB1YrbjwRrqBjkqD4GYzkRG",
+  "storageUsage": 257048,
+  "operatorPermission": {
+    "FunctionCall": {
+      "allowance": "15000000000000000000000",
+      "method_names": [
+        "request_payment"
+      ],
+      "receiver_id": "10f816f5fbf84d7c6cb0c5bd5e79e02be90260e3d58f85ed8317c215439280bf"
+    }
+  },
+  "version": "2.5.0-mainnet",
+  "fundingAccount": "mainnett12.near",
+  "buyerBalanceYocto": "182708573040307399999997",
+  "status": "Contract deployed; restricted worker configured; order funding remains separate."
+}

@@ -1,3 +1,4 @@
+import { settlementSymbol as currency } from './network';
 import { useEffect, useMemo, useState } from 'react';
 import { FileText, Upload, Download, Check, ArrowUpRight } from 'lucide-react';
 import type { ChainOrder, Deployment } from '../../shared/chain';
@@ -144,7 +145,7 @@ export function InvoiceReview({
         reference: i.reference,
         lineId: i.line_id,
         quantity: Number(i.quantity),
-        token: 'aUSD',
+        token: currency,
         amountBaseUnits: i.amount,
       },
       documentHash: i.document_hash,
@@ -389,7 +390,7 @@ export function InvoiceReview({
                 </div>
                 <div>
                   <dt>Invoice amount</dt>
-                  <dd>{money(payload.amount)} aUSD</dd>
+                  <dd>{money(payload.amount)} {currency}</dd>
                 </div>
                 <div>
                   <dt>Fixed payout</dt>

@@ -46,7 +46,7 @@ test('hosted invoice extraction obtains a wallet session before sending invoice 
     attempts: [],
     deployment: {
       network: 'testnet',
-      rpcUrl: '',
+      rpcUrl: 'https://test.rpc.fastnear.com',
       vault: 'vault.testnet',
       token: 'token.testnet',
       operator: 'operator.testnet',

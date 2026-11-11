@@ -53,7 +53,7 @@ function stateFor(): ChainState {
     liveAiAvailable: true,
     deployment: {
       network: 'testnet',
-      rpcUrl: '',
+      rpcUrl: 'https://test.rpc.fastnear.com',
       vault: 'vault.testnet',
       token: order.token,
       operator: order.terms.operator,

@@ -7,6 +7,7 @@ import { z } from 'zod';
 import { accountSchema } from '../shared/schema.ts';
 import type { ChainOrder } from '../shared/chain.ts';
 import { DomainError } from './ledger.ts';
+import { networkRPC, type Network } from '../shared/network.ts';
 
 type Proof = { accountId: string; publicKey: string; signature: string };
 type Challenge = {
@@ -32,6 +33,7 @@ export class WalletSessions {
     private origin: string,
     private verify: Verifier = verifyProof,
     private clock = Date.now,
+    private binding: { network: Network; vault?: string } = { network: 'testnet' },
   ) {
     db.exec(`CREATE TABLE IF NOT EXISTS wallet_challenges (id TEXT PRIMARY KEY, payload TEXT NOT NULL, expires INTEGER NOT NULL);
       CREATE TABLE IF NOT EXISTS wallet_sessions (hash TEXT PRIMARY KEY, account TEXT NOT NULL, expires INTEGER NOT NULL);
@@ -52,7 +54,8 @@ export class WalletSessions {
       application: 'Accord',
       purpose: 'Authorize invoice processing',
       website: this.origin,
-      network: 'testnet',
+      network: this.binding.network,
+      ...(this.binding.vault ? { vault: this.binding.vault } : {}),
       accountId,
       challengeId: challenge.id,
       expires,
@@ -166,7 +169,7 @@ async function verifyProof(proof: Proof, challenge: Challenge) {
       recipient: challenge.recipient,
     },
     signature: Buffer.from(proof.signature, 'base64'),
-    provider: new FinalizedRpcProvider({ url: 'https://test.rpc.fastnear.com' }),
+    provider: new FinalizedRpcProvider({ url: networkRPC(JSON.parse(challenge.message).network) }),
   });
 }
 export type InvoiceAuthorizer = (

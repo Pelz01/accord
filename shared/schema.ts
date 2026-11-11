@@ -15,7 +15,7 @@ export const invoiceSchema = z.strictObject({
   reference: z.string().min(1).max(80),
   lineId: z.string().min(1).max(64),
   quantity: quantitySchema,
-  token: z.literal('aUSD'),
+  token: z.enum(['aUSD', 'USDC']),
   amountBaseUnits: integerString,
 });
 export type Invoice = z.infer<typeof invoiceSchema>;

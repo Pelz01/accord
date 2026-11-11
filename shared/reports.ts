@@ -1,3 +1,4 @@
+import { tokenSymbol } from './network';
 import type { ChainState, Deployment } from './chain';
 import type { OrderPosition } from './payables';
 import type { PaymentRow } from './payments';
@@ -79,7 +80,7 @@ export function orderCSV(
       deployment.network,
       deployment.vault,
       row.order.token,
-      'aUSD',
+      tokenSymbol(deployment.token),
       6,
       row.order.id,
       row.order.buyer,
@@ -150,7 +151,7 @@ export function paymentCSV(
       deployment.network,
       deployment.vault,
       row.order.token,
-      'aUSD',
+      tokenSymbol(deployment.token),
       6,
       row.id,
       row.order.id,
@@ -208,7 +209,7 @@ export function refundCSV(
         deployment.network,
         deployment.vault,
         row.order.token,
-        'aUSD',
+        tokenSymbol(deployment.token),
         6,
         row.order.id,
         refund.id,

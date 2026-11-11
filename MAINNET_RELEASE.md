@@ -7,12 +7,12 @@ Mainnet is required for the submission. Direct USDC settlement comes before Inte
 Run from the repository root after building the vault artifact:
 
 ```powershell
-npm run verify:mainnet:preflight -- mainnett12.near 2
+npm run verify:mainnet:preflight -- mainnett12.near 3 0.1
 ```
 
 The arguments are a public funding account and an explicit total NEAR ceiling. The check reads finalized mainnet RPC state, the Intents token list and `.data/wasm/vault.wasm`. It writes `.data/mainnet-preflight.json`. It never loads a key, creates a quote or sends a transaction. Exit code 2 means the measured lower bound exceeds the supplied ceiling; exit code 0 does **not** authorize deployment or spending.
 
-The current authorized ceiling is **2 NEAR**, irrespective of the funding account's balance. An explicit USDC funding amount is still required before any order funding or swap.
+The owner authorized **3 NEAR total**, including deployment, account setup, gas and acquiring a tiny amount of USDC. The controlled plan allocates 2.65 NEAR to the vault, 0.02 each to supplier and payment-service gas, 0.1 to the NEAR/USDC swap, 0.1 as the initial order allowance and 0.11 as buyer setup/gas headroom. No additional funding is authorized.
 
 ### Settlement asset verified
 
@@ -21,7 +21,7 @@ The current authorized ceiling is **2 NEAR**, irrespective of the funding accoun
 - Observed token code hash: `DVJx7F3dHEHJYwpYPwXHu8K9Uo7h4kXFcALucY5oNX8q`. The preflight fails if this changes; review an issuer upgrade instead of silently updating the pin.
 - The live [1Click token list](https://1click.chaindefuser.com/v0/tokens) contains the exact NEAR contract, six decimals and asset ID `nep141:17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1`. Listing does not prove route liquidity, minimum size or an executable quote.
 
-### Budget gate
+### Historical budget gate
 
 Measured against the existing tested vault, **232,955 bytes**, SHA-256 `2eb011ff5989660c2ce6939ad8bd616e77ca9d7df3fd10d87e0aa9980ac74f04`:
 
@@ -35,7 +35,7 @@ This exceeds the authorized ceiling. It excludes account/key state, gas, token r
 
 The existing artifact is testnet-only. Any mainnet-compatible rebuild or optimization needs a new size measurement, hash, security review and regression checks. Do not strip recovery or authorization features, replace the allocator with an unmaintained dependency, or treat a larger wallet balance as a larger spending authorization.
 
-### Investigation under the two-NEAR ceiling
+### Historical investigation under the earlier two-NEAR ceiling
 
 The owner confirmed that the total ceiling remains **2 NEAR**. Five alternatives were measured in ignored, isolated files; the original tested artifact and deployed release were preserved. Measurements and hashes are in [the cost-study evidence](fixtures/mainnet-cost-study.json).
 
@@ -66,8 +66,14 @@ The retained order deposit covers future persistent invoice, payment and recover
 
 ## Funds-availability limits
 
-The current [2.4.0 native-deposit release](NATIVE_DEPOSITS.md) refunds eligible new-order allowance while retaining record backing and a 25% buffer. Historical deposits remain untracked. Its final 254,662-byte code requires 2.54662 NEAR of code backing; with the unchanged 1 NEAR upfront order allowance, the lower bound is 3.54662 NEAR before other setup. The earlier size table describes the previous artifact. The authorized ceiling remains 2 NEAR, so mainnet is still not deployed.
+The 2.5.0 mainnet candidate is **256,674 bytes**, SHA-256 `beb76c43bd50db4cc763b2595835da7611124fbb60c70c6d0330185eeaa43d83`. Code backing is **2.56674 NEAR** at the verified protocol rate. Mainnet orders start with **0.1 NEAR**, then enforce explicit top-ups as their actual retained records grow. The 25% reserve, 32-invoice/64-attempt limits, fixed-recipient rules, payment reservations and refund protection remain enforced. Testnet orders retain their existing 1 NEAR capacity policy. Neither allowance is a gas fee.
 
-The [measured storage and recovery audit](STORAGE_AND_RECOVERY.md) records actual before/after bytes, ordinary transaction charges, full-capacity storage, retained excess deposits, disposable native-balance recovery and public mainnet account checks. It confirms that native customer deposit refunds and order cleanup are missing; successful disposable teardown does not implement production shutdown. The current deposit and budget gates remain unchanged.
+On the disposable sandbox, the identical normal candidate was initialized with the mainnet domain and pinned token address. A synthetic NEP-141 fixture at that address tested 0.01-token partial settlement, replay rejection, unused-token refunds, native excess refunds, and storage exhaustion followed by an owner top-up. This does not represent execution of Circle's production code. Mainnet token metadata and code are separately pinned and checked before deployment.
+
+The owner approved the Intear/Rhea acquisition of **0.364520 native USDC** using 0.1 NEAR plus wallet gas/storage, then funded the three controlled setup accounts with **2.69 NEAR** in total. The mainnet service is isolated at **/home/ubuntu/accord/mainnet**, on its own database, configuration, proxy credential, document service and operator key. Only a vault-scoped request_payment key with finite allowance may run on the server. Master keys stay in ignored local storage; they never enter Vercel or the public repository.
+
+The tested contract is now deployed: [deployment receipt](https://nearblocks.io/txns/AhwibHUiHGQuQecLsZQZc9nS68SbyfUPhwET3zyS4TwQ). Its worker key is limited to request_payment with 0.015 NEAR allowance. The hosted default is mainnet; /workspace?network=testnet selects the separate existing testnet service. Direct mainnet order settlement and its browser evidence are still pending. USDC acquisition used Intear's Rhea route; it is **not** evidence that Accord's NEAR Intents funding integration is implemented. Order cleanup and safe production shutdown also remain separate from unused allowance refunds.
 
 The existing [internal security review](SECURITY_REVIEW.md) remains applicable. Unused token withdrawal requires mutual closure after accepted goods are paid and pending transfers are zero. Either party can block closure. Unknown transfers retain their reservations; a timeout does not authorize replacement spending. The native order deposit is not part of the token refund. Use controlled amounts that may remain locked. Independent review and production operations remain outstanding before meaningful customer value.
+
+The first browser creation request was rejected by Intear before broadcast because its default 150 TGas reservation exceeded the buyer's remaining balance. Mainnet wallet calls now use method-specific allowances verified by the mainnet-domain sandbox: 50 TGas creation, 30 registration, 70 token funding, 25 simple approvals, 80 closure and 40 native claims. No contract minimum was lowered. While the vault had no orders or token obligations, 0.064 NEAR of unused setup capital was reallocated to the controlled supplier for its prepaid wallet gas. Code/state backing and a further 0.005 NEAR platform margin were protected. No extra funding was added.

@@ -1,3 +1,4 @@
+import { settlementSymbol as currency } from './network';
 import { useState } from 'react';
 import type { ChainAttempt, ChainOrder, ChainRecovery } from '../../shared/chain';
 import { money } from '../../shared/schema';
@@ -77,7 +78,7 @@ export function RecoveryPanel({
           <span>{recovery.phase === 'Closed' ? 'Returned to buyer' : 'Unused budget'}</span>
           <strong>
             {money(recovery.phase === 'Closed' ? recovery.refunded : refundable)}{' '}
-            <small>aUSD</small>
+            <small>{currency}</small>
           </strong>
         </div>
         <div>
@@ -100,7 +101,7 @@ export function RecoveryPanel({
               <span>{expired ? 'Proposal expired' : 'Closure proposed'}</span>
               <strong>{proposal.proposed_by}</strong>
               <small>
-                {money(proposal.refund_amount)} aUSD to {order.buyer}
+                {money(proposal.refund_amount)} {currency} to {order.buyer}
               </small>
             </div>
           )}
@@ -221,7 +222,7 @@ export function RecoveryPanel({
           <div>
             <strong>Payment awaiting confirmation</strong>
             <small>
-              {money(attempt.amount)} aUSD · {attempt.request_id}
+              {money(attempt.amount)} {currency} · {attempt.request_id}
             </small>
           </div>
           <button
@@ -257,7 +258,7 @@ export function RecoveryPanel({
           <div className="refund-review">
             <span>{review.acknowledgment ? 'Receipt to confirm' : 'Buyer refund'}</span>
             <strong>
-              {money(review.amount)} <small>aUSD</small>
+              {money(review.amount)} <small>{currency}</small>
             </strong>
             <span>{review.recipient}</span>
           </div>

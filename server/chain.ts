@@ -24,6 +24,12 @@ import { automaticPaymentJob } from './automatic-payments.ts';
 import { FinalizedRpcProvider } from './rpc.ts';
 import { assertOperatorPolicy } from './operator-policy.ts';
 import {
+  assertDeploymentNetwork,
+  networkRPC,
+  tokenSymbol,
+  type Network,
+} from '../shared/network.ts';
+import {
   HoldPaymentError,
   paymentArguments,
   publicPaymentJob,
@@ -44,20 +50,26 @@ const requestSchema = z.strictObject({
   auditHash: z.string().regex(/^[a-f0-9]{64}$/),
   invoice: invoicePayloadSchema.optional(),
 });
-const provider = new FinalizedRpcProvider({ url: 'https://test.rpc.fastnear.com' });
+export const runtimeNetwork: Network =
+  process.env.ACCORD_NETWORK === 'mainnet' ? 'mainnet' : 'testnet';
+if (process.env.ACCORD_NETWORK && !['mainnet', 'testnet'].includes(process.env.ACCORD_NETWORK))
+  throw new Error('Invalid server network.');
+const provider = new FinalizedRpcProvider({ url: networkRPC(runtimeNetwork) });
 const displayReads = new RpcReadCache();
-const recipient = 'Accord testnet operator';
+const recipient = `Accord ${runtimeNetwork} operator`;
 export async function deployment(): Promise<Deployment | null> {
   try {
     const d = JSON.parse(
       await readFile(process.env.ACCORD_DEPLOYMENT_PATH || '.data/deployment.json', 'utf8'),
     ) as Deployment;
+    if (!accountSchema.safeParse(d.vault).success || !accountSchema.safeParse(d.token).success)
+      throw new Error('Invalid deployment.');
+    assertDeploymentNetwork(d, runtimeNetwork);
     if (
-      d.network !== 'testnet' ||
-      !accountSchema.safeParse(d.vault).success ||
-      !accountSchema.safeParse(d.token).success
+      runtimeNetwork === 'mainnet' &&
+      (!process.env.ACCORD_VAULT || d.vault !== process.env.ACCORD_VAULT)
     )
-      throw new Error('Invalid testnet deployment.');
+      throw new Error('Mainnet vault does not match the isolated service.');
     return d;
   } catch (e) {
     if ((e as NodeJS.ErrnoException).code === 'ENOENT') return null;
@@ -77,7 +89,7 @@ export function asPreviewOrder(o: ChainOrder): Order {
     ordered: Number(o.terms.ordered),
     unitPrice: o.terms.unit_price,
     lineId: o.terms.line_id,
-    token: 'aUSD',
+    token: tokenSymbol(o.token),
     termsHash: o.terms_hash,
     acceptedTerms: o.accepted_terms,
     funded: o.funded,
@@ -124,6 +136,21 @@ async function operatorKey(d: Deployment) {
   });
   try {
     assertOperatorPolicy(d, onchain.permission, target.code_hash);
+    if (d.network === 'mainnet') {
+      const config = await view<{
+        network: string;
+        token: string;
+        initial_storage_allowance: string;
+        incremental_storage: boolean;
+      }>(d, 'get_config', {});
+      if (
+        config.network !== 'mainnet' ||
+        config.token !== d.token ||
+        config.initial_storage_allowance !== '100000000000000000000000' ||
+        !config.incremental_storage
+      )
+        throw new Error('The mainnet contract configuration does not match the reviewed release.');
+    }
   } catch (error) {
     throw new DomainError((error as Error).message, 503);
   }
@@ -357,7 +384,7 @@ export async function registerChain(
     ledger.db.prepare('DELETE FROM chain_challenges WHERE expires<?').run(Date.now());
     const message = JSON.stringify({
       application: 'Accord',
-      network: 'testnet',
+      network: d.network,
       vault: d.vault,
       requestId: id,
       ...body,

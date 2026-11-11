@@ -1,0 +1,182 @@
+{
+  "at": "2026-11-11T18:57:59.815Z",
+  "environment": "disposable-near-sandbox",
+  "networkDomain": "mainnet",
+  "tokenFixture": "Synthetic NEP-141 fixture installed only inside the sandbox at the pinned USDC address; not Circle production code.",
+  "wasmSha256": "beb76c43bd50db4cc763b2595835da7611124fbb60c70c6d0330185eeaa43d83",
+  "checks": [
+    {
+      "name": "Pinned mainnet domain settles a 0.01 six-decimal payment at fixed price and recipient; replay cannot pay twice.",
+      "status": "PASS"
+    },
+    {
+      "name": "A mainnet-domain 0.1 NEAR starting reserve accepts an owner top-up and returns only genuine open-order excess.",
+      "status": "PASS"
+    },
+    {
+      "name": "Mutual closure returns the unused 0.01 token amount separately from native allowance; retained records stay backed.",
+      "status": "PASS"
+    },
+    {
+      "name": "Record growth reverts when its own small budget is exhausted; an explicit owner top-up permits it without touching another order.",
+      "status": "PASS"
+    }
+  ],
+  "transactions": [
+    {
+      "method": "new",
+      "hash": "21vXp2QDEU1ydCSWXSLwNGWMCrtSR8FCNogL2WiehSbe",
+      "succeeded": true
+    },
+    {
+      "method": "new",
+      "hash": "CXxZuDLjVJEFW2b81wFwsb7Ntr8zsqoryN7pfzQ1GsDm",
+      "succeeded": true
+    },
+    {
+      "method": "storage_deposit",
+      "hash": "85Unn3naxzVC4Bovf4grCQ1hp3t3qyZtdJDsChdBQDzL",
+      "succeeded": true
+    },
+    {
+      "method": "storage_deposit",
+      "hash": "AB6MrJxcnHdTPyi5yVHBN3SgQnGsYptH9sKYUX3K7R9A",
+      "succeeded": true
+    },
+    {
+      "method": "create_automatic_order",
+      "hash": "4ma4Hdx4qSA2PfSriaaZ1N2qwAGV6JDByCG2btr8H64f",
+      "succeeded": true
+    },
+    {
+      "method": "accept_order",
+      "hash": "DL7GY5iEgKR8FpkG8HvD6SQMwmetytJHraMp678oVpG4",
+      "succeeded": true
+    },
+    {
+      "method": "ft_transfer_call",
+      "hash": "5VqR4L586kfB6AFsBxHsHgisoS2dps32wwiVydpGgqoS",
+      "succeeded": true
+    },
+    {
+      "method": "confirm_delivery",
+      "hash": "GKyAXseCWNgpWGF7hDhm1ANMuFUsH5B37zp52jc5jkhD",
+      "succeeded": true
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "2SbTeGWDAbo4LujEgy9wxWQkYFydtR68oPyUNguM94fB",
+      "succeeded": true
+    },
+    {
+      "method": "request_payment",
+      "hash": "7YtWUoXMurX9rNvQQdtibyG2DqivVDbVWvEHiHZJbTDe",
+      "succeeded": true
+    },
+    {
+      "method": "request_payment",
+      "hash": "BKKJS3ifMREneFYCrABcWDcJpUqbsB91AyaeZLunyF9n",
+      "succeeded": false
+    },
+    {
+      "method": "top_up_order_storage",
+      "hash": "FTffQ6o32h9Q7GRwDKUiyaEMgo3G5DjcxYnzmeV53Kop",
+      "succeeded": true
+    },
+    {
+      "method": "claim_native_excess",
+      "hash": "EYK6AysRiZz2Y8V8cuwEUenkd7v3UW9aSpDKyAfHDbv2",
+      "succeeded": true
+    },
+    {
+      "method": "propose_close",
+      "hash": "5ibYxeF7ZvwsG1CeG3PmJwYkKUs7afrAuZ8dDtNByFi9",
+      "succeeded": true
+    },
+    {
+      "method": "accept_close",
+      "hash": "FdkanzqnHDN1QUeTQns1nqHw5y8KmyKj5A8cmWMGFn5y",
+      "succeeded": true
+    },
+    {
+      "method": "claim_native_excess",
+      "hash": "3gdU1ULsT4fLSFniYmPBaDKv4Ets7bz8AGzJKQxhuVWL",
+      "succeeded": true
+    },
+    {
+      "method": "create_automatic_order",
+      "hash": "5wvueB6hQk6NfevKt3YQra5ipuFkYdAEto5DQdYvxcV8",
+      "succeeded": true
+    },
+    {
+      "method": "accept_order",
+      "hash": "7BzGgBPweA6wjQ582C8wT5YDen1UHxAWmdXiAr26Mm81",
+      "succeeded": true
+    },
+    {
+      "method": "ft_transfer_call",
+      "hash": "EMbSSeTQVGD2tG3gdraspX5yM8vDF1XP6jZ88mQLhyWj",
+      "succeeded": true
+    },
+    {
+      "method": "top_up_order_storage",
+      "hash": "3hvdfVuvEPGGCtGGnVwGJsAHx4gYSGux1ULjZEDR7aGo",
+      "succeeded": true
+    },
+    {
+      "method": "confirm_invoice",
+      "hash": "EzSCpkTQ1Rcx3cBpTe55FuXr4Hdvfz3DCTo1BBGEZpGy",
+      "succeeded": true
+    }
+  ],
+  "completed": true,
+  "final": {
+    "order": {
+      "id": "MAINNET-DOMAIN",
+      "buyer": "buyer.test.near",
+      "token": "17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1",
+      "terms": {
+        "supplier": "supplier.test.near",
+        "receiver": "buyer.test.near",
+        "operator": "operator.test.near",
+        "payout": "supplier.test.near",
+        "line_id": "cartons",
+        "description": "Controlled purchasing check",
+        "unit": "carton",
+        "ordered": "2",
+        "unit_price": "10000",
+        "expires_at": "18446744073709551615"
+      },
+      "terms_hash": "525ac4c194736fa9327881b03c129b62fc7db81bb20772ee1f385947b3024453",
+      "accepted_terms": true,
+      "funded": "20000",
+      "accepted": "1",
+      "paid": "1",
+      "pending": "0",
+      "sequence": "1",
+      "attempts": 1
+    },
+    "credit": {
+      "tracked": true,
+      "deposit": {
+        "owner": "buyer.test.near",
+        "deposited": "125000000000000000000000",
+        "call_deposits_spent": "2",
+        "refunded": "97712499999999999999998",
+        "pending": "0",
+        "storage_bytes": "2183",
+        "claim_sequence": "2",
+        "claim_status": "Settled"
+      },
+      "storage_backing": "21830000000000000000000",
+      "retained_required": "27287500000000000000000",
+      "claimable": "0",
+      "margin_percent": 25,
+      "invoice_limit": 32,
+      "payment_attempt_limit": 64,
+      "initial_allowance": "100000000000000000000000",
+      "incremental": true
+    },
+    "claimAfterClosure": "72712499999999999999998"
+  }
+}

@@ -1,5 +1,7 @@
 # Customer storage deposits
 
+This page records the 2.4.0 testnet release and its measurements. The newer controlled mainnet release uses an incremental 0.1 NEAR starting allowance; see [mainnet status](MAINNET_RELEASE.md). Existing testnet behavior is preserved.
+
 Release **2.4.0-native-deposits** adds native NEAR accounting and customer refunds for newly created orders. Supplier-payment tokens remain separate. The existing full-capacity creation allowance remains **1 NEAR**; it was not replaced with the measured small-order amount.
 
 ## Customer behavior

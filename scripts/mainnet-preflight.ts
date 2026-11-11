@@ -14,6 +14,7 @@ import {
 // Read-only: no signer, account key, quote/deposit creation or transaction submission.
 const account = accountSchema.parse(process.argv[2]);
 const cap = nativeAmount(process.argv[3] ?? '0');
+const initialOrderAllowance = nativeAmount(process.argv[4] ?? '1');
 assert(cap > 0n, 'Supply an explicit positive NEAR budget.');
 const provider = new FinalizedRpcProvider({ url: 'https://rpc.fastnear.com' });
 const wasm = await readFile('.data/wasm/vault.wasm');
@@ -46,6 +47,7 @@ const budget = deploymentBudget(
   wasm.length,
   BigInt(runtime.runtime_config.storage_amount_per_byte),
   cap,
+  initialOrderAllowance,
 );
 const report = {
   checkedAt: new Date().toISOString(),

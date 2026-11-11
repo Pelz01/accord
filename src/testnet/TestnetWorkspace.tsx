@@ -43,8 +43,11 @@ import { paymentRows } from '../../shared/payments';
 import { OrderCards } from './OrderCards';
 import { WalletMenu } from './WalletMenu';
 import './workspace-polish.css';
+import { chainFetch, selectedNetwork, explorerBase, settlementSymbol as currency } from './network';
+import { assertDeploymentNetwork, orderAllowance, tokenRegistration } from '../../shared/network';
+import { nativeDisplay } from '../../shared/mainnet-readiness';
 
-const explorer = (hash: string) => `https://testnet.nearblocks.io/txns/${hash}`;
+const explorer = (hash: string) => `${explorerBase}/txns/${hash}`;
 type WorkspaceView = 'home' | 'overview' | 'supplier' | 'orders' | 'payments';
 function route() {
   const params = new URLSearchParams(window.location.search);
@@ -111,17 +114,18 @@ export function TestnetWorkspace() {
   }, []);
   const refresh = useCallback(async () => {
     if (!account) return;
-    const r = await fetch(
+    const r = await chainFetch(
       '/api/chain/state' + (account ? '?account=' + encodeURIComponent(account) : ''),
     );
     const body = await r.json();
-    if (!r.ok) throw new Error(body.error ?? 'Testnet state is unavailable.');
+    if (!r.ok) throw new Error(body.error ?? 'Order state is unavailable.');
+    if (body.deployment) assertDeploymentNetwork(body.deployment, selectedNetwork);
     setState(body);
     setRefreshRequired(false);
     setRefreshNotice('');
     // Job-list availability must not turn a successful chain read into a failure.
     try {
-      const j = await fetch('/api/chain/jobs');
+      const j = await chainFetch('/api/chain/jobs');
       if (j.ok) setJobs((await j.json()).jobs);
     } catch {
       // The next background refresh will retry this supplementary read.
@@ -207,7 +211,7 @@ export function TestnetWorkspace() {
         message: challenge.message,
         recipient: challenge.recipient,
         nonce: Uint8Array.from(atob(challenge.nonce), (c) => c.charCodeAt(0)),
-        network: 'testnet',
+        network: selectedNetwork,
         signerId: account!,
       });
     } catch (e) {
@@ -239,7 +243,7 @@ export function TestnetWorkspace() {
     }
   }
   async function post(path: string, body: unknown, headers: Record<string, string> = {}) {
-    const r = await fetch(`/api/chain${path}`, {
+    const r = await chainFetch(`/api/chain${path}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...headers },
       body: JSON.stringify(body),
@@ -263,7 +267,7 @@ export function TestnetWorkspace() {
       }
       headers.Authorization = 'Bearer ' + session.current!.token;
     }
-    const response = await fetch('/api/chain' + path, {
+    const response = await chainFetch('/api/chain' + path, {
       method: body === undefined ? 'GET' : 'POST',
       headers: {
         ...headers,
@@ -279,7 +283,7 @@ export function TestnetWorkspace() {
     return result;
   }
   async function call(method: string, args: Record<string, unknown>, deposit = '0') {
-    if (!d) throw new Error('Testnet deployment is not configured.');
+    if (!d) throw new Error('Deployment is not configured.');
     const orderId =
       typeof args.order_id === 'string'
         ? args.order_id
@@ -323,7 +327,7 @@ export function TestnetWorkspace() {
           expires_at: (BigInt(Date.now() + 7 * 86400000) * 1_000_000n).toString(),
         },
       },
-      '1000000000000000000000000',
+      orderAllowance(d.network),
     );
     navigate('orders', id);
   }
@@ -335,7 +339,7 @@ export function TestnetWorkspace() {
           d.token,
           'storage_deposit',
           { account_id: id, registration_only: true },
-          '100000000000000000000000',
+          tokenRegistration(d.network),
         ),
       );
     setTransaction(
@@ -433,7 +437,7 @@ export function TestnetWorkspace() {
         </main>
         <footer className="wallet-gate-footer">
           <span>Accord</span>
-          <span>{d?.network === 'mainnet' ? 'NEAR Mainnet' : 'NEAR Testnet'}</span>
+          <span>NEAR {selectedNetwork}</span>
           <a href="/#safeguards">
             Security & safeguards
             <ArrowUpRight size={12} />
@@ -495,11 +499,11 @@ export function TestnetWorkspace() {
           <div className="workspace-environment">
             <span>
               <span className="connection-dot" />
-              NEAR {d?.network === 'mainnet' ? 'mainnet' : 'testnet'}
+              NEAR {selectedNetwork}
             </span>
             {d && (
               <a
-                href={`https://testnet.nearblocks.io/address/${d.vault}`}
+                href={`${explorerBase}/address/${d.vault}`}
                 target="_blank"
                 rel="noreferrer"
                 aria-label="View payment contract"
@@ -566,7 +570,7 @@ export function TestnetWorkspace() {
           ) : !state.configured || !d ? (
             <div className="empty-state">
               <Wallet size={32} />
-              <h2>Testnet deployment is not configured.</h2>
+              <h2>Deployment is not configured.</h2>
               <p>The workspace is temporarily unavailable. Please try again shortly.</p>
               <a className="button secondary" href="/workspace">
                 Return home
@@ -608,7 +612,9 @@ export function TestnetWorkspace() {
               </button>
               <div className="page-heading">
                 <div>
-                  <div className="eyebrow">{order.id} / NEAR TESTNET</div>
+                  <div className="eyebrow">
+                    {order.id} / NEAR {selectedNetwork.toUpperCase()}
+                  </div>
                   <h1>{order.terms.description}</h1>
                   <p>{order.terms.supplier}</p>
                 </div>
@@ -641,7 +647,7 @@ export function TestnetWorkspace() {
                             <td>
                               <strong>{order.terms.description}</strong>
                               <small className="block muted">
-                                {money(order.terms.unit_price)} aUSD / {order.terms.unit}
+                                {money(order.terms.unit_price)} {currency} / {order.terms.unit}
                               </small>
                             </td>
                             <td>{order.terms.ordered}</td>
@@ -682,7 +688,7 @@ export function TestnetWorkspace() {
                     <p>
                       Eligible value:{' '}
                       {money((chainAvailable(order) * BigInt(order.terms.unit_price)).toString())}{' '}
-                      aUSD. The onchain contract fixes the price and recipient.
+                      {currency}. The onchain contract fixes the price and recipient.
                     </p>
                   </section>
                   <section className="ledger-section">
@@ -708,7 +714,9 @@ export function TestnetWorkspace() {
                                 <tr key={a.request_id}>
                                   <td>{a.request_id.slice(0, 16)}</td>
                                   <td>{a.quantity}</td>
-                                  <td>{money(a.amount)} aUSD</td>
+                                  <td>
+                                    {money(a.amount)} {currency}
+                                  </td>
                                   <td>
                                     <Badge
                                       tone={
@@ -906,8 +914,11 @@ export function TestnetWorkspace() {
                   <div className="limit-note">
                     <LockKeyhole size={15} />
                     <p>
-                      Testnet only. Invoice authenticity is not verified. Deployment keys are
-                      retained during testing.
+                      {selectedNetwork === 'testnet'
+                        ? 'Testnet only. '
+                        : 'Controlled mainnet release. '}
+                      Invoice authenticity is not verified. Deployment keys are retained for this
+                      release.
                       {!recovery && ' Closure and refunds are unavailable for this deployment.'}
                     </p>
                   </div>
@@ -933,18 +944,21 @@ export function TestnetWorkspace() {
               </div>
               <div className="metrics">
                 <Metric
+                  symbol={currency}
                   label="Still committed"
                   amount={totals.committed}
                   caption="Funded less paid and refunded"
                   icon={<Wallet size={16} />}
                 />
                 <Metric
+                  symbol={currency}
                   label="Paid to suppliers"
                   amount={totals.paid}
                   caption="Finalized in the contract"
                   icon={<ArrowUpRight size={16} />}
                 />
                 <Metric
+                  symbol={currency}
                   label={
                     d?.features?.includes('automatic-v1') ? 'Ready for payment' : 'Ready to review'
                   }
@@ -954,6 +968,7 @@ export function TestnetWorkspace() {
                   icon={<ShieldCheck size={16} />}
                 />
                 <Metric
+                  symbol={currency}
                   label="In progress"
                   amount={totals.processing}
                   caption="Reserved or awaiting dispatch"
@@ -997,7 +1012,7 @@ export function TestnetWorkspace() {
                             {money(
                               (BigInt(o.terms.ordered) * BigInt(o.terms.unit_price)).toString(),
                             )}{' '}
-                            aUSD
+                            {currency}
                           </td>
                           <td>
                             {o.accepted} / {o.terms.ordered}
@@ -1032,11 +1047,7 @@ export function TestnetWorkspace() {
               <div className="workspace-footer">
                 <ShieldCheck size={18} />
                 <p>Payments follow your agreed terms and confirmed deliveries.</p>
-                <a
-                  href={`https://testnet.nearblocks.io/address/${d?.vault}`}
-                  target="_blank"
-                  rel="noreferrer"
-                >
+                <a href={`${explorerBase}/address/${d?.vault}`} target="_blank" rel="noreferrer">
                   Inspect contract
                   <ArrowUpRight size={14} />
                 </a>
@@ -1045,7 +1056,7 @@ export function TestnetWorkspace() {
           )}
         </main>
         <footer className="app-footer">
-          <span>Accord / NEAR testnet</span>
+          <span>Accord / NEAR {selectedNetwork}</span>
           <span>Keep business moving.</span>
         </footer>
       </div>
@@ -1084,6 +1095,8 @@ export function TestnetWorkspace() {
               role="buyer"
               buyerAccount={account ?? ''}
               testnet
+              network={selectedNetwork}
+              tokenSymbol={currency}
               operatorAccount={d?.operator}
               recoveryEnabled={d?.features?.includes('recovery-v1')}
               automaticPayments={d?.features?.includes('automatic-v1')}
@@ -1107,7 +1120,9 @@ export function TestnetWorkspace() {
                   </div>
                   <div>
                     <dt>Unit price</dt>
-                    <dd>{money(order.terms.unit_price)} aUSD</dd>
+                    <dd>
+                      {money(order.terms.unit_price)} {currency}
+                    </dd>
                   </div>
                   <div>
                     <dt>Fixed payout</dt>
@@ -1131,14 +1146,16 @@ export function TestnetWorkspace() {
           ) : order && modal === 'fund' ? (
             <>
               <p className="modal-description">
-                Register the vault and fixed payout with the test token, then transfer exactly{' '}
+                Register the vault and fixed payout with {currency}, then transfer exactly{' '}
                 {money((BigInt(order.terms.ordered) * BigInt(order.terms.unit_price)).toString())}{' '}
-                aUSD. Wallet approval is required for each transaction.
+                {currency}. Wallet approval is required for each transaction.
               </p>
               <div className="alert warning">
                 <LockKeyhole size={16} />
-                Registration attaches up to 0.1 testnet NEAR per account; excess is returned by the
-                token.{' '}
+                Registration attaches up to{' '}
+                {nativeDisplay(BigInt(tokenRegistration(selectedNetwork)))}{' '}
+                {selectedNetwork === 'testnet' ? 'testnet ' : ''}NEAR per account; excess is
+                returned by the token.{' '}
                 {recovery
                   ? 'Unused tokens require buyer and supplier approval to refund.'
                   : 'Unspent order tokens cannot be withdrawn.'}

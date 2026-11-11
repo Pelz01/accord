@@ -1,11 +1,13 @@
 import { NearConnector } from '@hot-labs/near-connect';
 import type { ConnectorAction } from '@hot-labs/near-connect';
+import { selectedNetwork } from './network';
+import { walletGas } from '../../shared/network';
 
 let connector: NearConnector | undefined;
 export function walletConnector() {
   return (connector ??= new NearConnector({
-    network: 'testnet',
-    features: { testnet: true, signMessage: true },
+    network: selectedNetwork,
+    features: { ...(selectedNetwork === 'testnet' ? { testnet: true } : {}), signMessage: true },
     autoConnect: false,
     footerBranding: null,
   }));
@@ -22,17 +24,17 @@ export async function sendCall(
   methodName: string,
   args: Record<string, unknown>,
   deposit = '0',
-  gas = '150000000000000',
+  gas = walletGas(selectedNetwork, methodName),
 ) {
   const wallet = await walletConnector().wallet();
-  const signer = (await wallet.getAccounts({ network: 'testnet' }))[0]?.accountId;
-  if (!signer) throw new Error('Connect a testnet wallet first.');
+  const signer = (await wallet.getAccounts({ network: selectedNetwork }))[0]?.accountId;
+  if (!signer) throw new Error(`Connect a ${selectedNetwork} wallet first.`);
   const action: ConnectorAction = {
     type: 'FunctionCall',
     params: { methodName, args, gas, deposit },
   };
   const result = await wallet.signAndSendTransaction({
-    network: 'testnet',
+    network: selectedNetwork,
     signerId: signer,
     receiverId: contract,
     actions: [action],

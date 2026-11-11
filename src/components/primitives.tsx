@@ -22,12 +22,14 @@ export function Metric({
   caption,
   icon,
   accent = false,
+  symbol = 'aUSD',
 }: {
   label: string;
   amount: string;
   caption: string;
   icon: ReactNode;
   accent?: boolean;
+  symbol?: string;
 }) {
   return (
     <div className={`metric ${accent ? 'accent' : ''}`}>
@@ -37,7 +39,7 @@ export function Metric({
       </div>
       <div className="metric-value">
         {money(amount)}
-        <span>aUSD</span>
+        <span>{symbol}</span>
       </div>
       <p>{caption}</p>
     </div>

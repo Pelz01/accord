@@ -121,7 +121,7 @@ try {
   });
   const before = await snapshot();
   await vault.deploy(wasm('vault'));
-  assert.equal(await vault.view('get_version', {}), '2.4.0-native-deposits');
+  assert.equal(await vault.view('get_version', {}), '2.5.0-mainnet');
   assert.deepEqual(await snapshot(), before);
   pass(
     'upgrade preserves automatic order, settled attempt, invoice capacity, recovery and token balance',

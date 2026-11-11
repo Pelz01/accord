@@ -1,7 +1,14 @@
 import { test, expect, type Page } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
-import type { ChainOrder, ChainState, ChainJob, ChainAttempt, ChainNativeDeposit } from '../../shared/chain';
+import type {
+  ChainOrder,
+  ChainState,
+  ChainJob,
+  ChainAttempt,
+  ChainNativeDeposit,
+} from '../../shared/chain';
 import { invoiceCommitment, type InvoicePayload } from '../../shared/invoices';
+import { MAINNET_USDC } from '../../shared/mainnet-readiness';
 
 const buyer = 'buyer.testnet';
 test('pending native refunds cannot be claimed again and historical deposits never invent credit', async ({
@@ -209,7 +216,7 @@ function fixtures() {
     attempts,
     deployment: {
       network: 'testnet',
-      rpcUrl: '',
+      rpcUrl: 'https://test.rpc.fastnear.com',
       vault: 'vault.testnet',
       token: base.token,
       operator: base.terms.operator,
@@ -256,6 +263,39 @@ async function exported(page: Page, label: string) {
   const file = await download;
   return readFile((await file.path())!, 'utf8');
 }
+
+test('mainnet uses USDC labels, mainnet receipts and the smaller storage allowance', async ({
+  page,
+}) => {
+  const f = fixtures();
+  f.state.deployment = {
+    ...f.state.deployment!,
+    network: 'mainnet',
+    rpcUrl: 'https://rpc.fastnear.com',
+    vault: 'vault.near',
+    operator: 'operator.near',
+    token: MAINNET_USDC,
+    features: ['automatic-v1', 'recovery-v1', 'invoice-v1', 'native-deposits-v1'],
+  };
+  f.state.orders = f.state.orders.map((o) => ({
+    ...o,
+    token: MAINNET_USDC,
+    terms: { ...o.terms, operator: 'operator.near' },
+  }));
+  const errors = await setup(page, f);
+  await page.goto('/workspace?network=mainnet&view=orders');
+  await expect(page.getByRole('link', { name: 'View payment contract' })).toHaveAttribute(
+    'href',
+    'https://nearblocks.io/address/vault.near',
+  );
+  await expect(page.locator('main')).toContainText('USDC');
+  await expect(page.locator('main')).not.toContainText('aUSD');
+  await page.getByRole('button', { name: 'New purchase order', exact: true }).click();
+  await expect(page.getByLabel('Unit price (USDC)')).toBeVisible();
+  await expect(page.getByRole('dialog')).toContainText('0.1 NEAR initial storage deposit');
+  await expect(page.getByRole('dialog')).toContainText('explicit storage top-ups');
+  expect(errors).toEqual([]);
+});
 
 test('buyer overview separates reservations, invoice review and refunds; filtered exports match the view', async ({
   page,
@@ -721,7 +761,7 @@ for (const failedRead of ['state', 'jobs'] as const) {
   }) => {
     const fixture = fixtures();
     fixture.state.deployment!.features!.push('native-deposits-v1');
-      const credit: ChainNativeDeposit = {
+    const credit: ChainNativeDeposit = {
       tracked: true,
       deposit: {
         owner: buyer,
@@ -747,9 +787,9 @@ for (const failedRead of ['state', 'jobs'] as const) {
     let unavailable = true;
     await page.exposeFunction('recordSubmittedRefund', () => {
       calls++;
-        credit.deposit!.refunded = credit.claimable;
-        credit.deposit!.claim_status = 'Settled';
-        credit.deposit!.claim_sequence = '1';
+      credit.deposit!.refunded = credit.claimable;
+      credit.deposit!.claim_status = 'Settled';
+      credit.deposit!.claim_sequence = '1';
       credit.claimable = '0';
     });
     await page.route('**/src/testnet/Wallet.ts*', (route) =>
