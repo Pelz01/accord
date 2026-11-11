@@ -43,7 +43,7 @@ export default async function proxy(request: Request, response: ServerResponse) 
   if (defaultNetwork === 'mainnet' && !request.headers['x-accord-network'] && path !== 'health')
     return fail(response, 409, 'Reload Accord to select the transaction network.');
   if (
-    !/^(health|chain\/(state|jobs|challenge|submit|session(?:\/challenge)?|orders\/[A-Za-z0-9_-]{1,64}\/(?:extract|invoices|documents(?:\/[a-f0-9-]{36})?)))$/.test(
+    !/^(health|chain\/(state|jobs|challenge|submit|session(?:\/challenge)?|intents\/(?:current|quote|[a-f0-9-]{36}(?:\/(?:begin|cancel|receipt))?)|orders\/[A-Za-z0-9_-]{1,64}\/(?:extract|invoices|documents(?:\/[a-f0-9-]{36})?)))$/.test(
       path,
     )
   )

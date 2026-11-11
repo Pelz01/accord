@@ -46,6 +46,9 @@ import './workspace-polish.css';
 import { chainFetch, selectedNetwork, explorerBase, settlementSymbol as currency } from './network';
 import { assertDeploymentNetwork, orderAllowance, tokenRegistration } from '../../shared/network';
 import { nativeDisplay } from '../../shared/mainnet-readiness';
+import { IntentsFundingPanel } from './IntentsFundingPanel';
+import { fundingActions, WRAPPED_NEAR } from '../../shared/intents';
+import { walletResultHash, WalletReceiptUnavailable } from '../../shared/wallet-result';
 
 const explorer = (hash: string) => `${explorerBase}/txns/${hash}`;
 type WorkspaceView = 'home' | 'overview' | 'supplier' | 'orders' | 'payments';
@@ -70,9 +73,9 @@ export function TestnetWorkspace() {
     [working, setBusy] = useState(false),
     [account, setAccount] = useState<string | null>(null),
     [selected, setSelected] = useState<string | null>(() => route().order);
-  const [modal, setModal] = useState<'create' | 'receipt' | 'invoice' | 'accept' | 'fund' | null>(
-      null,
-    ),
+  const [modal, setModal] = useState<
+      'create' | 'receipt' | 'invoice' | 'accept' | 'fund' | 'intents' | null
+    >(null),
     [total, setTotal] = useState(''),
     [transaction, setTransaction] = useState('');
   const [jobs, setJobs] = useState<ChainJob[]>([]);
@@ -226,6 +229,10 @@ export function TestnetWorkspace() {
       await refreshAfterAction();
       if (close) setModal(null);
     } catch (e) {
+      if (e instanceof WalletReceiptUnavailable) {
+        setModal(null);
+        await refreshAfterAction();
+      }
       setError(walletError(e).message);
     } finally {
       setBusy(false);
@@ -298,6 +305,21 @@ export function TestnetWorkspace() {
   }
   async function create(input: CreateOrder) {
     if (!account || !d) throw new Error('Connect your wallet first.');
+    const pendingKey = `accord:unresolved-create:${selectedNetwork}:${d.vault}:${account}`;
+    const pendingId = sessionStorage.getItem(pendingKey);
+    if (pendingId) {
+      const response = await chainFetch('/api/chain/state?account=' + encodeURIComponent(account));
+      if (!response.ok) throw new WalletReceiptUnavailable();
+      const latest: ChainState = await response.json();
+      assertDeploymentNetwork(latest.deployment!, selectedNetwork);
+      if (!latest.orders.some((o) => o.id === pendingId && o.buyer === account))
+        throw new Error(
+          `The earlier creation request for ${pendingId} is still unresolved. Check its wallet receipt before starting another order.`,
+        );
+      sessionStorage.removeItem(pendingKey);
+      navigate('orders', pendingId);
+      return;
+    }
     input = createSchema.parse(input);
     if (
       account === input.supplier ||
@@ -310,25 +332,38 @@ export function TestnetWorkspace() {
         'Choose separate buyer, supplier and delivery reviewer accounts. You can confirm your own deliveries.',
       );
     const id = `PO-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
-    await call(
-      d.features?.includes('automatic-v1') ? 'create_automatic_order' : 'create_order',
-      {
-        order_id: id,
-        terms: {
-          supplier: input.supplier,
-          receiver: input.receiver,
-          operator: input.operator,
-          payout: input.payout,
-          line_id: 'cartons',
-          description: input.description,
-          unit: 'carton',
-          ordered: String(input.ordered),
-          unit_price: input.unitPrice,
-          expires_at: (BigInt(Date.now() + 7 * 86400000) * 1_000_000n).toString(),
+    try {
+      await call(
+        d.features?.includes('automatic-v1') ? 'create_automatic_order' : 'create_order',
+        {
+          order_id: id,
+          terms: {
+            supplier: input.supplier,
+            receiver: input.receiver,
+            operator: input.operator,
+            payout: input.payout,
+            line_id: 'cartons',
+            description: input.description,
+            unit: 'carton',
+            ordered: String(input.ordered),
+            unit_price: input.unitPrice,
+            expires_at: (BigInt(Date.now() + 7 * 86400000) * 1_000_000n).toString(),
+          },
         },
-      },
-      orderAllowance(d.network),
-    );
+        orderAllowance(d.network),
+      );
+    } catch (e) {
+      if (!(e instanceof WalletReceiptUnavailable)) throw e;
+      sessionStorage.setItem(pendingKey, id);
+      // Creation has a unique id: recover from the finalized contract read, never create again.
+      const response = await chainFetch('/api/chain/state?account=' + encodeURIComponent(account));
+      if (!response.ok) throw e;
+      const latest: ChainState = await response.json();
+      assertDeploymentNetwork(latest.deployment!, selectedNetwork);
+      const created = latest.orders.find((o) => o.id === id && o.buyer === account);
+      if (!created) throw e;
+    }
+    sessionStorage.removeItem(pendingKey);
     navigate('orders', id);
   }
   async function fund() {
@@ -518,6 +553,13 @@ export function TestnetWorkspace() {
                 account={account}
                 busy={busy}
                 onDisconnect={() => run(() => walletConnector().disconnect())}
+                onAddUSDC={
+                  selectedNetwork === 'mainnet' &&
+                  d?.features?.includes('intents-funding-v1') &&
+                  account === d.accounts.buyer
+                    ? () => setModal('intents')
+                    : undefined
+                }
               />
             ) : (
               <button
@@ -1071,7 +1113,9 @@ export function TestnetWorkspace() {
                   ? 'Accept fixed order terms'
                   : modal === 'fund'
                     ? 'Prepare token funding'
-                    : 'Review supplier invoice'
+                    : modal === 'intents'
+                      ? 'Add USDC'
+                      : 'Review supplier invoice'
           }
           subtitle={
             modal === 'create'
@@ -1102,6 +1146,32 @@ export function TestnetWorkspace() {
               automaticPayments={d?.features?.includes('automatic-v1')}
               nativeDeposits={d?.features?.includes('native-deposits-v1')}
               onCreate={(input) => run(() => create(input as CreateOrder))}
+            />
+          ) : modal === 'intents' && account && d ? (
+            <IntentsFundingPanel
+              key={`${d.network}:${d.vault}:${account}`}
+              account={account}
+              request={authorizedRequest}
+              onBusy={setBusy}
+              onFund={async (record) => {
+                if (
+                  selectedNetwork !== 'mainnet' ||
+                  record.network !== 'mainnet' ||
+                  record.vault !== d.vault ||
+                  record.account !== account
+                )
+                  throw new Error('Reconnect the wallet for this funding request.');
+                const wallet = await walletConnector().wallet();
+                if ((await wallet.getAccounts({ network: 'mainnet' }))[0]?.accountId !== account)
+                  throw new Error('Select the original buyer wallet before funding.');
+                const result = await wallet.signAndSendTransaction({
+                  network: 'mainnet',
+                  signerId: account,
+                  receiverId: WRAPPED_NEAR,
+                  actions: fundingActions(record.quote, record.registrations),
+                });
+                return walletResultHash(result);
+              }}
             />
           ) : order && modal === 'accept' ? (
             <>
@@ -1164,6 +1234,15 @@ export function TestnetWorkspace() {
                 Register & fund with wallet
                 <ArrowRight size={15} />
               </button>
+              {d?.network === 'mainnet' && d.features?.includes('intents-funding-v1') && (
+                <button
+                  className="button secondary full"
+                  disabled={busy}
+                  onClick={() => setModal('intents')}
+                >
+                  Add USDC with NEAR
+                </button>
+              )}
             </>
           ) : order && modal === 'receipt' ? (
             <form

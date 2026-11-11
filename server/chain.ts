@@ -23,6 +23,7 @@ import { RpcReadCache } from './read-cache.ts';
 import { automaticPaymentJob } from './automatic-payments.ts';
 import { FinalizedRpcProvider } from './rpc.ts';
 import { assertOperatorPolicy } from './operator-policy.ts';
+import { IntentsFunding } from './intents.ts';
 import {
   assertDeploymentNetwork,
   networkRPC,
@@ -164,14 +165,51 @@ export async function registerChain(
     authRequired = false,
     authorizeInvoice,
     authorizeAccess,
+    authorizeWallet,
   }: {
     worker?: boolean;
     authRequired?: boolean;
     authorizeInvoice?: InvoiceAuthorizer;
     authorizeAccess?: InvoiceAuthorizer;
+    authorizeWallet?: (request: Parameters<InvoiceAuthorizer>[0]) => string;
   } = {},
 ) {
   const files = new InvoiceFiles(ledger.db);
+  const funding = new IntentsFunding(ledger.db, provider);
+  async function fundingContext(request: Parameters<InvoiceAuthorizer>[0]) {
+    if (!authorizeWallet) throw new DomainError('Authorize your wallet to add USDC.', 401);
+    const account = authorizeWallet(request),
+      d = await requiredDeployment();
+    if (d.network !== 'mainnet' || !d.features?.includes('intents-funding-v1'))
+      throw new DomainError('Intents funding is not available for this deployment yet.', 409);
+    return { account, d };
+  }
+  app.get('/api/chain/intents/current', async (req) => {
+    const { d, account } = await fundingContext(req);
+    return funding.current(d, account);
+  });
+  app.post('/api/chain/intents/quote', async (req) => {
+    const { d, account } = await fundingContext(req);
+    const body = z.strictObject({ amountNear: z.string().min(1).max(30) }).parse(req.body);
+    return funding.quote(d, account, body.amountNear);
+  });
+  app.get<{ Params: { id: string } }>('/api/chain/intents/:id', async (req) => {
+    const { d, account } = await fundingContext(req);
+    return funding.status(d, account, z.string().uuid().parse(req.params.id));
+  });
+  app.post<{ Params: { id: string } }>('/api/chain/intents/:id/begin', async (req) => {
+    const { d, account } = await fundingContext(req);
+    return funding.begin(d, account, z.string().uuid().parse(req.params.id));
+  });
+  app.post<{ Params: { id: string } }>('/api/chain/intents/:id/cancel', async (req) => {
+    const { d, account } = await fundingContext(req);
+    return funding.cancel(d, account, z.string().uuid().parse(req.params.id));
+  });
+  app.post<{ Params: { id: string } }>('/api/chain/intents/:id/receipt', async (req) => {
+    const { d, account } = await fundingContext(req),
+      body = z.strictObject({ hash: z.string().min(32).max(60) }).parse(req.body);
+    return funding.record(d, account, z.string().uuid().parse(req.params.id), body.hash);
+  });
   ledger.db.exec(
     `CREATE TABLE IF NOT EXISTS chain_jobs (id TEXT PRIMARY KEY,payload TEXT NOT NULL); CREATE TABLE IF NOT EXISTS chain_challenges (id TEXT PRIMARY KEY,payload TEXT NOT NULL,used INTEGER NOT NULL DEFAULT 0,expires INTEGER NOT NULL);`,
   );

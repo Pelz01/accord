@@ -1,0 +1,62 @@
+.intents-funding {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+}
+.intents-funding > p {
+  margin: 0;
+  line-height: 1.65;
+}
+.funding-amounts {
+  margin: 0;
+  padding: 18px 0;
+  display: grid;
+  gap: 14px;
+  border-top: 1px solid var(--border, #ddd);
+  border-bottom: 1px solid var(--border, #ddd);
+}
+.funding-amounts > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 18px;
+}
+.funding-amounts dt {
+  font-size: 12px;
+  color: var(--muted, #666);
+}
+.funding-amounts dd {
+  margin: 0;
+  text-align: right;
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+.funding-recipient {
+  font-size: 12px;
+}
+.funding-recipient strong {
+  display: block;
+  overflow-wrap: anywhere;
+  font-weight: 500;
+}
+.funding-provider {
+  font-size: 11px;
+  color: var(--muted, #666);
+}
+.funding-receipts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 12px;
+}
+.funding-success {
+  color: var(--ink, #111);
+  font-weight: 600;
+}
+.intents-funding details > summary {
+  font-size: 12px;
+  cursor: pointer;
+}
+.intents-funding details .field {
+  margin: 16px 0;
+}

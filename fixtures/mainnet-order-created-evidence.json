@@ -1,0 +1,29 @@
+{
+  "checkedAt": "2026-11-11T19:34:18.032Z",
+  "network": "mainnet",
+  "milestone": "Order created; supplier acceptance, funding and settlement pending",
+  "transactionHash": "3piSPs3xhd5F9A9oxLMoE26HyXko5ejcDeBYx716zGB4",
+  "explorer": "https://nearblocks.io/txns/3piSPs3xhd5F9A9oxLMoE26HyXko5ejcDeBYx716zGB4",
+  "signer": "mainnett12.near",
+  "vault": "10f816f5fbf84d7c6cb0c5bd5e79e02be90260e3d58f85ed8317c215439280bf",
+  "method": "create_automatic_order",
+  "attachedYocto": "100000000000000000000000",
+  "gas": 50000000000000,
+  "terms": {
+    "supplier": "1ce366dc92817f9e8ac25e941c9a552591bb7d4662b8c965fe944f3d46abd151",
+    "receiver": "mainnett12.near",
+    "operator": "eb9d09dab80a829383c6402fc3a6ef90f6035256b0845f130127b254e4cd250c",
+    "payout": "1ce366dc92817f9e8ac25e941c9a552591bb7d4662b8c965fe944f3d46abd151",
+    "line_id": "cartons",
+    "description": "Mainnet purchasing check",
+    "unit": "carton",
+    "ordered": "2",
+    "unit_price": "10000",
+    "expires_at": "1795028588197000000"
+  },
+  "orderId": "PO-7886D7BD",
+  "finalExecutionStatus": "FINAL",
+  "status": {
+    "SuccessValue": "eyJpZCI6IlBPLTc4ODZEN0JEIiwiYnV5ZXIiOiJtYWlubmV0dDEyLm5lYXIiLCJ0b2tlbiI6IjE3MjA4NjI4Zjg0ZjVkNmFkMzNmMGRhM2JiYmViMjdmZmNiMzk4ZWFjNTAxYTMxYmQ2YWQyMDExZTM2MTMzYTEiLCJ0ZXJtcyI6eyJzdXBwbGllciI6IjFjZTM2NmRjOTI4MTdmOWU4YWMyNWU5NDFjOWE1NTI1OTFiYjdkNDY2MmI4Yzk2NWZlOTQ0ZjNkNDZhYmQxNTEiLCJyZWNlaXZlciI6Im1haW5uZXR0MTIubmVhciIsIm9wZXJhdG9yIjoiZWI5ZDA5ZGFiODBhODI5MzgzYzY0MDJmYzNhNmVmOTBmNjAzNTI1NmIwODQ1ZjEzMDEyN2IyNTRlNGNkMjUwYyIsInBheW91dCI6IjFjZTM2NmRjOTI4MTdmOWU4YWMyNWU5NDFjOWE1NTI1OTFiYjdkNDY2MmI4Yzk2NWZlOTQ0ZjNkNDZhYmQxNTEiLCJsaW5lX2lkIjoiY2FydG9ucyIsImRlc2NyaXB0aW9uIjoiTWFpbm5ldCBwdXJjaGFzaW5nIGNoZWNrIiwidW5pdCI6ImNhcnRvbiIsIm9yZGVyZWQiOiIyIiwidW5pdF9wcmljZSI6IjEwMDAwIiwiZXhwaXJlc19hdCI6IjE3OTUwMjg1ODgxOTcwMDAwMDAifSwidGVybXNfaGFzaCI6ImZmODc3NTljNGRlNDdiYWQxN2Y2MWY4YTI2OTdhNjBlNzViMjNiYzI0ZWNmNzc5MzBiMzhhOGRjYjlkOGZmZGIiLCJhY2NlcHRlZF90ZXJtcyI6ZmFsc2UsImZ1bmRlZCI6IjAiLCJhY2NlcHRlZCI6IjAiLCJwYWlkIjoiMCIsInBlbmRpbmciOiIwIiwic2VxdWVuY2UiOiIwIiwiYXR0ZW1wdHMiOjB9"
+  }
+}

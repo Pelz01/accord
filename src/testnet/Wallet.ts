@@ -2,6 +2,7 @@ import { NearConnector } from '@hot-labs/near-connect';
 import type { ConnectorAction } from '@hot-labs/near-connect';
 import { selectedNetwork } from './network';
 import { walletGas } from '../../shared/network';
+import { walletResultHash } from '../../shared/wallet-result';
 
 let connector: NearConnector | undefined;
 export function walletConnector() {
@@ -39,9 +40,5 @@ export async function sendCall(
     receiverId: contract,
     actions: [action],
   });
-  if (typeof result.status === 'object' && 'Failure' in result.status)
-    throw new Error(
-      'The contract rejected this transaction. Inspect the transaction receipt and refresh.',
-    );
-  return result.transaction.hash;
+  return walletResultHash(result);
 }

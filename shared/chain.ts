@@ -87,6 +87,7 @@ export type Deployment = {
     | 'automatic-v1'
     | 'customer-approval-v1'
     | 'native-deposits-v1'
+    | 'intents-funding-v1'
   )[];
 };
 export type ChainPaymentPolicy = {

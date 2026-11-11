@@ -48,6 +48,7 @@ test('production API requires its trusted proxy and excludes all simulator endpo
     );
     assert.equal((await app.inject({ url: '/api/state', headers })).statusCode, 404);
     for (const url of [
+      '/api/chain/intents/current',
       '/api/chain/orders/PO-1/invoices',
       '/api/chain/orders/PO-1/documents/11111111-1111-4111-8111-111111111111',
     ]) {

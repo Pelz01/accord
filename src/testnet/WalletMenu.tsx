@@ -5,10 +5,12 @@ export function WalletMenu({
   account,
   busy,
   onDisconnect,
+  onAddUSDC,
 }: {
   account: string;
   busy: boolean;
   onDisconnect: () => void;
+  onAddUSDC?: () => void;
 }) {
   const ref = useRef<HTMLDetailsElement>(null);
   const [open, setOpen] = useState(false);
@@ -37,6 +39,17 @@ export function WalletMenu({
       <div className="wallet-menu-panel">
         <span>Connected wallet</span>
         <p>{account}</p>
+        {onAddUSDC && (
+          <button
+            disabled={busy}
+            onClick={() => {
+              if (ref.current) ref.current.open = false;
+              onAddUSDC();
+            }}
+          >
+            Add USDC
+          </button>
+        )}
         <button disabled={busy} onClick={onDisconnect}>
           <LogOut size={15} />
           Disconnect

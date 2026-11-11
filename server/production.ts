@@ -45,7 +45,10 @@ export function productionApp(
       if (++writes > 120)
         return reply.code(429).send({ error: 'Too many requests. Please try again shortly.' });
     }
-    if (/^\/api\/chain\/orders\/[^/]+\/(?:extract|documents|invoices)(?:[/?]|$)/.test(request.url))
+    if (
+      /^\/api\/chain\/orders\/[^/]+\/(?:extract|documents|invoices)(?:[/?]|$)/.test(request.url) ||
+      /^\/api\/chain\/intents(?:\/|$)/.test(request.url)
+    )
       sessions.account(request.headers.authorization);
   });
   app.setErrorHandler((error, _request, reply) => {
@@ -72,6 +75,7 @@ export function productionApp(
       authorizeAccess: (request, order) => {
         sessions.authorizeOrder(request.headers.authorization, order);
       },
+      authorizeWallet: (request) => sessions.account(request.headers.authorization),
     }),
   );
   return app;

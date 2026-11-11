@@ -1,6 +1,6 @@
 # Controlled mainnet release
 
-Mainnet is required for the submission. Direct USDC settlement comes before Intents funding. This is a controlled demonstration with the owner's funds, not an approval to accept customer funds. The existing hosted release remains on testnet.
+Mainnet is required for the submission. Direct USDC settlement comes before Intents funding. This is a controlled demonstration with the owner's funds, not an approval to accept customer funds. The hosted default now uses mainnet; the existing testnet service remains separate.
 
 ## Read-only preflight
 
@@ -77,3 +77,13 @@ The tested contract is now deployed: [deployment receipt](https://nearblocks.io/
 The existing [internal security review](SECURITY_REVIEW.md) remains applicable. Unused token withdrawal requires mutual closure after accepted goods are paid and pending transfers are zero. Either party can block closure. Unknown transfers retain their reservations; a timeout does not authorize replacement spending. The native order deposit is not part of the token refund. Use controlled amounts that may remain locked. Independent review and production operations remain outstanding before meaningful customer value.
 
 The first browser creation request was rejected by Intear before broadcast because its default 150 TGas reservation exceeded the buyer's remaining balance. Mainnet wallet calls now use method-specific allowances verified by the mainnet-domain sandbox: 50 TGas creation, 30 registration, 70 token funding, 25 simple approvals, 80 closure and 40 native claims. No contract minimum was lowered. While the vault had no orders or token obligations, 0.064 NEAR of unused setup capital was reallocated to the controlled supplier for its prepaid wallet gas. Code/state backing and a further 0.005 NEAR platform margin were protected. No extra funding was added.
+
+The buyer created **PO-7886D7BD** through Intear on mainnet: 2 cartons at 0.01 USDC each, with a 0.1 NEAR native storage allowance. The [finalized creation receipt](https://nearblocks.io/txns/3piSPs3xhd5F9A9oxLMoE26HyXko5ejcDeBYx716zGB4) and [public evidence](fixtures/mainnet-order-created-evidence.json) establish creation only. Supplier acceptance, USDC funding, delivery, payment and refunds remain pending. Intear returned an incomplete receipt to the app after successful creation; the client now accepts supported outcome envelopes and recovers creation by its unique order ID from finalized records. An unresolved creation is held across reloads rather than generating another wallet request.
+
+## Intents funding implementation
+
+The repository includes a feature-gated NEAR Intents 1Click funding flow. It is **disabled in the live deployment**, and no live Intents transfer has been tested. The existing Rhea acquisition remains separate evidence. Enable `intents-funding-v1` only after the direct mainnet journey passes and both the API and frontend are deployed.
+
+The initial integration accepts at most 0.01 NEAR per request from the configured controlled buyer. Quotes pin wrapped NEAR as input and native NEAR USDC as output, with the same buyer as recipient and refund destination, exact amounts, expiry and a 1% slippage limit. Wallet review precedes an atomic wrapped-NEAR registration/wrap/transfer batch. Receiving USDC in the buyer's wallet and funding an Accord order remain separate transactions. Other source chains are not implemented.
+
+The API stores an unresolved request before asking the wallet to sign. Unknown submissions remain held; status checks never trigger another wallet request. Settlement requires a verified source transaction and a successful native-USDC transfer receipt, rather than only a provider status. Failed, refunded or incomplete swaps remain available for review; provider-reported refunds are not independently established as returned funds. Isolated tests cover expiry, changed recipients/assets, duplicate submission, racing status reads, read outages and forged settlement evidence. These tests do not establish a live swap.
