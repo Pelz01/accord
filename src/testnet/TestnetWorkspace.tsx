@@ -156,6 +156,7 @@ export function TestnetWorkspace() {
     const signIn = ({ accounts }: { accounts: { accountId: string }[] }) =>
       setAccount(accounts[0]?.accountId ?? null);
     const signOut = () => {
+      setTransaction('');
       setAccount(null);
       navigate('home', null, null, true);
       setError('');

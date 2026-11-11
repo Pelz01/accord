@@ -1,0 +1,86 @@
+{
+  "checkedAt": "2026-11-11T19:54:12.009Z",
+  "network": "mainnet",
+  "orderId": "PO-7886D7BD",
+  "status": "Invoice confirmation and settlement pending",
+  "fundedUsdcBaseUnits": "20000",
+  "acceptedCartons": "1",
+  "paidCartons": "0",
+  "pendingCartons": "0",
+  "transactions": [
+    {
+      "step": "creation",
+      "hash": "3piSPs3xhd5F9A9oxLMoE26HyXko5ejcDeBYx716zGB4",
+      "signer": "mainnett12.near",
+      "receiver": "10f816f5fbf84d7c6cb0c5bd5e79e02be90260e3d58f85ed8317c215439280bf",
+      "method": "create_automatic_order",
+      "args": {
+        "order_id": "PO-7886D7BD",
+        "terms": {
+          "supplier": "1ce366dc92817f9e8ac25e941c9a552591bb7d4662b8c965fe944f3d46abd151",
+          "receiver": "mainnett12.near",
+          "operator": "eb9d09dab80a829383c6402fc3a6ef90f6035256b0845f130127b254e4cd250c",
+          "payout": "1ce366dc92817f9e8ac25e941c9a552591bb7d4662b8c965fe944f3d46abd151",
+          "line_id": "cartons",
+          "description": "Mainnet purchasing check",
+          "unit": "carton",
+          "ordered": "2",
+          "unit_price": "10000",
+          "expires_at": "1795028588197000000"
+        }
+      },
+      "deposit": "100000000000000000000000",
+      "gas": 50000000000000,
+      "final": true,
+      "explorer": "https://nearblocks.io/txns/3piSPs3xhd5F9A9oxLMoE26HyXko5ejcDeBYx716zGB4"
+    },
+    {
+      "step": "supplierAcceptance",
+      "hash": "LfCGykDWVZJhnFB5h6zghjFBCbPZzWv48pjnHXoeWaT",
+      "signer": "1ce366dc92817f9e8ac25e941c9a552591bb7d4662b8c965fe944f3d46abd151",
+      "receiver": "10f816f5fbf84d7c6cb0c5bd5e79e02be90260e3d58f85ed8317c215439280bf",
+      "method": "accept_order",
+      "args": {
+        "order_id": "PO-7886D7BD",
+        "terms_hash": "ff87759c4de47bad17f61f8a2697a60e75b23bc24ecf77930b38a8dcb9d8ffdb"
+      },
+      "deposit": "1",
+      "gas": 25000000000000,
+      "final": true,
+      "explorer": "https://nearblocks.io/txns/LfCGykDWVZJhnFB5h6zghjFBCbPZzWv48pjnHXoeWaT"
+    },
+    {
+      "step": "funding",
+      "hash": "E9EoETzJx6NCPQger8F3LxptofHhMjewWN5yNoUBV1Yb",
+      "signer": "mainnett12.near",
+      "receiver": "17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1",
+      "method": "ft_transfer_call",
+      "args": {
+        "receiver_id": "10f816f5fbf84d7c6cb0c5bd5e79e02be90260e3d58f85ed8317c215439280bf",
+        "amount": "20000",
+        "msg": "PO-7886D7BD"
+      },
+      "deposit": "1",
+      "gas": 70000000000000,
+      "final": true,
+      "explorer": "https://nearblocks.io/txns/E9EoETzJx6NCPQger8F3LxptofHhMjewWN5yNoUBV1Yb"
+    },
+    {
+      "step": "delivery",
+      "hash": "A91ZR1ToN1FsND6fXMUbgpvcXZSTTKLfS2EXTtpDDURP",
+      "signer": "mainnett12.near",
+      "receiver": "10f816f5fbf84d7c6cb0c5bd5e79e02be90260e3d58f85ed8317c215439280bf",
+      "method": "confirm_delivery",
+      "args": {
+        "order_id": "PO-7886D7BD",
+        "sequence": "1",
+        "cumulative_quantity": "1",
+        "receipt_hash": "5ec91d1a666e543da78b448c39e9a574c6023ad68a4207dc3d5dade050121708"
+      },
+      "deposit": "1",
+      "gas": 25000000000000,
+      "final": true,
+      "explorer": "https://nearblocks.io/txns/A91ZR1ToN1FsND6fXMUbgpvcXZSTTKLfS2EXTtpDDURP"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "checkedAt": "2026-11-11T19:53:40.159Z",
+  "image": "accord-mainnet-api:2.5.1",
+  "imageId": "sha256:ff7632f81574c25ee53cd917292bc60a6070c7a2c882605b7bec05fa0c875880",
+  "bundleSha256": "fc99d9c371e139670c9ec372e12a0bb0654060524854b6c13aae5cfd7808fe8c",
+  "intentsAuthStatus": 401,
+  "unrelatedServiceHealthy": true,
+  "snapshots": {
+    "mainnet": {
+      "network": "mainnet",
+      "orderCount": 1,
+      "operatorReady": true,
+      "intentsEnabled": false
+    },
+    "testnet": {
+      "network": "testnet",
+      "orderCount": 4,
+      "operatorReady": true,
+      "intentsEnabled": false
+    }
+  }
+}
