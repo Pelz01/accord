@@ -37,6 +37,29 @@ export type FundingQuote = {
   deadline: string;
   slippageBps: number;
 };
+export type FundingStage =
+  | 'quoted'
+  | 'awaiting-wallet'
+  | 'submitted'
+  | 'settled'
+  | 'needs-review'
+  | 'cancelled';
+export type FundingRecord = {
+  id: string;
+  account: string;
+  network: 'mainnet';
+  vault: string;
+  createdAt: number;
+  stage: FundingStage;
+  request: ReturnType<typeof fundingRequest>;
+  quote: FundingQuote;
+  registrations: { account: string; deposit: string }[];
+  sourceHash: string | null;
+  sourceVerified: boolean;
+  destinationHash: string | null;
+  providerStatus: string | null;
+  error: string | null;
+};
 export function fundingRequest(account: string, amount: string, deadline: string, dry = false) {
   accountSchema.parse(account);
   const units = nativeAmount(amount);

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import type { FundingRecord } from '../../server/intents';
+import type { FundingRecord } from '../../shared/intents';
 import { nativeDisplay } from '../../shared/mainnet-readiness';
 import { money } from '../../shared/schema';
 import { explorerBase } from './network';

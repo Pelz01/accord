@@ -10,27 +10,12 @@ import {
   validateFundingQuote,
   WRAPPED_NEAR,
   WRAPPED_NEAR_ASSET,
-  type FundingQuote,
+  type FundingRecord,
+  type FundingStage as Stage,
 } from '../shared/intents.ts';
 import { MAINNET_USDC, verifySettlementAsset, nativeAmount } from '../shared/mainnet-readiness.ts';
 
-type Stage = 'quoted' | 'awaiting-wallet' | 'submitted' | 'settled' | 'needs-review' | 'cancelled';
-export type FundingRecord = {
-  id: string;
-  account: string;
-  network: 'mainnet';
-  vault: string;
-  createdAt: number;
-  stage: Stage;
-  request: ReturnType<typeof fundingRequest>;
-  quote: FundingQuote;
-  registrations: { account: string; deposit: string }[];
-  sourceHash: string | null;
-  sourceVerified: boolean;
-  destinationHash: string | null;
-  providerStatus: string | null;
-  error: string | null;
-};
+export type { FundingRecord } from '../shared/intents.ts';
 type Receipt = {
   status: unknown;
   transaction: { signer_id: string; receiver_id: string; actions: unknown[] };
