@@ -1,0 +1,264 @@
+{
+  "checkedAt": "2026-11-11T06:27:35.875Z",
+  "network": "testnet",
+  "browser": "ChatGPT in-app browser",
+  "wallet": "Intear",
+  "account": "testing33.testnet",
+  "vault": "vault.accord-v2-8e0a631d.testnet",
+  "orderId": "PO-E13E0551",
+  "scope": "Unfunded native storage top-up, excess claim, cancellation and final claim; not a funded supplier-payment test.",
+  "order": {
+    "id": "PO-E13E0551",
+    "buyer": "testing33.testnet",
+    "token": "token.accord-v2-8e0a631d.testnet",
+    "terms": {
+      "supplier": "supplier.accord-v2-8e0a631d.testnet",
+      "receiver": "testing33.testnet",
+      "operator": "operator.accord-v2-8e0a631d.testnet",
+      "payout": "supplier.accord-v2-8e0a631d.testnet",
+      "line_id": "cartons",
+      "description": "Browser refund check",
+      "unit": "carton",
+      "ordered": "1",
+      "unit_price": "1000000",
+      "expires_at": "1794982644344000000"
+    },
+    "terms_hash": "9641caba7b35ebca972bb9b4fb375291b96201caf34384a3b8f560ed261dc31a",
+    "accepted_terms": false,
+    "funded": "0",
+    "accepted": "0",
+    "paid": "0",
+    "pending": "0",
+    "sequence": "0",
+    "attempts": 0
+  },
+  "recovery": {
+    "phase": "Closed",
+    "proposal": null,
+    "refund_pending": "0",
+    "refunded": "0",
+    "refunds": []
+  },
+  "credit": {
+    "tracked": true,
+    "deposit": {
+      "owner": "testing33.testnet",
+      "deposited": "1250000000000000000000000",
+      "call_deposits_spent": "0",
+      "refunded": "1238025000000000000000000",
+      "pending": "0",
+      "storage_bytes": "958",
+      "claim_sequence": "2",
+      "claim_status": "Settled"
+    },
+    "storage_backing": "9580000000000000000000",
+    "retained_required": "11975000000000000000000",
+    "claimable": "0",
+    "margin_percent": 25,
+    "invoice_limit": 32,
+    "payment_attempt_limit": 64
+  },
+  "transactions": [
+    {
+      "action": "create",
+      "hash": "86DaTzXcshfSSotvwsmSLWfHUUPBHEwy8RvcGQL79yoS",
+      "signer": "testing33.testnet",
+      "receiver": "vault.accord-v2-8e0a631d.testnet",
+      "status": {
+        "SuccessValue": "eyJpZCI6IlBPLUUxM0UwNTUxIiwiYnV5ZXIiOiJ0ZXN0aW5nMzMudGVzdG5ldCIsInRva2VuIjoidG9rZW4uYWNjb3JkLXYyLThlMGE2MzFkLnRlc3RuZXQiLCJ0ZXJtcyI6eyJzdXBwbGllciI6InN1cHBsaWVyLmFjY29yZC12Mi04ZTBhNjMxZC50ZXN0bmV0IiwicmVjZWl2ZXIiOiJ0ZXN0aW5nMzMudGVzdG5ldCIsIm9wZXJhdG9yIjoib3BlcmF0b3IuYWNjb3JkLXYyLThlMGE2MzFkLnRlc3RuZXQiLCJwYXlvdXQiOiJzdXBwbGllci5hY2NvcmQtdjItOGUwYTYzMWQudGVzdG5ldCIsImxpbmVfaWQiOiJjYXJ0b25zIiwiZGVzY3JpcHRpb24iOiJCcm93c2VyIHJlZnVuZCBjaGVjayIsInVuaXQiOiJjYXJ0b24iLCJvcmRlcmVkIjoiMSIsInVuaXRfcHJpY2UiOiIxMDAwMDAwIiwiZXhwaXJlc19hdCI6IjE3OTQ5ODI2NDQzNDQwMDAwMDAifSwidGVybXNfaGFzaCI6Ijk2NDFjYWJhN2IzNWViY2E5NzJiYjliNGZiMzc1MjkxYjk2MjAxY2FmMzQzODRhM2I4ZjU2MGVkMjYxZGMzMWEiLCJhY2NlcHRlZF90ZXJtcyI6ZmFsc2UsImZ1bmRlZCI6IjAiLCJhY2NlcHRlZCI6IjAiLCJwYWlkIjoiMCIsInBlbmRpbmciOiIwIiwic2VxdWVuY2UiOiIwIiwiYXR0ZW1wdHMiOjB9"
+      },
+      "receipts": [
+        {
+          "id": "8kQNdp7NM4M7uqzcZLidHZDtiGHWkj4wVrjJroH56JLs",
+          "executor": "vault.accord-v2-8e0a631d.testnet",
+          "status": {
+            "SuccessValue": "eyJpZCI6IlBPLUUxM0UwNTUxIiwiYnV5ZXIiOiJ0ZXN0aW5nMzMudGVzdG5ldCIsInRva2VuIjoidG9rZW4uYWNjb3JkLXYyLThlMGE2MzFkLnRlc3RuZXQiLCJ0ZXJtcyI6eyJzdXBwbGllciI6InN1cHBsaWVyLmFjY29yZC12Mi04ZTBhNjMxZC50ZXN0bmV0IiwicmVjZWl2ZXIiOiJ0ZXN0aW5nMzMudGVzdG5ldCIsIm9wZXJhdG9yIjoib3BlcmF0b3IuYWNjb3JkLXYyLThlMGE2MzFkLnRlc3RuZXQiLCJwYXlvdXQiOiJzdXBwbGllci5hY2NvcmQtdjItOGUwYTYzMWQudGVzdG5ldCIsImxpbmVfaWQiOiJjYXJ0b25zIiwiZGVzY3JpcHRpb24iOiJCcm93c2VyIHJlZnVuZCBjaGVjayIsInVuaXQiOiJjYXJ0b24iLCJvcmRlcmVkIjoiMSIsInVuaXRfcHJpY2UiOiIxMDAwMDAwIiwiZXhwaXJlc19hdCI6IjE3OTQ5ODI2NDQzNDQwMDAwMDAifSwidGVybXNfaGFzaCI6Ijk2NDFjYWJhN2IzNWViY2E5NzJiYjliNGZiMzc1MjkxYjk2MjAxY2FmMzQzODRhM2I4ZjU2MGVkMjYxZGMzMWEiLCJhY2NlcHRlZF90ZXJtcyI6ZmFsc2UsImZ1bmRlZCI6IjAiLCJhY2NlcHRlZCI6IjAiLCJwYWlkIjoiMCIsInBlbmRpbmciOiIwIiwic2VxdWVuY2UiOiIwIiwiYXR0ZW1wdHMiOjB9"
+          }
+        },
+        {
+          "id": "GSNN9byqXKS4qtzFfrXYQLFXB99KuDmVBeu2KDv1qoVS",
+          "executor": "testing33.testnet",
+          "status": {
+            "SuccessValue": ""
+          }
+        }
+      ]
+    },
+    {
+      "action": "topup",
+      "hash": "G4qoVN78t5bdteCSGWCzXJmk1pkgYfGbgYRMx8UWg146",
+      "signer": "testing33.testnet",
+      "receiver": "vault.accord-v2-8e0a631d.testnet",
+      "status": {
+        "SuccessValue": ""
+      },
+      "receipts": [
+        {
+          "id": "DyFxUGbphVDB4AdofPqTiXhnPwbncndEaRVj9S66DcEL",
+          "executor": "vault.accord-v2-8e0a631d.testnet",
+          "status": {
+            "SuccessValue": ""
+          }
+        },
+        {
+          "id": "FY2NkdNnZciSBWty7F24hwkgr8JSzx75zJwsHVx2XxNb",
+          "executor": "testing33.testnet",
+          "status": {
+            "SuccessValue": ""
+          }
+        }
+      ]
+    },
+    {
+      "action": "claimExcess",
+      "hash": "BWjoRd2Xbme8pRdwasG5uFMcXFGRZwrbBHuA48d1cqxv",
+      "signer": "testing33.testnet",
+      "receiver": "vault.accord-v2-8e0a631d.testnet",
+      "status": {
+        "SuccessValue": "IlNldHRsZWQi"
+      },
+      "receipts": [
+        {
+          "id": "7suC5xyxRKeyXhj3SPLiyuHyxcFNbhvZfCtUAgjMiVnu",
+          "executor": "vault.accord-v2-8e0a631d.testnet",
+          "status": {
+            "SuccessReceiptId": "DZyvFR28vyV88XimRR5HAC6bnvWrJEmJ1eJDcB6VNqMk"
+          }
+        },
+        {
+          "id": "6TEirfHQRQuYcF1acCcoHWyFsdMq2L8EYWrPtkzHc4bz",
+          "executor": "testing33.testnet",
+          "status": {
+            "SuccessValue": ""
+          }
+        },
+        {
+          "id": "6U8h4HwSQxwaDLqRarGJ5VeCbVfkwpJGoiCAk1B92MLu",
+          "executor": "testing33.testnet",
+          "status": {
+            "SuccessValue": ""
+          }
+        },
+        {
+          "id": "DZyvFR28vyV88XimRR5HAC6bnvWrJEmJ1eJDcB6VNqMk",
+          "executor": "vault.accord-v2-8e0a631d.testnet",
+          "status": {
+            "SuccessValue": "IlNldHRsZWQi"
+          }
+        },
+        {
+          "id": "2tupnc5WnJDyJ2grVtfxyRAAdH6MUr2SxYrEqm8mZobj",
+          "executor": "testing33.testnet",
+          "status": {
+            "SuccessValue": ""
+          }
+        },
+        {
+          "id": "BM9sscXnScGjNB89BHQfWFNz75XuGmEHLSF4h84fmjU9",
+          "executor": "testing33.testnet",
+          "status": {
+            "SuccessValue": ""
+          }
+        }
+      ]
+    },
+    {
+      "action": "cancel",
+      "hash": "FDvYr6QnDALkiZf3H8Bcyx64CgaBf6oMsuyuWVyZgFoU",
+      "signer": "testing33.testnet",
+      "receiver": "vault.accord-v2-8e0a631d.testnet",
+      "status": {
+        "SuccessValue": ""
+      },
+      "receipts": [
+        {
+          "id": "7yEBT8AzhUjVnWJwTYEJtWzizjFXNaMxpUpdKH2ftsKN",
+          "executor": "vault.accord-v2-8e0a631d.testnet",
+          "status": {
+            "SuccessValue": ""
+          }
+        },
+        {
+          "id": "HCgJorNE49ga3bEYFFdaeTZSGcTm6zNK4QF7NR6ciZzX",
+          "executor": "testing33.testnet",
+          "status": {
+            "SuccessValue": ""
+          }
+        }
+      ]
+    },
+    {
+      "action": "claimAfterClosure",
+      "hash": "6fPiZ2QiarJ6KVoPiE4rKuJq8MVPyUPkFagUB7qhuJUS",
+      "signer": "testing33.testnet",
+      "receiver": "vault.accord-v2-8e0a631d.testnet",
+      "status": {
+        "SuccessValue": "IlNldHRsZWQi"
+      },
+      "receipts": [
+        {
+          "id": "FuRCm5Fw9qLzecUNeWwawyJ9noNEAd7F9nL4RfjAvziJ",
+          "executor": "vault.accord-v2-8e0a631d.testnet",
+          "status": {
+            "SuccessReceiptId": "8Vs1a5sbNZLGpzuU57JFr9yQsfNQXNnWRy6qsJHSjX2e"
+          }
+        },
+        {
+          "id": "GpuAYWRoeBk5NJFHZQTJwYv6y8tC9p8A75obGNkniaUL",
+          "executor": "testing33.testnet",
+          "status": {
+            "SuccessValue": ""
+          }
+        },
+        {
+          "id": "7iCsdKTgmVigL7zLj1qTzdUySBALB9gbocAvXAQaJZx4",
+          "executor": "testing33.testnet",
+          "status": {
+            "SuccessValue": ""
+          }
+        },
+        {
+          "id": "8Vs1a5sbNZLGpzuU57JFr9yQsfNQXNnWRy6qsJHSjX2e",
+          "executor": "vault.accord-v2-8e0a631d.testnet",
+          "status": {
+            "SuccessValue": "IlNldHRsZWQi"
+          }
+        },
+        {
+          "id": "HbNiAT6odaq7kaUD4VKsx9LbnFTkNxGd58bDeJQa8reV",
+          "executor": "testing33.testnet",
+          "status": {
+            "SuccessValue": ""
+          }
+        },
+        {
+          "id": "GYDfFvQMSSDTLvb8gaQC2sd1oT6vHUN71G1C3bUioA48",
+          "executor": "testing33.testnet",
+          "status": {
+            "SuccessValue": ""
+          }
+        }
+      ]
+    }
+  ],
+  "balanceBeforeYocto": "1497384397348757699999999",
+  "balanceAfterYocto": "1483108647552300499999996",
+  "balanceDecreaseBeyondRetainedYocto": "2300749796457200000003",
+  "uiAssertions": {
+    "closed": true,
+    "returnedNear": "1.238025",
+    "heldNear": "0.011975",
+    "claimDisabled": true
+  },
+  "observedIssue": "The hosted state read intermittently failed after successful submissions, leaving a misleading retry dialog. Browser verification checked finalized state before any next action. Follow-up frontend fix closes submitted dialogs and pauses actions until refresh succeeds.",
+  "frontendRelease": {
+    "checkedAt": "2026-11-11T06:29:47.272Z",
+    "productionUrl": "https://accord-payments.vercel.app",
+    "deploymentId": "dpl_8rce5qZtKa9HFnJQ1nxSHCWpWTem",
+    "workspaceAsset": "TestnetWorkspace-NTtf5Jby.js",
+    "workspaceSha256": "cf38cf12ddcaea5b86ba2e2a9f3ea4954e9ab965efda78d58036b2557b1a7c1f",
+    "browserTestsPassed": 28,
+    "productionBuildPassed": true,
+    "hostedLedgerMatchesFinalizedProof": true
+  }
+}

@@ -41,6 +41,10 @@ On **PO-NATIVE-8887B8CB**, a fresh faucet-funded buyer prepaid **1.25 testnet NE
 
 The hosted API and frontend use the same deployment hash and expose the final ledger. Three existing orders visible to testing33.testnet correctly remain untracked. The restricted worker is ready, the document service remains healthy, and the unrelated VPS health endpoint still returns 200. The API database was backed up before activation. No GitHub Actions workflow was run.
 
+The real **Intear / ChatGPT in-app browser** check on **PO-E13E0551** used testing33.testnet to create an unfunded order with 1 testnet NEAR, add 0.25 NEAR, reclaim that 0.25 NEAR while open, cancel the order and reclaim **0.988025 NEAR** after closure. All five transactions finalized successfully. Total returned is **1.238025 NEAR**; **0.011975 NEAR** remains held for 958 bytes of retained records and the buffer. Pending and claimable balances are zero, and the browser disables another claim. [Final refund](https://testnet.nearblocks.io/txns/6fPiZ2QiarJ6KVoPiE4rKuJq8MVPyUPkFagUB7qhuJUS), [browser evidence](fixtures/native-deposit-browser-evidence.json). This verifies native refunds on an unfunded order; it is not a funded two-customer-wallet supplier-payment journey.
+
+This browser check found intermittent hosted refresh failures after successful submissions. The frontend now closes the submitted review, preserves its receipt and pauses further actions until fresh order state arrives, rather than presenting a transaction retry. Supplementary job-list failures do not invalidate a successful order-state read. Two additional isolated regressions cover these failures; all 28 browser checks pass.
+
 Public evidence: [native sandbox checks](fixtures/native-deposit-sandbox-evidence.json), [five regression suites](fixtures/native-deposit-regression-evidence.json), [live upgrade and refunds](fixtures/native-deposit-testnet-evidence.json), and [hosted checks](fixtures/native-deposit-hosted-evidence.json).
 
 A fresh [public mainnet activity check](fixtures/native-deposit-mainnet-activity.json) still found 3 NEAR, no deployed code and no outgoing activity for mainnett12.near in the indexed records. All signing in this release was on testnet or an isolated sandbox.
@@ -53,4 +57,4 @@ Build in Linux/WSL with `bash scripts/build-native-contracts.sh`, then run `npm 
 
 ## Still separate
 
-Order cleanup that frees retained storage, historical-deposit migration, and safe production shutdown are **not implemented**. Neither closure nor this allowance refund removes order records or releases the shared code backing. Independent review, production custody, the updated real-wallet browser journey and the remaining mainnet/Intents work are still required.
+Order cleanup that frees retained storage, historical-deposit migration, and safe production shutdown are **not implemented**. Neither closure nor this allowance refund removes order records or releases the shared code backing. Independent review, production custody, a complete funded two-customer-wallet browser journey and the remaining mainnet/Intents work are still required.

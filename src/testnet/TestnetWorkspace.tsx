@@ -64,7 +64,7 @@ function route() {
 export function TestnetWorkspace() {
   const [state, setState] = useState<ChainState | null>(null),
     [error, setError] = useState(''),
-    [busy, setBusy] = useState(false),
+    [working, setBusy] = useState(false),
     [account, setAccount] = useState<string | null>(null),
     [selected, setSelected] = useState<string | null>(() => route().order);
   const [modal, setModal] = useState<'create' | 'receipt' | 'invoice' | 'accept' | 'fund' | null>(
@@ -77,6 +77,9 @@ export function TestnetWorkspace() {
   const [view, setView] = useState<WorkspaceView>(() => route().view);
   const [adviceId, setAdviceId] = useState<string | null>(() => route().payment);
   const [capturedAt, setCapturedAt] = useState('');
+  const [refreshRequired, setRefreshRequired] = useState(false);
+  const [refreshNotice, setRefreshNotice] = useState('');
+  const busy = working || refreshRequired;
   function navigate(
     next: WorkspaceView,
     orderId: string | null = null,
@@ -114,8 +117,15 @@ export function TestnetWorkspace() {
     const body = await r.json();
     if (!r.ok) throw new Error(body.error ?? 'Testnet state is unavailable.');
     setState(body);
-    const j = await fetch('/api/chain/jobs');
-    if (j.ok) setJobs((await j.json()).jobs);
+    setRefreshRequired(false);
+    setRefreshNotice('');
+    // Job-list availability must not turn a successful chain read into a failure.
+    try {
+      const j = await fetch('/api/chain/jobs');
+      if (j.ok) setJobs((await j.json()).jobs);
+    } catch {
+      // The next background refresh will retry this supplementary read.
+    }
     setCapturedAt(new Date().toISOString());
   }, [account]);
   useEffect(() => {
@@ -123,9 +133,13 @@ export function TestnetWorkspace() {
     if (!account) {
       setState(null);
       setJobs([]);
+      setRefreshRequired(false);
+      setRefreshNotice('');
       return;
     }
-    refresh().catch((e) => setError(e.message));
+    refresh().catch(() =>
+      setRefreshNotice('Could not load the latest order records. Reconnecting automatically.'),
+    );
     const id = setInterval(() => refresh().catch(() => {}), 10000);
     return () => clearInterval(id);
   }, [refresh]);
@@ -205,12 +219,23 @@ export function TestnetWorkspace() {
     setError('');
     try {
       await fn();
-      await refresh();
+      await refreshAfterAction();
       if (close) setModal(null);
     } catch (e) {
       setError(walletError(e).message);
     } finally {
       setBusy(false);
+    }
+  }
+  async function refreshAfterAction() {
+    if (!account) return;
+    setRefreshRequired(true);
+    try {
+      await refresh();
+    } catch {
+      setRefreshNotice(
+        'Transaction submitted. Waiting for the latest order records. Actions will unlock after refresh; do not submit it again.',
+      );
     }
   }
   async function post(path: string, body: unknown, headers: Record<string, string> = {}) {
@@ -508,6 +533,12 @@ export function TestnetWorkspace() {
           </div>
         </header>
         <main>
+          {refreshNotice && (
+            <div className="chain-receipt" role="status">
+              <Loader2 size={15} />
+              <span>{refreshNotice}</span>
+            </div>
+          )}
           {error && (
             <div className="alert error" role="alert">
               <ShieldCheck size={17} />
@@ -751,7 +782,7 @@ export function TestnetWorkspace() {
                         setBusy(true);
                         try {
                           await call(method, args, deposit);
-                          await refresh();
+                          await refreshAfterAction();
                         } finally {
                           setBusy(false);
                         }
@@ -770,7 +801,7 @@ export function TestnetWorkspace() {
                         setBusy(true);
                         try {
                           await call(method, args);
-                          await refresh();
+                          await refreshAfterAction();
                         } finally {
                           setBusy(false);
                         }
@@ -1181,11 +1212,11 @@ export function TestnetWorkspace() {
               request={authorizedRequest}
               onConfirm={async (invoice) => {
                 await call('confirm_invoice', { order_id: order.id, invoice });
-                await refresh();
+                await refreshAfterAction();
               }}
               onPayment={async (invoice, quantity) => {
                 await payment(invoice, quantity);
-                await refresh();
+                await refreshAfterAction();
               }}
             />
           ) : null}

@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
-import type { ChainOrder, ChainState, ChainJob, ChainAttempt } from '../../shared/chain';
+import type { ChainOrder, ChainState, ChainJob, ChainAttempt, ChainNativeDeposit } from '../../shared/chain';
 import { invoiceCommitment, type InvoicePayload } from '../../shared/invoices';
 
 const buyer = 'buyer.testnet';
@@ -714,3 +714,77 @@ test('native deposit claims show retained backing, require review and attach wal
   await expect(page.getByRole('dialog')).toContainText('25% storage buffer');
   expect(errors).toEqual([]);
 });
+
+for (const failedRead of ['state', 'jobs'] as const) {
+  test(`a submitted native refund is not offered for retry when the ${failedRead} read fails`, async ({
+    page,
+  }) => {
+    const fixture = fixtures();
+    fixture.state.deployment!.features!.push('native-deposits-v1');
+      const credit: ChainNativeDeposit = {
+      tracked: true,
+      deposit: {
+        owner: buyer,
+        deposited: '1000000000000000000000000',
+        call_deposits_spent: '0',
+        refunded: '0',
+        pending: '0',
+        storage_bytes: '3000',
+        claim_sequence: '0',
+        claim_status: 'Idle',
+      },
+      storage_backing: '30000000000000000000000',
+      retained_required: '37500000000000000000000',
+      claimable: '962500000000000000000000',
+      margin_percent: 25,
+      invoice_limit: 32,
+      payment_attempt_limit: 64,
+    };
+    fixture.state.nativeDeposits = { 'PO-CLOSED': credit };
+    await page.clock.install();
+    const errors = await setup(page, fixture);
+    let calls = 0;
+    let unavailable = true;
+    await page.exposeFunction('recordSubmittedRefund', () => {
+      calls++;
+        credit.deposit!.refunded = credit.claimable;
+        credit.deposit!.claim_status = 'Settled';
+        credit.deposit!.claim_sequence = '1';
+      credit.claimable = '0';
+    });
+    await page.route('**/src/testnet/Wallet.ts*', (route) =>
+      route.fulfill({
+        contentType: 'application/javascript',
+        body: `export const accountId=async()=>"buyer.testnet";export const walletConnector=()=>({on:()=>{},off:()=>{}});export const sendCall=async()=>{await window.recordSubmittedRefund();return 'confirmed-refund';};`,
+      }),
+    );
+    await page.route(`**/api/chain/${failedRead}*`, (route) => {
+      if (calls && unavailable)
+        return route.fulfill({ status: 503, json: { error: 'Read unavailable' } });
+      return route.fulfill({
+        json: failedRead === 'state' ? fixture.state : { jobs: fixture.jobs },
+      });
+    });
+    await page.goto('/workspace?view=orders&order=PO-CLOSED');
+    const panel = page.getByRole('region', { name: 'Order storage deposit' });
+    await panel.getByRole('button', { name: 'Claim available NEAR' }).click();
+    await page.getByRole('dialog').getByRole('checkbox').check();
+    await page.getByRole('button', { name: 'Continue in wallet' }).click();
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+    await expect(page.getByRole('link', { name: 'Inspect receipt' })).toHaveAttribute(
+      'href',
+      /confirmed-refund$/,
+    );
+    await expect(panel.getByRole('button', { name: 'Claim available NEAR' })).toBeDisabled();
+    await expect(page.getByRole('alert')).toHaveCount(0);
+    if (failedRead === 'state') {
+      await expect(page.getByText(/Actions will unlock after refresh/)).toBeVisible();
+      unavailable = false;
+      await page.clock.runFor(10000);
+      await expect(page.getByText(/Actions will unlock after refresh/)).toHaveCount(0);
+    }
+    await expect(panel).toContainText('Returned 0.9625 NEAR');
+    expect(calls).toBe(1);
+    expect(errors).toEqual([]);
+  });
+}
