@@ -9,6 +9,7 @@ The mainnet purchase and refund demonstration has passed. The application has no
 - `mainnet-order-proof.png`: the live closed mainnet order, payment, token refund and returned storage allowance.
 - `mainnet-remittance-proof.png`: the live settled remittance advice.
 - `mainnet-remittance.csv`: the actual CSV downloaded from that advice.
+- `mainnet-intents-proof.png`: the hosted mainnet Intents result showing USDC received.
 - `../fixtures/mainnet-settlement-evidence.json`: amounts, final states and mainnet transaction hashes.
 - `../fixtures/mainnet-ai-invoice-evidence.json`: live NEAR AI invoice extraction metadata.
 
@@ -16,7 +17,9 @@ The controlled order funded 0.02 native USDC, paid 0.01 USDC for one accepted ca
 
 ## Intents status
 
-The 0.01 NEAR Intents deposit and bridge receipt are verified on mainnet. The provider subsequently refunded it after QUOTE_EXPIRED. A finalized native transfer confirms 0.01 NEAR returned to mainnett12.near. No USDC conversion completed; do not describe that swap as successful. `../fixtures/mainnet-intents-evidence.json` records this limitation. The original request remains retained for review, and no replacement deposit was sent.
+The hosted retry successfully converted 0.01 NEAR into 0.033796 native USDC in mainnett12.near, above the quoted minimum of 0.033461 USDC. Finalized token-transfer evidence and the source receipt are in `../fixtures/mainnet-intents-evidence.json`. The wallet balance after receipt was 0.388316 USDC. Swapping credits the buyer wallet; funding an Accord order is a separate approval. This verifies NEAR-to-USDC conversion on NEAR mainnet, not a swap from another chain.
+
+The first attempt expired and returned its 0.01 NEAR principal. Its refund was independently verified and the request closed before retrying. That history is preserved in `../fixtures/mainnet-intents-first-attempt-evidence.json`.
 
 ## Human steps before sending the application
 

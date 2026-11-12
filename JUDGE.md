@@ -17,7 +17,9 @@ Read the public state without a wallet:
 node --input-type=module -e "const r=await fetch('https://accord-payments.vercel.app/api/chain/state?account=mainnett12.near',{headers:{'x-accord-network':'mainnet'}});const s=await r.json();console.log(JSON.stringify({order:s.orders[0],recovery:s.recoveries['PO-7886D7BD'],nativeDeposit:s.nativeDeposits['PO-7886D7BD']},null,2));"
 ```
 
-The regular workspace requires a related wallet for its customer views. The public proof above does not expose invoice files or source text. The mainnet WASM is unchanged by the worker gas correction. Current application checks include 73 unit/service cases and the existing isolated browser journeys. Historical testnet evidence below remains labeled testnet.
+NEAR Intents funding also passed through the hosted Intear flow: 0.01 NEAR converted into 0.033796 native USDC in the buyer wallet. The [finalized USDC receipt](https://nearblocks.io/txns/6nSRXWEH7VfuFQQmPqzc3LCY3X3jUHgVkWKcY34k5td5), [funding evidence](fixtures/mainnet-intents-evidence.json) and [hosted result](submission/mainnet-intents-proof.png) establish receipt above the quoted minimum. The first expired attempt and verified refund are retained separately. Conversion and order funding are separate approvals; this check did not exercise an origin on another chain.
+
+The regular workspace requires a related wallet for its customer views. The public proof above does not expose invoice files or source text. The mainnet WASM is unchanged by the worker gas correction. Current application checks include 74 unit/service cases and the existing isolated browser journeys. Historical testnet evidence below remains labeled testnet.
 
 ## Two-wallet automatic orders
 

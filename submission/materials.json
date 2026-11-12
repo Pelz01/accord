@@ -1,7 +1,7 @@
 {
   "draft": true,
   "projectName": "Accord",
-  "description": "Accord brings purchase orders, deliveries, invoices and supplier payments together. A buyer creates and funds an order; the supplier accepts its price and payment account. The buyer confirms deliveries with the same wallet, or appoints a receiver. NEAR AI Cloud extracts invoice fields from text, PDFs or scans. The supplier reviews and confirms the exact invoice and document hash. Accord’s background worker then requests eligible payment. A Rust contract on NEAR fixes the recipient and price, accounts for paid and pending quantities, and limits payment to confirmed deliveries and supplier-approved invoices. Customers use two wallets; no operator wallet is required. The product includes buyer payables, a supplier view, remittance advice, CSV export, mutual closure and storage-deposit refunds. The hosted mainnet check funded 0.02 native USDC, paid 0.01 USDC for one carton, refunded the unused 0.01 USDC and returned 0.0689625 NEAR of unused storage allowance. PDF/OCR and failure recovery have separate testnet and sandbox evidence. The first Intents swap was refunded after quote expiry; a successful USDC conversion remains unverified. This is a controlled release, without an external audit or a claim of readiness for customer funds.",
+  "description": "Accord brings purchase orders, deliveries, invoices and supplier payments together. A buyer creates and funds an order; the supplier accepts its price and payment account. The buyer confirms deliveries with the same wallet, or appoints a receiver. NEAR AI Cloud extracts invoice fields from text, PDFs or scans. The supplier reviews and confirms the exact invoice and document hash. Accord’s background worker then requests eligible payment. A Rust contract on NEAR fixes the recipient and price, accounts for paid and pending quantities, and limits payment to confirmed deliveries and supplier-approved invoices. Customers use two wallets; no operator wallet is required. The product includes buyer payables, a supplier view, remittance advice, CSV export, mutual closure and storage-deposit refunds. The hosted mainnet check funded 0.02 native USDC, paid 0.01 USDC for one carton, refunded the unused 0.01 USDC and returned 0.0689625 NEAR of unused storage allowance. PDF/OCR and failure recovery have separate testnet and sandbox evidence. NEAR Intents funding is verified on mainnet: swap NEAR into native USDC in the buyer’s wallet, then fund an order separately. This is a controlled release, without an external audit or a claim of readiness for customer funds.",
   "publicRepository": "https://github.com/Pelz01/accord",
   "liveProduct": "https://accord-payments.vercel.app",
   "proposedTracks": [
@@ -20,7 +20,9 @@
     "invoiceConfirmation": "https://nearblocks.io/txns/Gk3RrKAiMm8Fv65yr8PQ2zB2Jae2Jm5yoR4c67XfEb6M",
     "payment": "https://nearblocks.io/txns/F8tY6iegPD3VNi3sE5e2Dv4uA9dySPkv3ZwjjwCR9YAL",
     "refund": "https://nearblocks.io/txns/FDvVLCf7XpKgrTXAQg8zk4H7VhEXna2BQpaC3CFZWtnW",
-    "nativeDepositRefund": "https://nearblocks.io/txns/DVCc6ahTnTdvB11mHuUqn4bsYLHcNdDgsPYpWJsdXewP"
+    "nativeDepositRefund": "https://nearblocks.io/txns/DVCc6ahTnTdvB11mHuUqn4bsYLHcNdDgsPYpWJsdXewP",
+    "intentsFunding": "https://nearblocks.io/txns/6gRq6bfkpGiFTYN8WuuRu5mYqkBbayxG5vdagxSaPM95",
+    "intentsUSDCReceipt": "https://nearblocks.io/txns/6nSRXWEH7VfuFQQmPqzc3LCY3X3jUHgVkWKcY34k5td5"
   },
   "demo": [
     {
@@ -45,8 +47,8 @@
     },
     {
       "time": "1:40-2:00",
-      "show": "Public repository and mainnet transaction evidence.",
-      "say": "The repository contains reproducible checks and the mainnet receipts behind this demonstration."
+      "show": "Intents source and destination receipts, then the repository.",
+      "say": "NEAR Intents adds USDC to the buyer’s wallet. Funding an order is a separate approval."
     }
   ],
   "recordingState": {
@@ -67,7 +69,7 @@
     "realWalletBuyerJourneyVerified": true,
     "supplierAcceptanceAndInvoiceVerifiedThroughWallet": true,
     "supplierClosureProposalUsedControlledSdk": true,
-    "intentsMainnetVerified": false,
+    "intentsMainnetVerified": true,
     "externalAudit": false
   }
 }
