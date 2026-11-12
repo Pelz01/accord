@@ -1,0 +1,21 @@
+{
+  "checkedAt": "2026-11-12T09:21:24.328Z",
+  "network": "mainnet",
+  "orderId": "PO-7886D7BD",
+  "requestId": "auto-72419646788a101291f92c726ee8777e4ff166ca",
+  "originalHash": "D5eK8BnFkHYKsPWyqSZZ5UzCQqL72VWYL3XXWVMwUvQm",
+  "originalNonce": "224033215000001",
+  "originalKeyRevoked": true,
+  "retiredPublicKey": "ed25519:FACtxFkwzPsniTt1GXAcWmZncw7V1cCyDvintoEFovRq",
+  "replacementPublicKey": "ed25519:8vrfHfEjXNMFXi3385Uh6e7FpsL3EZZYcpBWmTLnHZ6d",
+  "rotationHash": "GBprogSRyUb86cfjpJCpcrNm9MsH8kzVwe2jL4yGEYoo",
+  "allowanceYocto": "90000000000000000000000",
+  "floatYocto": "64000000000000000000000",
+  "floatFrom": "1ce366dc92817f9e8ac25e941c9a552591bb7d4662b8c965fe944f3d46abd151",
+  "floatTo": "eb9d09dab80a829383c6402fc3a6ef90f6035256b0845f130127b254e4cd250c",
+  "transferHash": "BffYTYfLZAa2qzvdJuLrBAV7vQD13To5FNQppVD3SGK1",
+  "additionalExternalFunding": "0",
+  "returnFloatHash": "6vtf2NQZAWHPAaiBoD9w3zxAbBxxFkGvQAT98Y4KQ7uM",
+  "floatReturnedYocto": "64000000000000000000000",
+  "completedAt": "2026-11-12T09:24:58.274Z"
+}

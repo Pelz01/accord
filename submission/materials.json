@@ -1,55 +1,52 @@
 {
   "draft": true,
   "projectName": "Accord",
-  "description": "Accord keeps business moving by bringing orders, deliveries and payments together. Buying teams and suppliers stay on the same page, from the first order to the final payment. Buyers create and fund fixed terms; suppliers accept the price and payout account; an authorized receiver confirms cumulative deliveries. PDF invoices and scans are processed into text, and NEAR AI Cloud extracts structured fields. The supplier reviews and confirms a canonical commitment covering those fields, the document hash, order terms, network and vault. An operator can then authorize a partial payment. A Rust contract on NEAR independently checks the supplier confirmation and enforces paid + pending <= accepted <= ordered, reserving entitlement before the token transfer. The operator cannot change prices, recipients or delivery records. The product includes wallet-gated orders, private file review, durable payment jobs, receipts, mutual closure and buyer refunds. The hosted application runs on Vercel and an isolated VPS backend. Real testnet transfers, supplier confirmation, PDF/OCR, failed callbacks and recovery have been verified. This release uses testnet aUSD. Mainnet and a complete real-wallet browser journey remain separate release gates; no external audit or invoice-specific payment ledger is claimed.",
+  "description": "Accord brings purchase orders, deliveries, invoices and supplier payments together. A buyer creates and funds an order; the supplier accepts its price and payment account. The buyer confirms deliveries with the same wallet, or appoints a receiver. NEAR AI Cloud extracts invoice fields from text, PDFs or scans. The supplier reviews and confirms the exact invoice and document hash. Accord’s background worker then requests eligible payment. A Rust contract on NEAR fixes the recipient and price, accounts for paid and pending quantities, and limits payment to confirmed deliveries and supplier-approved invoices. Customers use two wallets; no operator wallet is required. The product includes buyer payables, a supplier view, remittance advice, CSV export, mutual closure and storage-deposit refunds. The hosted mainnet check funded 0.02 native USDC, paid 0.01 USDC for one carton, refunded the unused 0.01 USDC and returned 0.0689625 NEAR of unused storage allowance. PDF/OCR and failure recovery have separate testnet and sandbox evidence. Intents funding is implemented; its live transfer check is still pending. This is a controlled release, without an external audit or a claim of readiness for customer funds.",
   "publicRepository": "https://github.com/Pelz01/accord",
   "liveProduct": "https://accord-payments.vercel.app",
   "proposedTracks": [
     {
       "id": "security",
-      "reason": "The agent cannot expand its spending authority; contract checks and limited keys constrain settlement."
+      "reason": "Contract limits, confirmed invoices, reservations and restricted service keys constrain execution."
     },
     {
       "id": "realworld",
-      "reason": "Purchase orders, supplier invoices, delivery receipts and partial supplier payments."
+      "reason": "Buyer and supplier purchasing, native USDC settlement, remittance and refunds."
     }
   ],
-  "demoPostDraft": "Keep business moving with Accord. Orders, deliveries and payments, brought together. Built on NEAR. Try it: https://accord-payments.vercel.app Code: https://github.com/Pelz01/accord @NEARProtocol #NEARHackathon",
+  "demoPostDraft": "Pay suppliers as deliveries arrive. Accord connects agreed orders, confirmed goods and supplier-approved invoices to payments on NEAR. Built at NEAR HACKATHON.\nhttps://accord-payments.vercel.app\nhttps://github.com/Pelz01/accord\n@NEARProtocol #NEARHackathon",
   "proofLinks": {
-    "invoiceConfirmation": "https://testnet.nearblocks.io/txns/GpkApCikL16Mhb8mPFhXuebzAVp18nnEtQxMQoFmFG84",
-    "payment": "https://testnet.nearblocks.io/txns/Ab1rGxNWG6CKoEYUmKnFUHrujnfhG88B26QRPzrnwnG",
-    "refund": "https://testnet.nearblocks.io/txns/5RzNhuARA7TWu7wpXwSArDG2ohmXxZemKXUfPQS9LVdZ"
+    "contract": "https://nearblocks.io/address/10f816f5fbf84d7c6cb0c5bd5e79e02be90260e3d58f85ed8317c215439280bf",
+    "invoiceConfirmation": "https://nearblocks.io/txns/Gk3RrKAiMm8Fv65yr8PQ2zB2Jae2Jm5yoR4c67XfEb6M",
+    "payment": "https://nearblocks.io/txns/F8tY6iegPD3VNi3sE5e2Dv4uA9dySPkv3ZwjjwCR9YAL",
+    "refund": "https://nearblocks.io/txns/FDvVLCf7XpKgrTXAQg8zk4H7VhEXna2BQpaC3CFZWtnW",
+    "nativeDepositRefund": "https://nearblocks.io/txns/DVCc6ahTnTdvB11mHuUqn4bsYLHcNdDgsPYpWJsdXewP"
   },
   "demo": [
     {
-      "time": "0:00-0:15",
-      "show": "Landing page, then open the wallet gate.",
-      "say": "A supplier can invoice the full order before all the goods arrive. Accord pays only the quantity already accepted."
+      "time": "0:00-0:20",
+      "show": "Landing page, then completed mainnet order PO-7886D7BD.",
+      "say": "Accord brings buying teams and suppliers together around one order. Each uses their own wallet."
     },
     {
-      "time": "0:15-0:35",
-      "show": "A funded purchase order, fixed payout, price, accepted, paid and pending quantities.",
-      "say": "The buyer funds agreed terms. A separate supplier accepts them, and the receiver confirms delivery. Those records define the payment limit."
+      "time": "0:20-0:45",
+      "show": "Two cartons ordered, one accepted, and supplier-confirmed invoice ACC-MAINNET-7886D7BD-1.",
+      "say": "The buyer confirms what arrived. NEAR AI extracts invoice fields; the supplier confirms them. Extraction alone cannot authorize payment."
     },
     {
-      "time": "0:35-1:00",
-      "show": "Upload the synthetic scanned PDF, inspect its preview and OCR text, then extract fields.",
-      "say": "OCR reads the scan. NEAR AI extracts fields, and the application checks them against the order. Extraction alone grants no authority."
+      "time": "0:45-1:15",
+      "show": "Settled 0.01 USDC payment, remittance advice and mainnet receipt.",
+      "say": "The worker pays in the background. NEAR fixes the recipient and price, reserves pending amounts and prevents payment beyond accepted quantities."
     },
     {
-      "time": "1:00-1:20",
-      "show": "Supplier review, the public-field notice, wallet confirmation, then the confirmed commitment.",
-      "say": "The supplier confirms these exact fields and this document hash. A changed invoice needs a new confirmation."
+      "time": "1:15-1:40",
+      "show": "Closed order, 0.01 USDC refunded and 0.0689625 NEAR returned.",
+      "say": "Both parties approved closure. Unused payment funds returned to the buyer, separately from unused storage allowance. Retained records remain backed."
     },
     {
-      "time": "1:20-1:45",
-      "show": "Operator bounded request and the real completed testnet receipt linked in this file.",
-      "say": "The operator signs a bounded request. The worker has a limited key. NEAR checks the confirmed invoice and reserves delivery entitlement before sending tokens."
-    },
-    {
-      "time": "1:45-2:00",
-      "show": "The verified buyer refund receipt and the public repository.",
-      "say": "Both parties can close a settled order and return unused tokens to the buyer. Unknown outcomes stay reserved. The current release is on testnet."
+      "time": "1:40-2:00",
+      "show": "Public repository and mainnet transaction evidence.",
+      "say": "The repository contains reproducible checks and the mainnet receipts behind this demonstration."
     }
   ],
   "recordingState": {
@@ -61,10 +58,16 @@
   "humanDetailsDeferred": true,
   "submissionRulesSource": "https://nearhackathon.com/HACKATHON.md",
   "readiness": {
+    "mainnetDeployed": true,
+    "mainnetSettlementVerified": true,
+    "mainnetTokenRefundVerified": true,
+    "mainnetNativeRefundVerified": true,
     "invoiceConfirmationVerified": true,
-    "pdfOcrVerified": true,
-    "mainnetDeployed": false,
+    "pdfOcrVerifiedOnTestnet": true,
     "realWalletBuyerJourneyVerified": true,
-    "realWalletBrowserJourneyVerified": false
+    "supplierAcceptanceAndInvoiceVerifiedThroughWallet": true,
+    "supplierClosureProposalUsedControlledSdk": true,
+    "intentsMainnetVerified": false,
+    "externalAudit": false
   }
 }

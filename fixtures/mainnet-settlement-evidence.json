@@ -1,0 +1,49 @@
+{
+  "checkedAt": "2026-11-12T09:32:28.845Z",
+  "network": "mainnet",
+  "orderId": "PO-7886D7BD",
+  "settlementToken": "17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1",
+  "decimals": 6,
+  "ordered": "2",
+  "accepted": "1",
+  "paid": "1",
+  "pending": "0",
+  "fundedUsdcBaseUnits": "20000",
+  "supplierReceivedUsdcBaseUnits": "10000",
+  "buyerRefundUsdcBaseUnits": "10000",
+  "phase": "Closed",
+  "nativeDepositRefundedYocto": "68962499999999999999998",
+  "nativeRetainedYocto": "31037500000000000000000",
+  "vaultUsdcBaseUnits": "0",
+  "transactions": {
+    "payment": "F8tY6iegPD3VNi3sE5e2Dv4uA9dySPkv3ZwjjwCR9YAL",
+    "closure": "FDvVLCf7XpKgrTXAQg8zk4H7VhEXna2BQpaC3CFZWtnW",
+    "nativeRefund": "DVCc6ahTnTdvB11mHuUqn4bsYLHcNdDgsPYpWJsdXewP"
+  },
+  "balances": [
+    {
+      "role": "buyer",
+      "accountId": "mainnett12.near",
+      "nativeYocto": "150858763208770799999991",
+      "usdcBaseUnits": "354520"
+    },
+    {
+      "role": "supplier",
+      "accountId": "1ce366dc92817f9e8ac25e941c9a552591bb7d4662b8c965fe944f3d46abd151",
+      "nativeYocto": "77177992344862499999997",
+      "usdcBaseUnits": "10000"
+    },
+    {
+      "role": "vault",
+      "accountId": "10f816f5fbf84d7c6cb0c5bd5e79e02be90260e3d58f85ed8317c215439280bf",
+      "nativeYocto": "2614166627030383800000006",
+      "usdcBaseUnits": "0"
+    },
+    {
+      "role": "operator",
+      "accountId": "eb9d09dab80a829383c6402fc3a6ef90f6035256b0845f130127b254e4cd250c",
+      "nativeYocto": "18040677949554300000000",
+      "usdcBaseUnits": "0"
+    }
+  ]
+}

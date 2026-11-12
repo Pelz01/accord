@@ -6,6 +6,19 @@ Open [accord-payments.vercel.app](https://accord-payments.vercel.app) for the ho
 
 The normal flow uses two customer wallets: buyer and supplier. The buyer creates and funds the order, then confirms delivery using the same wallet. An optional warehouse reviewer can be assigned at creation. The supplier accepts terms and confirms invoice fields. Accord’s restricted background worker requests eligible payment; the contract enforces the financial limits. Creation, acceptance, funding, delivery and supplier invoice confirmation remain wallet transactions. Invoice extraction requires the server's NEAR_AI_API_KEY and fails visibly when unavailable. Existing manual-policy orders retain their operator NEP-413 authorization flow. Never share a private key in chat or commit it.
 
+
+## Verified mainnet demonstration
+
+PO-7886D7BD is Closed: 2 cartons ordered, 1 accepted and paid, pending 0. It was funded with 0.02 native USDC; 0.01 USDC reached the supplier and 0.01 USDC returned to the buyer. The buyer also recovered 0.0689625 NEAR of its native allowance; 0.0310375 NEAR remains backing retained records and the buffer. [Evidence](fixtures/mainnet-settlement-evidence.json) links actual mainnet receipts. [Live NEAR AI metadata](fixtures/mainnet-ai-invoice-evidence.json) records the text-invoice extraction. PDF/OCR has separate historical testnet evidence. The supplier closure proposal and operational recovery used controlled SDK keys; the customer acceptance, invoice confirmation, buyer actions and refunds were exercised through Intear.
+
+Read the public state without a wallet:
+
+```sh
+node --input-type=module -e "const r=await fetch('https://accord-payments.vercel.app/api/chain/state?account=mainnett12.near',{headers:{'x-accord-network':'mainnet'}});const s=await r.json();console.log(JSON.stringify({order:s.orders[0],recovery:s.recoveries['PO-7886D7BD'],nativeDeposit:s.nativeDeposits['PO-7886D7BD']},null,2));"
+```
+
+The regular workspace requires a related wallet for its customer views. The public proof above does not expose invoice files or source text. The mainnet WASM is unchanged by the worker gas correction. Current application checks include 73 unit/service cases and the existing isolated browser journeys. Historical testnet evidence below remains labeled testnet.
+
 ## Two-wallet automatic orders
 
 Version 2.3.0-automatic adds create_automatic_order and get_payment_policy without changing stored Vault/Order/Attempt layouts. The buyer is the default receiver; a separate reviewer is optional. The service account stays separate. Automatic execution is agreed at creation and bound into the terms hash; existing orders remain manual. The UI contains no service-wallet setup or payment-authorization step for automatic orders. After a supplier-confirmed invoice and delivery, follow Payments for settlement and remittance.

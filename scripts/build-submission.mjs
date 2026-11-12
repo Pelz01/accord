@@ -3,18 +3,31 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { chromium } from '@playwright/test';
 import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
-
-const proof = JSON.parse(await readFile('fixtures/invoice-release-evidence.json', 'utf8'));
-assert.equal(proof.network, 'testnet');
-assert.ok(proof.paymentTransaction && proof.commitment && proof.checks.length >= 7);
-const buyerProof = JSON.parse(await readFile('fixtures/browser-wallet-evidence.json', 'utf8'));
-assert.equal(buyerProof.network, 'testnet');
+const proof = JSON.parse(await readFile('fixtures/mainnet-settlement-evidence.json', 'utf8'));
+assert.equal(proof.network, 'mainnet');
+assert.equal(proof.phase, 'Closed');
+assert.equal(proof.pending, '0');
+assert.equal(proof.supplierReceivedUsdcBaseUnits, '10000');
+assert.equal(proof.buyerRefundUsdcBaseUnits, '10000');
+let intents = null;
+try {
+  intents = JSON.parse(await readFile('fixtures/mainnet-intents-evidence.json', 'utf8'));
+} catch (e) {
+  if (e.code !== 'ENOENT') throw e;
+}
+const intentsVerified =
+  intents?.stage === 'settled' && intents?.sourceVerified === true && !!intents?.destinationHash;
 const description =
-  'Accord keeps business moving by bringing orders, deliveries and payments together. Buying teams and suppliers stay on the same page, from the first order to the final payment. Buyers create and fund fixed terms; suppliers accept the price and payout account; an authorized receiver confirms cumulative deliveries. PDF invoices and scans are processed into text, and NEAR AI Cloud extracts structured fields. The supplier reviews and confirms a canonical commitment covering those fields, the document hash, order terms, network and vault. An operator can then authorize a partial payment. A Rust contract on NEAR independently checks the supplier confirmation and enforces paid + pending <= accepted <= ordered, reserving entitlement before the token transfer. The operator cannot change prices, recipients or delivery records. The product includes wallet-gated orders, private file review, durable payment jobs, receipts, mutual closure and buyer refunds. The hosted application runs on Vercel and an isolated VPS backend. Real testnet transfers, supplier confirmation, PDF/OCR, failed callbacks and recovery have been verified. This release uses testnet aUSD. Mainnet and a complete real-wallet browser journey remain separate release gates; no external audit or invoice-specific payment ledger is claimed.';
-assert.ok(description.length >= 20 && description.length <= 2000);
+  'Accord brings purchase orders, deliveries, invoices and supplier payments together. A buyer creates and funds an order; the supplier accepts its price and payment account. The buyer confirms deliveries with the same wallet, or appoints a receiver. NEAR AI Cloud extracts invoice fields from text, PDFs or scans. The supplier reviews and confirms the exact invoice and document hash. Accord’s background worker then requests eligible payment. A Rust contract on NEAR fixes the recipient and price, accounts for paid and pending quantities, and limits payment to confirmed deliveries and supplier-approved invoices. Customers use two wallets; no operator wallet is required. The product includes buyer payables, a supplier view, remittance advice, CSV export, mutual closure and storage-deposit refunds. The hosted mainnet check funded 0.02 native USDC, paid 0.01 USDC for one carton, refunded the unused 0.01 USDC and returned 0.0689625 NEAR of unused storage allowance. PDF/OCR and failure recovery have separate testnet and sandbox evidence. ' +
+  (intentsVerified
+    ? 'NEAR Intents funding is verified on mainnet: swap NEAR into native USDC in the buyer’s wallet, then fund an order separately. '
+    : 'Intents funding is implemented; its live transfer check is still pending. ') +
+  'This is a controlled release, without an external audit or a claim of readiness for customer funds.';
+assert(description.length >= 20 && description.length <= 2000);
 const post =
-  'Keep business moving with Accord. Orders, deliveries and payments, brought together. Built on NEAR. Try it: https://accord-payments.vercel.app Code: https://github.com/Pelz01/accord @NEARProtocol #NEARHackathon';
-assert.ok(post.length <= 280);
+  'Pay suppliers as deliveries arrive. Accord connects agreed orders, confirmed goods and supplier-approved invoices to payments on NEAR. Built at NEAR HACKATHON.\nhttps://accord-payments.vercel.app\nhttps://github.com/Pelz01/accord\n@NEARProtocol #NEARHackathon';
+assert(post.length <= 280);
+const tx = (hash) => 'https://nearblocks.io/txns/' + hash;
 const material = {
   draft: true,
   projectName: 'Accord',
@@ -25,52 +38,54 @@ const material = {
     {
       id: 'security',
       reason:
-        'The agent cannot expand its spending authority; contract checks and limited keys constrain settlement.',
+        'Contract limits, confirmed invoices, reservations and restricted service keys constrain execution.',
     },
     {
       id: 'realworld',
-      reason:
-        'Purchase orders, supplier invoices, delivery receipts and partial supplier payments.',
+      reason: 'Buyer and supplier purchasing, native USDC settlement, remittance and refunds.',
     },
   ],
   demoPostDraft: post,
   proofLinks: {
-    invoiceConfirmation:
-      'https://testnet.nearblocks.io/txns/' +
-      proof.transactions.find((t) => t.label === 'confirm_invoice').hash,
-    payment: 'https://testnet.nearblocks.io/txns/' + proof.paymentTransaction,
-    refund: 'https://testnet.nearblocks.io/txns/5RzNhuARA7TWu7wpXwSArDG2ohmXxZemKXUfPQS9LVdZ',
+    contract:
+      'https://nearblocks.io/address/10f816f5fbf84d7c6cb0c5bd5e79e02be90260e3d58f85ed8317c215439280bf',
+    invoiceConfirmation: tx('Gk3RrKAiMm8Fv65yr8PQ2zB2Jae2Jm5yoR4c67XfEb6M'),
+    payment: tx(proof.transactions.payment),
+    refund: tx(proof.transactions.closure),
+    nativeDepositRefund: tx(proof.transactions.nativeRefund),
+    ...(intentsVerified
+      ? { intentsFunding: tx(intents.sourceHash), intentsUSDCReceipt: tx(intents.destinationHash) }
+      : {}),
   },
   demo: [
     {
-      time: '0:00-0:15',
-      show: 'Landing page, then open the wallet gate.',
-      say: 'A supplier can invoice the full order before all the goods arrive. Accord pays only the quantity already accepted.',
+      time: '0:00-0:20',
+      show: 'Landing page, then completed mainnet order PO-7886D7BD.',
+      say: 'Accord brings buying teams and suppliers together around one order. Each uses their own wallet.',
     },
     {
-      time: '0:15-0:35',
-      show: 'A funded purchase order, fixed payout, price, accepted, paid and pending quantities.',
-      say: 'The buyer funds agreed terms. A separate supplier accepts them, and the receiver confirms delivery. Those records define the payment limit.',
+      time: '0:20-0:45',
+      show: 'Two cartons ordered, one accepted, and supplier-confirmed invoice ACC-MAINNET-7886D7BD-1.',
+      say: 'The buyer confirms what arrived. NEAR AI extracts invoice fields; the supplier confirms them. Extraction alone cannot authorize payment.',
     },
     {
-      time: '0:35-1:00',
-      show: 'Upload the synthetic scanned PDF, inspect its preview and OCR text, then extract fields.',
-      say: 'OCR reads the scan. NEAR AI extracts fields, and the application checks them against the order. Extraction alone grants no authority.',
+      time: '0:45-1:15',
+      show: 'Settled 0.01 USDC payment, remittance advice and mainnet receipt.',
+      say: 'The worker pays in the background. NEAR fixes the recipient and price, reserves pending amounts and prevents payment beyond accepted quantities.',
     },
     {
-      time: '1:00-1:20',
-      show: 'Supplier review, the public-field notice, wallet confirmation, then the confirmed commitment.',
-      say: 'The supplier confirms these exact fields and this document hash. A changed invoice needs a new confirmation.',
+      time: '1:15-1:40',
+      show: 'Closed order, 0.01 USDC refunded and 0.0689625 NEAR returned.',
+      say: 'Both parties approved closure. Unused payment funds returned to the buyer, separately from unused storage allowance. Retained records remain backed.',
     },
     {
-      time: '1:20-1:45',
-      show: 'Operator bounded request and the real completed testnet receipt linked in this file.',
-      say: 'The operator signs a bounded request. The worker has a limited key. NEAR checks the confirmed invoice and reserves delivery entitlement before sending tokens.',
-    },
-    {
-      time: '1:45-2:00',
-      show: 'The verified buyer refund receipt and the public repository.',
-      say: 'Both parties can close a settled order and return unused tokens to the buyer. Unknown outcomes stay reserved. The current release is on testnet.',
+      time: '1:40-2:00',
+      show: intentsVerified
+        ? 'Intents source and destination receipts, then the repository.'
+        : 'Public repository and mainnet transaction evidence.',
+      say: intentsVerified
+        ? 'NEAR Intents adds USDC to the buyer’s wallet. Funding an order is a separate approval.'
+        : 'The repository contains reproducible checks and the mainnet receipts behind this demonstration.',
     },
   ],
   recordingState: {
@@ -82,18 +97,25 @@ const material = {
   humanDetailsDeferred: true,
   submissionRulesSource: 'https://nearhackathon.com/HACKATHON.md',
   readiness: {
+    mainnetDeployed: true,
+    mainnetSettlementVerified: true,
+    mainnetTokenRefundVerified: true,
+    mainnetNativeRefundVerified: true,
     invoiceConfirmationVerified: true,
-    pdfOcrVerified: true,
-    mainnetDeployed: false,
-    realWalletBuyerJourneyVerified: buyerProof.final.phase === 'Closed',
-    realWalletBrowserJourneyVerified: false,
+    pdfOcrVerifiedOnTestnet: true,
+    realWalletBuyerJourneyVerified: true,
+    supplierAcceptanceAndInvoiceVerifiedThroughWallet: true,
+    supplierClosureProposalUsedControlledSdk: true,
+    intentsMainnetVerified: !!intentsVerified,
+    externalAudit: false,
   },
 };
 await mkdir('submission', { recursive: true });
 await writeFile('submission/materials.json', JSON.stringify(material, null, 2) + '\n');
+
 const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Accord - NEAR Hackathon</title><style>
-@font-face{font-family:Manrope;src:url('../node_modules/@fontsource/manrope/files/manrope-latin-500-normal.woff2')}@font-face{font-family:Public;src:url('../node_modules/@fontsource/public-sans/files/public-sans-latin-400-normal.woff2')}*{box-sizing:border-box}body{margin:0;background:#f4f1e8;color:#183b2a;font-family:Public,sans-serif}.poster{position:relative;width:1280px;height:720px;overflow:hidden}.photo{position:absolute;right:0;top:0;width:47%;height:100%;object-fit:cover;object-position:66% center}.shade{position:absolute;inset:0;background:linear-gradient(90deg,#f4f1e8 0%,#f4f1e8 48%,rgba(244,241,232,.12) 70%,transparent 100%)}.brand{position:absolute;left:64px;top:49px;display:flex;gap:12px;align-items:center;font:500 35px Manrope;letter-spacing:-2px}.poster-mark{display:block;width:34px;height:34px}.tag{position:absolute;top:66px;right:58px;font:11px Manrope;letter-spacing:2px;color:white;text-shadow:0 1px 6px #24382a}h1{position:absolute;left:64px;top:177px;width:650px;margin:0;font:500 76px/1.09 Manrope;letter-spacing:-4px}.sub{position:absolute;left:69px;top:393px;width:440px;font:20px/1.6 Public;color:#5b6f5f}.path{position:absolute;left:69px;top:514px;display:flex;gap:17px;align-items:center;font:13px Manrope;color:#28573c}.path span{color:#879f87}.footer{position:absolute;left:69px;bottom:48px;font:14px Public;letter-spacing:.2px}.footer small{display:block;font-size:11px;opacity:.65;margin-top:9px}
-</style></head><body><main class="poster"><img class="photo" src="../public/images/accord-commerce.jpg" alt="Warehouse loading bay"><div class="shade"></div><div class="brand"><img class="poster-mark" src="../public/brand/accord-mark.svg" alt="">accord.</div><div class="tag">NEAR HACKATHON</div><h1>Keep business<br>moving.</h1><p class="sub">Orders, deliveries and payments,<br>brought together.</p><div class="path">Agree<span>→</span>Receive<span>→</span>Pay</div><div class="footer">accord-payments.vercel.app<small>github.com/Pelz01/accord</small></div></main></body></html>`;
+@font-face{font-family:Manrope;src:url('../node_modules/@fontsource/manrope/files/manrope-latin-500-normal.woff2')}@font-face{font-family:Public;src:url('../node_modules/@fontsource/public-sans/files/public-sans-latin-400-normal.woff2')}*{box-sizing:border-box}body{margin:0;background:#f4f1e8;color:#171717;font-family:Public,sans-serif}.poster{position:relative;width:1280px;height:720px;overflow:hidden}.photo{position:absolute;right:0;top:0;width:47%;height:100%;object-fit:cover;object-position:66% center}.shade{position:absolute;inset:0;background:linear-gradient(90deg,#f4f1e8 0%,#f4f1e8 48%,rgba(244,241,232,.12) 70%,transparent 100%)}.brand{position:absolute;left:64px;top:49px;display:flex;gap:12px;align-items:center;font:500 35px Manrope;letter-spacing:-2px}.poster-mark{display:block;width:34px;height:34px}.tag{position:absolute;top:66px;right:58px;font:11px Manrope;letter-spacing:2px;color:white;text-shadow:0 1px 6px #171717}h1{position:absolute;left:64px;top:177px;width:650px;margin:0;font:500 76px/1.09 Manrope;letter-spacing:-4px}.sub{position:absolute;left:69px;top:393px;width:440px;font:20px/1.6 Public;color:#514d4a}.path{position:absolute;left:69px;top:514px;display:flex;gap:17px;align-items:center;font:13px Manrope;color:#e53600}.path span{color:#ff3d00}.footer{position:absolute;left:69px;bottom:48px;font:14px Public;letter-spacing:.2px}.footer small{display:block;font-size:11px;opacity:.65;margin-top:9px}
+</style></head><body><main class="poster"><img class="photo" src="../public/images/accord-commerce.jpg" alt="Warehouse loading bay"><div class="shade"></div><div class="brand"><img class="poster-mark" src="../public/brand/accord-mark.svg" alt="">accord.</div><div class="tag">NEAR HACKATHON</div><h1>Keep business<br>moving.</h1><p class="sub">Orders, deliveries and payments,<br>brought together.</p><div class="path">Agree<span>·</span>Receive<span>·</span>Pay</div><div class="footer">accord-payments.vercel.app<small>github.com/Pelz01/accord</small></div></main></body></html>`;
 await writeFile('submission/accord-poster.html', html);
 const browser = await chromium.launch();
 try {

@@ -1,0 +1,18 @@
+[
+  {
+    "id": "3680e5d6-a10d-4d48-92b7-68f9dffbf0c3",
+    "mode": "live",
+    "model": "z-ai/glm-5.3-flash",
+    "recordedAt": "2026-11-11T19:56:30.679Z",
+    "providerRequestId": "7755dc16-2abc-4638-aaf8-6d4570045245",
+    "documentHash": "737a2a723b349c8712781eee4e056e21e4cb4c6a85539fe25b1b9186410778a3",
+    "invoice": {
+      "orderId": "PO-7886D7BD",
+      "reference": "ACC-MAINNET-7886D7BD-1",
+      "lineId": "cartons",
+      "quantity": 1,
+      "token": "USDC",
+      "amountBaseUnits": "10000"
+    }
+  }
+]

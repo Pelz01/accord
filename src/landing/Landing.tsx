@@ -18,10 +18,9 @@ import '@fontsource/bodoni-moda/latin-400-italic.css';
 import './landing.css';
 import './product-art.css';
 
-const vault = 'vault.accord-v2-8e0a631d.testnet';
-const contractUrl = `https://testnet.nearblocks.io/address/${vault}`;
-const firstPayment =
-  'https://testnet.nearblocks.io/txns/GTntahDMfctnQyW8UauV2t7vF27swdgFh98jrw1f63tQ';
+const vault = '10f816f5fbf84d7c6cb0c5bd5e79e02be90260e3d58f85ed8317c215439280bf';
+const contractUrl = `https://nearblocks.io/address/${vault}`;
+const firstPayment = 'https://nearblocks.io/txns/F8tY6iegPD3VNi3sE5e2Dv4uA9dySPkv3ZwjjwCR9YAL';
 function Brand({ light = false }: { light?: boolean }) {
   return (
     <a className={`landing-brand ${light ? 'light' : ''}`} href="/" aria-label="Accord home">
@@ -104,28 +103,28 @@ function ProductIllustration() {
             <div>
               <span>Order value</span>
               <strong>
-                1,000<small>aUSD</small>
+                1,000<small>USDC</small>
               </strong>
             </div>
             <div>
               <span>Paid to supplier</span>
               <strong>
                 {paid * 10}
-                <small>aUSD</small>
+                <small>USDC</small>
               </strong>
             </div>
             <div className="product-budget-eligible">
               <span>Eligible to pay</span>
               <strong>
                 {pending ? 0 : eligible * 10}
-                <small>aUSD</small>
+                <small>USDC</small>
               </strong>
             </div>
           </div>
           <div className="product-table">
             <div className="product-table-head">
               <span>ORDER DETAILS</span>
-              <span>Fixed price · aUSD</span>
+              <span>Fixed price · USDC</span>
             </div>
             <div className="product-table-labels">
               <span>Item</span>
@@ -139,7 +138,7 @@ function ProductIllustration() {
                   <PackageCheck size={19} />
                 </span>
                 <div>
-                  Packing cartons<small>10 aUSD per carton</small>
+                  Packing cartons<small>10 USDC per carton</small>
                 </div>
               </div>
               <span>100</span>
@@ -163,7 +162,7 @@ function ProductIllustration() {
                 <p>
                   {pending
                     ? 'Entitlement is reserved while the outcome is checked.'
-                    : `Fixed recipient · supplier.testnet · ${100 - accepted} cartons awaiting delivery`}
+                    : `Fixed recipient · Meridian Supply · ${100 - accepted} cartons awaiting delivery`}
                 </p>
               </div>
             </div>
@@ -343,12 +342,12 @@ export function Landing() {
           </p>
           <a href={contractUrl} target="_blank" rel="noreferrer">
             <span>
-              NEAR TESTNET<small>Deployed payment contract</small>
+              NEAR MAINNET<small>Deployed payment contract</small>
             </span>
           </a>
           <a href={firstPayment} target="_blank" rel="noreferrer">
             <span>
-              PARTIAL SETTLEMENT<small>Inspect a real 400 aUSD payment</small>
+              PARTIAL SETTLEMENT<small>Inspect a real 0.01 USDC payment</small>
             </span>
           </a>
           <a href="https://github.com/Pelz01/accord" target="_blank" rel="noreferrer">
@@ -457,8 +456,8 @@ export function Landing() {
                     ? [
                         ['Supplier', 'Meridian Supply Co.'],
                         ['Order quantity', '100 cartons'],
-                        ['Price per carton', '10 aUSD'],
-                        ['Committed budget', '1,000 aUSD'],
+                        ['Price per carton', '10 USDC'],
+                        ['Committed budget', '1,000 USDC'],
                       ]
                     : activeStep === 1
                       ? [
@@ -468,10 +467,10 @@ export function Landing() {
                           ['Authorized receiver', 'Warehouse'],
                         ]
                       : [
-                          ['Accepted entitlement', '400 aUSD'],
-                          ['Already paid', '0 aUSD'],
-                          ['Pending reservations', '0 aUSD'],
-                          ['Eligible now', '400 aUSD'],
+                          ['Accepted entitlement', '400 USDC'],
+                          ['Already paid', '0 USDC'],
+                          ['Pending reservations', '0 USDC'],
+                          ['Eligible now', '400 USDC'],
                         ]
                   ).map(([k, v]) => (
                     <div key={k}>
@@ -574,7 +573,7 @@ export function Landing() {
               <span>Eligible now</span>
               <strong>40</strong>
             </div>
-            <p>At 10 aUSD per carton, that’s a 400 aUSD partial payment.</p>
+            <p>At 10 USDC per carton, that’s a 400 USDC partial payment.</p>
           </div>
         </section>
         <section className="landing-questions landing-section" id="questions">
