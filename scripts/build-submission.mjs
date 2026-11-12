@@ -21,7 +21,7 @@ const description =
   'Accord brings purchase orders, deliveries, invoices and supplier payments together. A buyer creates and funds an order; the supplier accepts its price and payment account. The buyer confirms deliveries with the same wallet, or appoints a receiver. NEAR AI Cloud extracts invoice fields from text, PDFs or scans. The supplier reviews and confirms the exact invoice and document hash. Accord’s background worker then requests eligible payment. A Rust contract on NEAR fixes the recipient and price, accounts for paid and pending quantities, and limits payment to confirmed deliveries and supplier-approved invoices. Customers use two wallets; no operator wallet is required. The product includes buyer payables, a supplier view, remittance advice, CSV export, mutual closure and storage-deposit refunds. The hosted mainnet check funded 0.02 native USDC, paid 0.01 USDC for one carton, refunded the unused 0.01 USDC and returned 0.0689625 NEAR of unused storage allowance. PDF/OCR and failure recovery have separate testnet and sandbox evidence. ' +
   (intentsVerified
     ? 'NEAR Intents funding is verified on mainnet: swap NEAR into native USDC in the buyer’s wallet, then fund an order separately. '
-    : 'Intents funding is implemented; its live transfer check is still pending. ') +
+    : 'The first Intents swap was refunded after quote expiry; a successful USDC conversion remains unverified. ') +
   'This is a controlled release, without an external audit or a claim of readiness for customer funds.';
 assert(description.length >= 20 && description.length <= 2000);
 const post =

@@ -16,7 +16,7 @@ The controlled order funded 0.02 native USDC, paid 0.01 USDC for one accepted ca
 
 ## Intents status
 
-The 0.01 NEAR Intents deposit and bridge receipt are verified on mainnet. The provider still reports PROCESSING, without a verified USDC payout. Do not describe that swap as settled. `../fixtures/mainnet-intents-evidence.json` records this limitation. The app retains the original request and does not offer another deposit while it is unresolved.
+The 0.01 NEAR Intents deposit and bridge receipt are verified on mainnet. The provider subsequently refunded it after QUOTE_EXPIRED. A finalized native transfer confirms 0.01 NEAR returned to mainnett12.near. No USDC conversion completed; do not describe that swap as successful. `../fixtures/mainnet-intents-evidence.json` records this limitation. The original request remains retained for review, and no replacement deposit was sent.
 
 ## Human steps before sending the application
 
