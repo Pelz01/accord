@@ -15,10 +15,11 @@ import {
   type StoredPaymentJob,
 } from '../server/payment-worker.ts';
 import type { ChainAttempt, Deployment } from '../shared/chain.ts';
+import { paymentGas, type Network } from '../shared/network.ts';
 
-async function fixture() {
+async function fixture(network: Network = 'testnet', gas = paymentGas(network)) {
   const d: Deployment = {
-    network: 'testnet',
+    network,
     rpcUrl: '',
     vault: 'vault.testnet',
     token: 'token.testnet',
@@ -46,9 +47,7 @@ async function fixture() {
     receiverId: d.vault,
     nonce: 1n,
     blockHash: new Uint8Array(32).fill(7),
-    actions: [
-      actions.functionCall('request_payment', paymentArguments(job), 150_000_000_000_000n, 0n),
-    ],
+    actions: [actions.functionCall('request_payment', paymentArguments(job), gas, 0n)],
   });
   const signed = await signer.signTransaction(transaction);
   const stored: StoredPaymentJob = {
@@ -267,4 +266,18 @@ test('the public jobs API excludes signed authorizations and private metadata', 
     await app.close();
     ledger.close();
   }
+});
+
+test('mainnet payment authorizations use the enforced 80 TGas minimum and retain exact legacy authorizations', async () => {
+  const current = await fixture('mainnet');
+  assert.equal(current.signed.transaction.actions[0].functionCall?.gas, 80_000_000_000_000n);
+  assert(preparedPayment(current.stored, current.d));
+  const legacy = await fixture('mainnet', 150_000_000_000_000n);
+  assert(preparedPayment(legacy.stored, legacy.d));
+  for (const gas of [79_000_000_000_000n, 81_000_000_000_000n]) {
+    const invalid = await fixture('mainnet', gas);
+    assert.throws(() => preparedPayment(invalid.stored, invalid.d), /review/);
+  }
+  const wrongNetwork = await fixture('testnet', 80_000_000_000_000n);
+  assert.throws(() => preparedPayment(wrongNetwork.stored, wrongNetwork.d), /review/);
 });

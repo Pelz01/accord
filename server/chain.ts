@@ -27,6 +27,7 @@ import { IntentsFunding } from './intents.ts';
 import {
   assertDeploymentNetwork,
   networkRPC,
+  paymentGas,
   tokenSymbol,
   type Network,
 } from '../shared/network.ts';
@@ -590,7 +591,7 @@ export async function registerChain(
                 actions.functionCall(
                   'request_payment',
                   paymentArguments(job),
-                  150_000_000_000_000n,
+                  paymentGas(d.network),
                   0n,
                 ),
               ],

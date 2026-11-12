@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-11T18:57:59.815Z",
+  "at": "2026-11-11T20:04:47.054Z",
   "environment": "disposable-near-sandbox",
   "networkDomain": "mainnet",
   "tokenFixture": "Synthetic NEP-141 fixture installed only inside the sandbox at the pinned USDC address; not Circle production code.",
@@ -25,108 +25,129 @@
   "transactions": [
     {
       "method": "new",
-      "hash": "21vXp2QDEU1ydCSWXSLwNGWMCrtSR8FCNogL2WiehSbe",
-      "succeeded": true
+      "hash": "AMKLD4BhLUbNqi85yUZCAscav25toFbqZUH1HD6J7gRW",
+      "succeeded": true,
+      "gas": "150000000000000"
     },
     {
       "method": "new",
-      "hash": "CXxZuDLjVJEFW2b81wFwsb7Ntr8zsqoryN7pfzQ1GsDm",
-      "succeeded": true
+      "hash": "5K6qmEFumPgAaywhgNJFubkRHxFXtgpjWs5xLqv7Cz87",
+      "succeeded": true,
+      "gas": "150000000000000"
     },
     {
       "method": "storage_deposit",
-      "hash": "85Unn3naxzVC4Bovf4grCQ1hp3t3qyZtdJDsChdBQDzL",
-      "succeeded": true
+      "hash": "HQjReB6qRXngx6qvUCM85WNKZWJ6bduir43m6qBBdGNT",
+      "succeeded": true,
+      "gas": "30000000000000"
     },
     {
       "method": "storage_deposit",
-      "hash": "AB6MrJxcnHdTPyi5yVHBN3SgQnGsYptH9sKYUX3K7R9A",
-      "succeeded": true
+      "hash": "9MNnWCXRPaaBn686CuveMzEYZ7yKcdBLKWVpyxQ9DY9Q",
+      "succeeded": true,
+      "gas": "30000000000000"
     },
     {
       "method": "create_automatic_order",
-      "hash": "4ma4Hdx4qSA2PfSriaaZ1N2qwAGV6JDByCG2btr8H64f",
-      "succeeded": true
+      "hash": "6VyWnxk3LZ9jRuTsduTMKJrEJbkUzMKbCR9j2ZBGUKzd",
+      "succeeded": true,
+      "gas": "50000000000000"
     },
     {
       "method": "accept_order",
-      "hash": "DL7GY5iEgKR8FpkG8HvD6SQMwmetytJHraMp678oVpG4",
-      "succeeded": true
+      "hash": "Ei8hxhEu1W5idSkeUVWqSm5jLnd1ZCWzqchzEGK3SwzL",
+      "succeeded": true,
+      "gas": "25000000000000"
     },
     {
       "method": "ft_transfer_call",
-      "hash": "5VqR4L586kfB6AFsBxHsHgisoS2dps32wwiVydpGgqoS",
-      "succeeded": true
+      "hash": "Ahrcj5k4BzpL57W4uKyUJybBT34HgwDDfUHJs8EiWkY5",
+      "succeeded": true,
+      "gas": "70000000000000"
     },
     {
       "method": "confirm_delivery",
-      "hash": "GKyAXseCWNgpWGF7hDhm1ANMuFUsH5B37zp52jc5jkhD",
-      "succeeded": true
+      "hash": "cncSyTaWYePeJfop26X4QK8R6WE6UP8BjfUxAnrXqtp",
+      "succeeded": true,
+      "gas": "25000000000000"
     },
     {
       "method": "confirm_invoice",
-      "hash": "2SbTeGWDAbo4LujEgy9wxWQkYFydtR68oPyUNguM94fB",
-      "succeeded": true
+      "hash": "3WAh6zNKK8Tr6vyEJEBynLGT4rxsPFc2msxdUrmQBMRo",
+      "succeeded": true,
+      "gas": "25000000000000"
     },
     {
       "method": "request_payment",
-      "hash": "7YtWUoXMurX9rNvQQdtibyG2DqivVDbVWvEHiHZJbTDe",
-      "succeeded": true
+      "hash": "8HNSs696NDnvCuH2cjz74C1peqYXHVoffUznJLVM5Y81",
+      "succeeded": true,
+      "gas": "80000000000000"
     },
     {
       "method": "request_payment",
-      "hash": "BKKJS3ifMREneFYCrABcWDcJpUqbsB91AyaeZLunyF9n",
-      "succeeded": false
+      "hash": "BU3P1bWp3FQE9dNKRDv6e4NhHHp3cpzdPQHzW67ukCHi",
+      "succeeded": false,
+      "gas": "80000000000000"
     },
     {
       "method": "top_up_order_storage",
-      "hash": "FTffQ6o32h9Q7GRwDKUiyaEMgo3G5DjcxYnzmeV53Kop",
-      "succeeded": true
+      "hash": "EAH9jtHCs6Li6TFovuns5XEzKsM9NuBcS87QvzfHMPL2",
+      "succeeded": true,
+      "gas": "25000000000000"
     },
     {
       "method": "claim_native_excess",
-      "hash": "EYK6AysRiZz2Y8V8cuwEUenkd7v3UW9aSpDKyAfHDbv2",
-      "succeeded": true
+      "hash": "9jMpLejidMogdK474E5uQJgYFneAv3owE7SQWPc1gAtg",
+      "succeeded": true,
+      "gas": "40000000000000"
     },
     {
       "method": "propose_close",
-      "hash": "5ibYxeF7ZvwsG1CeG3PmJwYkKUs7afrAuZ8dDtNByFi9",
-      "succeeded": true
+      "hash": "6th8sA1HnzPnkwfJFw4WHqSzxCm4RJRqahSsi2bGE1UJ",
+      "succeeded": true,
+      "gas": "25000000000000"
     },
     {
       "method": "accept_close",
-      "hash": "FdkanzqnHDN1QUeTQns1nqHw5y8KmyKj5A8cmWMGFn5y",
-      "succeeded": true
+      "hash": "Biy69T83VScNKPfQKsk2bTJekAJQJ5ESBR7f5H8Qi2bE",
+      "succeeded": true,
+      "gas": "80000000000000"
     },
     {
       "method": "claim_native_excess",
-      "hash": "3gdU1ULsT4fLSFniYmPBaDKv4Ets7bz8AGzJKQxhuVWL",
-      "succeeded": true
+      "hash": "6yCSDkKrxgNR4nHU2RfCmGL6cHXTDfWEjLAVPE3LYqCQ",
+      "succeeded": true,
+      "gas": "40000000000000"
     },
     {
       "method": "create_automatic_order",
-      "hash": "5wvueB6hQk6NfevKt3YQra5ipuFkYdAEto5DQdYvxcV8",
-      "succeeded": true
+      "hash": "7t6ywdhM4aQnwwgJmSseNGdvcVyW3D3uWWWN4VMy6Aqf",
+      "succeeded": true,
+      "gas": "50000000000000"
     },
     {
       "method": "accept_order",
-      "hash": "7BzGgBPweA6wjQ582C8wT5YDen1UHxAWmdXiAr26Mm81",
-      "succeeded": true
+      "hash": "A37fo8RwMrvbb37TgvWtCTDuWtHtL3vgDwhhYUYN52R2",
+      "succeeded": true,
+      "gas": "25000000000000"
     },
     {
       "method": "ft_transfer_call",
-      "hash": "EMbSSeTQVGD2tG3gdraspX5yM8vDF1XP6jZ88mQLhyWj",
-      "succeeded": true
+      "hash": "GNwrTAeJEscM8q7kXb8oqFsUPiowUu9GRxbmDar3Pbws",
+      "succeeded": true,
+      "gas": "70000000000000"
     },
     {
       "method": "top_up_order_storage",
-      "hash": "3hvdfVuvEPGGCtGGnVwGJsAHx4gYSGux1ULjZEDR7aGo",
-      "succeeded": true
+      "hash": "9R7TJRuvjVA4sgj3E8De2wxnyDdHvNTA6L4REY3Dm6WG",
+      "succeeded": true,
+      "gas": "25000000000000"
     },
     {
       "method": "confirm_invoice",
-      "hash": "EzSCpkTQ1Rcx3cBpTe55FuXr4Hdvfz3DCTo1BBGEZpGy",
-      "succeeded": true
+      "hash": "5i5FDPDGtodAyh2kboBeYCLKm9qhzro7DFiZYWjFp88G",
+      "succeeded": true,
+      "gas": "25000000000000"
     }
   ],
   "completed": true,
@@ -147,7 +168,7 @@
         "unit_price": "10000",
         "expires_at": "18446744073709551615"
       },
-      "terms_hash": "525ac4c194736fa9327881b03c129b62fc7db81bb20772ee1f385947b3024453",
+      "terms_hash": "7394abf4ced0b8cd56480f2b365a6acf7d4f8155c9d5c58a44c86e74aed8fcdf",
       "accepted_terms": true,
       "funded": "20000",
       "accepted": "1",

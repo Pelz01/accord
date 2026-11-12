@@ -11,6 +11,8 @@ export const orderAllowance = (network: Network) =>
   network === 'mainnet' ? '100000000000000000000000' : '1000000000000000000000000';
 export const tokenRegistration = (network: Network) =>
   network === 'mainnet' ? '1250000000000000000000' : '100000000000000000000000';
+export const paymentGas = (network: Network) =>
+  network === 'mainnet' ? 80_000_000_000_000n : 150_000_000_000_000n;
 
 // Wallets reserve the entire attached gas allowance before a signature.
 // Promise-producing calls retain the contract's enforced minimums.

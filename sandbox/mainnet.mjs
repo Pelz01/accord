@@ -18,9 +18,9 @@ const proof = {at:new Date().toISOString(),environment:'disposable-near-sandbox'
   wasmSha256:createHash('sha256').update(wasm).digest('hex'),checks:[],transactions:[],completed:false};
 const pass = name => {proof.checks.push({name,status:'PASS'});console.log('PASS '+name);};
 async function call(actor,target,method,args,opts=gas,fail=false){
-  const tgas={create_automatic_order:50,storage_deposit:30,ft_transfer_call:70,accept_order:25,confirm_delivery:25,confirm_invoice:25,top_up_order_storage:25,claim_native_excess:40,propose_close:25,accept_close:80};
+  const tgas={create_automatic_order:50,storage_deposit:30,ft_transfer_call:70,accept_order:25,confirm_delivery:25,confirm_invoice:25,request_payment:80,top_up_order_storage:25,claim_native_excess:40,propose_close:25,accept_close:80};
   const r=await actor.callRaw(target,method,args,{...opts,gas:String((tgas[method]??150)*1e12)});
-  proof.transactions.push({method,hash:r.transactionReceipt.hash,succeeded:r.succeeded});
+  proof.transactions.push({method,hash:r.transactionReceipt.hash,succeeded:r.succeeded,gas:String((tgas[method]??150)*1e12),gasBurnt:r.totalGasBurned?.toString()});
   if(fail)assert(r.failed||r.receiptFailures.length>0,method+' must fail');
   else {assert(r.succeeded,method+': '+JSON.stringify(r.status));assert.equal(r.receiptFailures.length,0,method);}
   return r;

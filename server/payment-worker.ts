@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { isDeepStrictEqual } from 'node:util';
 import { KeyType, SignedTransaction, baseEncode, encodeTransaction } from 'near-api-js';
 import type { ChainAttempt, ChainJob, Deployment } from '../shared/chain.ts';
+import { paymentGas } from '../shared/network.ts';
 
 export type StoredPaymentJob = ChainJob & {
   preparedTransaction?: string;
@@ -79,7 +80,8 @@ export function preparedPayment(job: StoredPaymentJob, deployment: Deployment): 
       !call ||
       call.methodName !== 'request_payment' ||
       call.deposit !== 0n ||
-      call.gas !== 150_000_000_000_000n ||
+      (call.gas !== paymentGas(deployment.network) &&
+        !(deployment.network === 'mainnet' && call.gas === 150_000_000_000_000n)) ||
       !Buffer.from(signed.encode()).equals(bytes) ||
       !isDeepStrictEqual(JSON.parse(Buffer.from(call.args).toString()), paymentArguments(job)) ||
       tx.publicKey.keyType !== KeyType.ED25519 ||
