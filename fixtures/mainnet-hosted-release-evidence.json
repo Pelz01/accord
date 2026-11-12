@@ -1,0 +1,22 @@
+{
+  "checkedAt": "2026-11-12T10:02:18.984Z",
+  "deployment": "dpl_2AydcriwnZ4m4AvqjWWFXjmosUBk",
+  "frontendCommit": "6768a8b",
+  "apiImage": "accord-mainnet-api:2.5.3",
+  "apiBundleSha256": "3b868b5ff95142a2b3e7bf6fffda19fc90cff1fb470db11484f6e4c2dcd6df93",
+  "landingChunk": "Landing-DDGjt_25.js",
+  "mainnetLinks": true,
+  "usdcCopy": true,
+  "checks": [
+    {
+      "network": "mainnet",
+      "orderCount": 1,
+      "operatorReady": true
+    },
+    {
+      "network": "testnet",
+      "orderCount": 4,
+      "operatorReady": true
+    }
+  ]
+}
