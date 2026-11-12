@@ -288,7 +288,7 @@ export async function registerChain(
         await displayReads.read(
           JSON.stringify([d.network, d.vault, d.operator, d.wasmSha256.vault, 'operator-ready']),
           () => operatorKey(d).then(() => true),
-          15000,
+          60000,
         );
         operatorReady = true;
       } catch {

@@ -102,3 +102,73 @@ test('unknown transaction receipt reads time out without fabricating failure or 
     await new Promise<void>((resolve) => server.close(() => resolve()));
   }
 });
+
+test('mainnet rate-limit failover preserves finalized reads and never broadcasts on another endpoint', async () => {
+  const original = globalThis.fetch,
+    seen: { url: string; method: string; params: Record<string, unknown> }[] = [];
+  globalThis.fetch = async (input, init) => {
+    const url = String(input),
+      body = JSON.parse(String(init?.body));
+    seen.push({ url, method: body.method, params: body.params });
+    if (url === 'https://rpc.fastnear.com')
+      return new Response(
+        JSON.stringify({
+          jsonrpc: '2.0',
+          id: body.id,
+          error: { code: -429, message: 'Rate limits exceeded' },
+        }),
+        { headers: { 'content-type': 'application/json' } },
+      );
+    assert.equal(url, 'https://rpc.mainnet.near.org');
+    assert.equal(body.method, 'query');
+    assert.equal(body.params.finality, 'final');
+    const result =
+      body.params.request_type === 'view_access_key'
+        ? { nonce: 1, permission: 'FullAccess', block_hash: '1'.repeat(32), block_height: 1 }
+        : body.params.request_type === 'view_account'
+          ? {
+              amount: '1',
+              locked: '0',
+              storage_usage: 1,
+              code_hash: '1'.repeat(32),
+              block_hash: '1'.repeat(32),
+              block_height: 1,
+            }
+          : {
+              result: [...Buffer.from('{}')],
+              logs: [],
+              block_hash: '1'.repeat(32),
+              block_height: 1,
+            };
+    return new Response(JSON.stringify({ jsonrpc: '2.0', id: body.id, result }), {
+      headers: { 'content-type': 'application/json' },
+    });
+  };
+  try {
+    const p = new FinalizedRpcProvider({ url: 'https://rpc.fastnear.com' });
+    await p.callFunctionRaw({
+      contractId: 'vault.near',
+      method: 'get_config',
+      args: {},
+      blockQuery: { finality: 'optimistic' },
+    });
+    await p.viewAccessKey({
+      accountId: 'buyer.near',
+      publicKey: 'ed25519:' + '1'.repeat(32),
+      finalityQuery: { finality: 'optimistic' },
+    });
+    await p.viewAccount({ accountId: 'vault.near', blockQuery: { finality: 'optimistic' } });
+    await assert.rejects(
+      p.sendJsonRpc('send_tx', { signed_tx_base64: 'not-a-real-transaction', wait_until: 'NONE' }),
+      /Rate limits|Unknown RPC error/,
+    );
+    assert.equal(seen.filter((x) => x.url === 'https://rpc.mainnet.near.org').length, 3);
+    assert(
+      seen
+        .filter((x) => x.url === 'https://rpc.mainnet.near.org')
+        .every((x) => x.method === 'query'),
+    );
+  } finally {
+    globalThis.fetch = original;
+  }
+});
