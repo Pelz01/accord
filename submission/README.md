@@ -5,11 +5,14 @@ The mainnet purchase and refund demonstration has passed. The application has no
 ## Ready to use
 
 - `materials.json`: project description, proposed tracks, post draft, proof links and a two-minute demo script.
+- `POST-CAPTIONS.md`: ready-to-review main post, optional replies, image captions and alt text. Video is optional for this hosted demo.
 - `accord-poster.png`: orange-and-black Accord cover image.
+- `landing-proof.png`: the public product page, captured from the hosted website.
 - `mainnet-order-proof.png`: the live closed mainnet order, payment, token refund and returned storage allowance.
 - `mainnet-remittance-proof.png`: the live settled remittance advice.
 - `mainnet-remittance.csv`: the actual CSV downloaded from that advice.
 - `mainnet-intents-proof.png`: the hosted mainnet Intents result showing USDC received.
+- `mainnet-refund-proof.png`: a focused crop of the actual returned funds and retained native backing.
 - `../fixtures/mainnet-settlement-evidence.json`: amounts, final states and mainnet transaction hashes.
 - `../fixtures/mainnet-ai-invoice-evidence.json`: live NEAR AI invoice extraction metadata.
 
@@ -27,4 +30,10 @@ The first attempt expired and returned its 0.01 NEAR principal. Its refund was i
 2. Supply the team lead name, contact email, team size, selected tracks and mainnet prize-payout account. If submitting another independent project, provide its name/link for the required related-project disclosure. These personal submission details stay outside the public repository.
 3. Agree to the contact notice: “I agree that the organizers may use these details to review our submission and contact us about this hackathon.” Review the exact final JSON payload before submission. Submit this repository once; subsequent corrections use the request-changes process.
 
-No personal values or consent have been invented. Video recording, publication and application submission remain human steps. Rules source: https://nearhackathon.com/HACKATHON.md
+No personal values or consent have been invented or added to this public pack. A screenshot-based post is prepared; recording a video is optional. Publication and application submission remain human steps. Rules source: https://nearhackathon.com/HACKATHON.md
+
+## Recommended screenshot post
+
+Attach the completed order, remittance advice, refund close-up and successful Intents result in that order. The landing screenshot and poster are optional cover images, not substitutes for the live transaction evidence. Caption and image-description text is in POST-CAPTIONS.md. Screenshots show recorded results; no recording of every user action is claimed. The Intents image's Expected amount is the original quote; the finalized actual receipt was 0.033796 USDC.
+
+The related independent project is [Last Light](https://github.com/Pelz01/lastlightgame); Accord's README discloses it. The reciprocal disclosure belongs in that project's README too. The prepared local Downloads pack includes that paragraph for the other repository.

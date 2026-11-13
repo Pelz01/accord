@@ -10,6 +10,18 @@ The hosted product is [accord-payments.vercel.app](https://accord-payments.verce
 
 ## Run
 
+For judging without spending funds, follow [the read-only mainnet walkthrough](JUDGE.md#verified-mainnet-demonstration), inspect the finalized transaction links, and open the [prepared screenshot demo](submission/README.md). The workspace requires a related wallet; an unrelated wallet will not inherit the controlled buyer's records. Testnet and mainnet evidence are labeled separately.
+
+## Hackathon disclosure and dependencies
+
+The author is also entering [Last Light](https://github.com/Pelz01/lastlightgame), a space-colony trading strategy game. It is an independent project: Accord handles purchase orders, invoices, supplier settlement and refunds; Last Light implements game rules, matches, inventory and a merchant economy. This repository is the Accord submission, not a second submission of the game.
+
+Accord's retained public history starts on 6 November 2026, within the hackathon development period. The application and payment contract were developed with AI coding assistance. The landing photographs were generated for this project. Historical planning and testnet reports are retained as evidence, not presented as current mainnet state.
+
+Third-party components include React/React DOM, Vite/TypeScript, Fastify, Zod, dotenv, Lucide, Fontsource (Manrope, Public Sans and Bodoni Moda), HOT's near-connect wallet connector, near-api-js, near-sdk, near-contract-standards and Borsh. Document processing uses Poppler and Tesseract; testing/build tools include Playwright, tsx, esbuild, Binaryen, concurrently and Prettier. Exact versions are recorded in package.json, package-lock.json, Cargo.toml and Cargo.lock. NEAR AI Cloud and the NEAR Intents 1Click API are external services. These components retain their own licenses; Accord's code is MIT licensed.
+
+## Local development
+
 Requires Node 24.12.0 (or a compatible Node 24 release). Document processing also needs Poppler and Tesseract in Linux. On Windows, the development document worker uses Ubuntu/WSL (override its distribution with ACCORD_DOCUMENT_WSL). The hosted document tools are installed in their own image.
 
 ```sh
@@ -116,9 +128,9 @@ Export CSV downloads the currently filtered orders and their associated payments
 
 On small screens, order cards show balances, delivery progress and status without horizontal scrolling. The single wallet control at the top opens the full connected account and Disconnect; keyboard Escape closes the menu. Order creation defaults to paying the supplier account, with an explicit separate-account option. The form shows an exact order total, optional delivery delegation, automatic payment conditions, the storage allowance and refund conditions before creation. Browser journeys cover these flows, including 320–1024 px form layouts and exact wallet-call arguments for both payout choices.
 
-## Current scope
+## Historical testnet scope and verification
 
-The current release supports one line per order, integer quantities, fixed six-decimal test-token amounts, exact funding, partial deliveries and payments, bounded attempts, and distinct role accounts. Creation retains 1 native NEAR for bounded storage/outgoing call deposits separately from token funding.
+The historical testnet release supports one line per order, integer quantities, six-decimal test-token amounts, exact funding, partial deliveries and payments, bounded attempts and optional delivery delegation. Its starting allowance is 1 test NEAR. The mainnet release instead starts with a 0.1 NEAR tracked allowance and native USDC; unused allowance is refundable while retained records remain backed. Role responsibilities do not require separate customer accounts beyond buyer and supplier.
 
 Closure and token refunds are implemented on testnet. Buyer and supplier approve the same 24-hour state snapshot after all accepted deliveries are paid and no transfer is unresolved. The order freezes before dispatch; unused tokens return only to the original buyer. A definite failed refund can be retried. Missing callbacks keep their reservation until the actual recipient explicitly acknowledges receipt; acknowledgment consumes it as paid and never reopens spending capacity. Unreceived, ambiguous transfers remain reserved. Newly tracked orders can return unused native storage allowance after closure; retained records and their 25% buffer stay backed. Older orders have no recorded refundable native credit. See [customer storage deposits](NATIVE_DEPOSITS.md).
 

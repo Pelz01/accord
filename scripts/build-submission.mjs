@@ -28,7 +28,7 @@ const description =
   'This is a controlled release, without an external audit or a claim of readiness for customer funds.';
 assert(description.length >= 20 && description.length <= 2000);
 const post =
-  'Pay suppliers as deliveries arrive. Accord connects agreed orders, confirmed goods and supplier-approved invoices to payments on NEAR. Built at NEAR HACKATHON.\nhttps://accord-payments.vercel.app\nhttps://github.com/Pelz01/accord\n@NEARProtocol #NEARHackathon';
+  'Supplier payments should follow the goods.\n\nI built Accord at NEAR HACKATHON. Confirm delivery and the invoice; NEAR enforces what can be paid in USDC.\n\nWhat would your team need?\nhttps://accord-payments.vercel.app\nhttps://github.com/Pelz01/accord\n@NEARProtocol #NEARHackathon';
 assert(post.length <= 280);
 const tx = (hash) => 'https://nearblocks.io/txns/' + hash;
 const material = {
@@ -38,6 +38,10 @@ const material = {
   publicRepository: 'https://github.com/Pelz01/accord',
   liveProduct: 'https://accord-payments.vercel.app',
   proposedTracks: [
+    {
+      id: 'business',
+      reason: 'AI-assisted procurement with human delivery/invoice approval and automatic eligible settlement.',
+    },
     {
       id: 'security',
       reason:
@@ -97,7 +101,7 @@ const material = {
     publicPostPublished: false,
     applicationSubmitted: false,
   },
-  humanDetailsDeferred: true,
+  personalSubmissionDetailsIncluded: false,
   submissionRulesSource: 'https://nearhackathon.com/HACKATHON.md',
   readiness: {
     mainnetDeployed: true,

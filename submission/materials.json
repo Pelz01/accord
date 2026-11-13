@@ -6,6 +6,10 @@
   "liveProduct": "https://accord-payments.vercel.app",
   "proposedTracks": [
     {
+      "id": "business",
+      "reason": "AI-assisted procurement with human delivery/invoice approval and automatic eligible settlement."
+    },
+    {
       "id": "security",
       "reason": "Contract limits, confirmed invoices, reservations and restricted service keys constrain execution."
     },
@@ -14,7 +18,7 @@
       "reason": "Buyer and supplier purchasing, native USDC settlement, remittance and refunds."
     }
   ],
-  "demoPostDraft": "Pay suppliers as deliveries arrive. Accord connects agreed orders, confirmed goods and supplier-approved invoices to payments on NEAR. Built at NEAR HACKATHON.\nhttps://accord-payments.vercel.app\nhttps://github.com/Pelz01/accord\n@NEARProtocol #NEARHackathon",
+  "demoPostDraft": "Supplier payments should follow the goods.\n\nI built Accord at NEAR HACKATHON. Confirm delivery and the invoice; NEAR enforces what can be paid in USDC.\n\nWhat would your team need?\nhttps://accord-payments.vercel.app\nhttps://github.com/Pelz01/accord\n@NEARProtocol #NEARHackathon",
   "proofLinks": {
     "contract": "https://nearblocks.io/address/10f816f5fbf84d7c6cb0c5bd5e79e02be90260e3d58f85ed8317c215439280bf",
     "invoiceConfirmation": "https://nearblocks.io/txns/Gk3RrKAiMm8Fv65yr8PQ2zB2Jae2Jm5yoR4c67XfEb6M",
@@ -57,7 +61,7 @@
     "publicPostPublished": false,
     "applicationSubmitted": false
   },
-  "humanDetailsDeferred": true,
+  "personalSubmissionDetailsIncluded": false,
   "submissionRulesSource": "https://nearhackathon.com/HACKATHON.md",
   "readiness": {
     "mainnetDeployed": true,
